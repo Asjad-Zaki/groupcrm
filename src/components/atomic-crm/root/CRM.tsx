@@ -23,6 +23,7 @@ import deals from "../deals";
 import leads from "../leads";
 import projects from "../projects";
 import { MyDayPage } from "../my-day/MyDayPage";
+import { PortalsPage } from "../portals/PortalsPage";
 import { PerformancePage } from "../performance/PerformancePage";
 import { Layout } from "../layout/Layout";
 import { MobileLayout } from "../layout/MobileLayout";
@@ -268,6 +269,7 @@ const DesktopAdmin = (
 
       <CustomRoutes>
         <Route path="/my-day" element={<MyDayPage />} />
+        <Route path="/portals" element={<PortalsPage />} />
         <Route path="/performance" element={<PerformancePage />} />
         <Route path={ProfilePage.path} element={<ProfilePage />} />
         <Route path={SettingsPage.path} element={<SettingsPage />} />
@@ -358,6 +360,7 @@ const MobileAdmin = (
         </CustomRoutes>
         <CustomRoutes>
           <Route path="/my-day" element={<MyDayPage />} />
+          <Route path="/portals" element={<PortalsPage />} />
           <Route path="/performance" element={<PerformancePage />} />
           <Route
             path={SettingsPageMobile.path}
