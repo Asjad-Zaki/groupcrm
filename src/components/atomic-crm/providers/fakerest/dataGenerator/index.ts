@@ -17,6 +17,7 @@ import { generateConversationMembers } from "./conversation_members";
 import { generateMessages } from "./messages";
 import { generateMessageLinks } from "./message_links";
 import { generateIssueThreads } from "./issue_threads";
+import { generateQuotations } from "./quotations";
 import type { Db } from "./types";
 
 export default (): Db => {
@@ -39,6 +40,7 @@ export default (): Db => {
   db.messages = generateMessages(db);
   db.message_links = generateMessageLinks(db);
   db.issue_threads = generateIssueThreads(db);
+  db.quotations = generateQuotations(db);
   db.configuration = [
     {
       id: 1,

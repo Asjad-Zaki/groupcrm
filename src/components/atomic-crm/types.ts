@@ -649,6 +649,53 @@ export type IssueThread = {
   created_at: string;
 };
 
+export interface QuoteLineItem {
+  id: string;
+  description: string;
+  unit: "SQM" | "L.S." | "NO" | "RMT" | "LOT" | "HOURS";
+  quantity: number;
+  unit_price: number;
+  total: number;
+}
+
+export interface QuotePaymentMilestone {
+  id: string;
+  percentage: number;
+  description: string;
+  amount: number;
+}
+
+export type Quotation = {
+  quote_number: string;
+  tenant_id: number;
+  operating_company: "goldland" | "abbadi" | "casavera";
+  company_name: string;
+  trn_number: string;
+  client_id?: Identifier;
+  client_name: string;
+  client_company: string;
+  client_phone?: string;
+  client_email?: string;
+  deal_id?: Identifier;
+  project_id?: Identifier;
+  project_name?: string;
+  issue_date: string;
+  valid_until: string;
+  currency: "AED";
+  status: "draft" | "sent" | "approved" | "rejected";
+  line_items: QuoteLineItem[];
+  subtotal: number;
+  vat_rate: number;
+  vat_amount: number;
+  total_amount: number;
+  payment_milestones: QuotePaymentMilestone[];
+  notes?: string;
+  created_by?: Identifier;
+  creator_name?: string;
+  created_at: string;
+  updated_at: string;
+} & Pick<RaRecord, "id">;
+
 export type ActivityCompanyCreated = {
   type: typeof COMPANY_CREATED;
   company_id: Identifier;

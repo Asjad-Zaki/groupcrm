@@ -26,6 +26,7 @@ import { MyDayPage } from "../my-day/MyDayPage";
 import { PortalsPage } from "../portals/PortalsPage";
 import { PerformancePage } from "../performance/PerformancePage";
 import { MessengerPage } from "../messenger/MessengerPage";
+import { QuotesPage } from "../quotes/QuotesPage";
 import { Layout } from "../layout/Layout";
 import { MobileLayout } from "../layout/MobileLayout";
 import { LoginPage } from "../login/LoginPage";
@@ -270,6 +271,7 @@ const DesktopAdmin = (
 
       <CustomRoutes>
         <Route path="/my-day" element={<MyDayPage />} />
+        <Route path="/quotes" element={<QuotesPage />} />
         <Route path="/messages" element={<MessengerPage />} />
         <Route path="/portals" element={<PortalsPage />} />
         <Route path="/performance" element={<PerformancePage />} />
@@ -289,6 +291,7 @@ const DesktopAdmin = (
       <Resource name="daily_reports" />
       <Resource name="conversations" />
       <Resource name="messages" />
+      <Resource name="quotations" />
       <Resource name="meetings" {...meetings} />
       <Resource name="sales" {...sales} />
       <Resource name="tags" />
@@ -364,6 +367,8 @@ const MobileAdmin = (
         </CustomRoutes>
         <CustomRoutes>
           <Route path="/my-day" element={<MyDayPage />} />
+          <Route path="/quotes" element={<QuotesPage />} />
+          <Route path="/messages" element={<MessengerPage />} />
           <Route path="/portals" element={<PortalsPage />} />
           <Route path="/performance" element={<PerformancePage />} />
           <Route
@@ -385,6 +390,9 @@ const MobileAdmin = (
         <Resource name="deal_notes" />
         <Resource name="tasks" list={MobileTasksList} />
         <Resource name="daily_reports" />
+        <Resource name="conversations" />
+        <Resource name="messages" />
+        <Resource name="quotations" />
         <Resource name="meetings" {...meetings} />
         <Resource name="sales" {...sales} />
         <Resource name="tags" />
