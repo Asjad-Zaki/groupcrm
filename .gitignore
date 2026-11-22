@@ -41,6 +41,9 @@ dist/
 # Shadcn Registry
 public/r/
 
+# Local-only files
+/README.md
+
 .claude/settings.local.json
 
 # Harness scratch (promotion lock, kept on purpose; worktrees cleaned at SessionEnd)
