@@ -1,40 +1,244 @@
-export function generateMessages(db: any) {
-  const conversations = db.conversations ?? [];
-  const conversationMembers = db.conversation_members ?? [];
-  const messages: any[] = [];
-  let messageId = 1;
+import type { Message } from "../../../types";
 
-  conversations.forEach((conv: any) => {
-    const convMembers = conversationMembers.filter(
-      (m: any) => m.conversation_id === conv.id
-    );
-    if (!convMembers.length) return;
+export function generateMessages(_db: any): Message[] {
+  const messages: Message[] = [
+    // --- Channel 1: all-hands-announcements ---
+    {
+      id: 1,
+      conversation_id: 1,
+      sender_id: 0,
+      sender_name: "Navas",
+      sender_role: "Managing Director / Principal Consultant",
+      body: "Welcome all team members to our unified Group CRM cockpit! Operations across Goldland Contracting, Abbadi Tech, and Casavera Interiors are now fully synchronized across our 3 entities.",
+      reactions: [
+        { emoji: "🚀", count: 8, users: [1, 2, 3, 4, 5, 6, 7, 13] },
+        { emoji: "👍", count: 6, users: [1, 3, 5, 6, 7, 13] },
+      ],
+      attachments: [],
+      created_at: "2026-11-20T08:00:00Z",
+    },
+    {
+      id: 2,
+      conversation_id: 1,
+      sender_id: 3,
+      sender_name: "Abrar",
+      sender_role: "General Manager / Operations Director",
+      body: "Important reminder for all site engineers, project managers, and designers: please complete your 60-second End-of-Day check-in and log active on-site trade manpower by 5:30 PM UAE time daily.",
+      reactions: [{ emoji: "✅", count: 7, users: [4, 5, 6, 7, 10, 12, 13] }],
+      attachments: [],
+      created_at: "2026-11-21T09:15:00Z",
+    },
+    {
+      id: 3,
+      conversation_id: 1,
+      sender_id: 2,
+      sender_name: "Rabeeh",
+      sender_role: "Head of Finance & Accounts",
+      body: "Monthly advance billing and VAT return reconciliation for all 3 entities is complete. Subcontractor payment certificates are being processed today per approved milestone sign-offs.",
+      reactions: [{ emoji: "🙌", count: 4, users: [0, 3, 7, 13] }],
+      attachments: [],
+      created_at: "2026-11-22T08:30:00Z",
+    },
 
-    const numMessages = conv.type === "issue" ? 3 : 5;
+    // --- Channel 2: goldland-permits-approvals ---
+    {
+      id: 4,
+      conversation_id: 2,
+      sender_id: 6,
+      sender_name: "Faseela",
+      sender_role: "Permitting Specialist",
+      body: "Dubai Municipality has cleared the decor package revision for project GL-PRJ-2026-001 (Fashion Avenue). Application status has transitioned to 'Inspection Coordination'.",
+      project_ref: "GL-PRJ-2026-001",
+      project_id: 1,
+      reactions: [{ emoji: "🎉", count: 5, users: [0, 3, 4, 13, 14] }],
+      attachments: [
+        {
+          file_name: "DM_Decor_Permit_Clearance_049182.pdf",
+          file_url: "#",
+          file_type: "application/pdf",
+          file_size: "3.2 MB",
+        },
+      ],
+      created_at: "2026-11-21T14:10:00Z",
+    },
+    {
+      id: 5,
+      conversation_id: 2,
+      sender_id: 13,
+      sender_name: "Shafi",
+      sender_role: "Site Safety & Supervisor",
+      body: "Night-time mall access permits are confirmed with Emaar Security. Contractor badges valid until end of December for all 8 technicians.",
+      reactions: [{ emoji: "👍", count: 3, users: [0, 6, 3] }],
+      attachments: [],
+      created_at: "2026-11-21T15:20:00Z",
+    },
+    {
+      id: 6,
+      conversation_id: 2,
+      sender_id: 0,
+      sender_name: "Navas",
+      sender_role: "Managing Director",
+      body: "Great progress Faseela and Shafi. Ensure that all DCD fire alarm layouts on site strictly match the approved stamped revisions before the inspector arrives.",
+      reactions: [{ emoji: "🫡", count: 2, users: [6, 13] }],
+      attachments: [],
+      created_at: "2026-11-22T09:15:00Z",
+    },
 
-    for (let i = 0; i < numMessages; i++) {
-      const sender = convMembers[i % convMembers.length];
-      const isReply = i > 1 && Math.random() > 0.7;
-      const replyTo = isReply ? messages[messages.length - 1]?.id : undefined;
+    // --- Channel 4: casavera-design-studio ---
+    {
+      id: 7,
+      conversation_id: 4,
+      sender_id: 5,
+      sender_name: "Asma",
+      sender_role: "Lead Interior Designer",
+      body: "Client site walk at Arabian Ranches III villa (CV-PRJ-2026-001) went exceptionally well! Formal approval received for the bookmatched Statuario marble slab and 3000K warm LED lighting details.",
+      project_ref: "CV-PRJ-2026-001",
+      project_id: 5,
+      reactions: [{ emoji: "✨", count: 6, users: [3, 4, 12, 15, 16, 0] }],
+      attachments: [
+        {
+          file_name: "Statuario_Marble_Bookmatch_Render_V3.jpg",
+          file_url: "#",
+          file_type: "image/jpeg",
+          file_size: "4.8 MB",
+        },
+      ],
+      created_at: "2026-11-21T17:10:00Z",
+    },
+    {
+      id: 8,
+      conversation_id: 4,
+      sender_id: 12,
+      sender_name: "Danish",
+      sender_role: "Estimation Engineer & Material Procurement",
+      body: "PO issued to our Italian stone supplier for 140 sq meters. Air freight tracking ETA confirmed for next Wednesday at Dubai Cargo Village.",
+      reactions: [{ emoji: "📦", count: 3, users: [5, 3, 1] }],
+      attachments: [],
+      created_at: "2026-11-22T08:00:00Z",
+    },
+    {
+      id: 9,
+      conversation_id: 4,
+      sender_id: 16,
+      sender_name: "Javed",
+      sender_role: "3D Visualizer",
+      body: "Downtown Penthouse (CV-PRJ-2026-002) double-height chandelier night renders are ready for client presentation. Shared in project Drive folder.",
+      project_ref: "CV-PRJ-2026-002",
+      project_id: 6,
+      reactions: [{ emoji: "🔥", count: 4, users: [5, 3, 0, 15] }],
+      attachments: [],
+      created_at: "2026-11-22T10:00:00Z",
+    },
 
-      const baseDate = new Date(conv.created_at);
-      const messageDate = new Date(baseDate.getTime() + i * 3600000);
+    // --- Channel 6: GL-PRJ-2026-001 (Project Chat) ---
+    {
+      id: 10,
+      conversation_id: 6,
+      sender_id: 6,
+      sender_name: "Faseela",
+      sender_role: "Permitting Specialist",
+      body: "Joint site inspection with Emaar Retail and Dubai Municipality inspector officially booked for Thursday, Nov 28 at 11:00 AM.",
+      project_ref: "GL-PRJ-2026-001",
+      project_id: 1,
+      reactions: [{ emoji: "🎯", count: 3, users: [0, 3, 13] }],
+      attachments: [],
+      created_at: "2026-11-21T11:00:00Z",
+    },
+    {
+      id: 11,
+      conversation_id: 6,
+      sender_id: 13,
+      sender_name: "Shafi",
+      sender_role: "Site Safety & Supervisor",
+      body: "Site readiness check complete: ceiling framing is clear, smoke detector sensors labeled, and fire retardant test certificates are on site.",
+      project_ref: "GL-PRJ-2026-001",
+      project_id: 1,
+      reactions: [{ emoji: "✅", count: 3, users: [0, 6, 3] }],
+      attachments: [],
+      created_at: "2026-11-21T16:30:00Z",
+    },
+    {
+      id: 12,
+      conversation_id: 6,
+      sender_id: 0,
+      sender_name: "Navas",
+      sender_role: "Managing Director",
+      body: "Good job team. Shafi, please ensure Dior client representative is notified of the inspection timing so they can attend if desired.",
+      project_ref: "GL-PRJ-2026-001",
+      project_id: 1,
+      reactions: [{ emoji: "👍", count: 2, users: [6, 13] }],
+      attachments: [],
+      created_at: "2026-11-22T08:45:00Z",
+    },
 
-      messages.push({
-        id: messageId++,
-        conversation_id: conv.id,
-        sender_id: sender.user_id,
-        body: `Message ${i + 1} in ${conv.type} "${conv.name}"`,
-        reply_to: replyTo,
-        edited_at: i > 5 ? new Date(messageDate.getTime() + 3600000).toISOString() : null,
-        deleted_at: null,
-        attachments: i % 4 === 0 ? [{ file_name: `file_${i}.pdf`, file_url: `#`, file_type: "application/pdf" }] : [],
-        created_at: messageDate.toISOString(),
-        sender_name: `User ${sender.user_id}`,
-      });
-    }
-  });
+    // --- DM 12: Navas & Abrar ---
+    {
+      id: 13,
+      conversation_id: 12,
+      sender_id: 0,
+      sender_name: "Navas",
+      sender_role: "Managing Director",
+      body: "Abrar, how are the site engineers taking to the new My Day board and daily check-ins?",
+      reactions: [],
+      attachments: [],
+      created_at: "2026-11-22T09:00:00Z",
+    },
+    {
+      id: 14,
+      conversation_id: 12,
+      sender_id: 3,
+      sender_name: "Abrar",
+      sender_role: "General Manager",
+      body: "They love it Navas. Sadiq, Shafi, and Asma are submitting their daily logs consistently. Submission rate on the daily board reached 71% today and blockers are flagged immediately instead of waiting for weekly meetings.",
+      reactions: [{ emoji: "💪", count: 1, users: [0] }],
+      attachments: [],
+      created_at: "2026-11-22T09:40:00Z",
+    },
+    {
+      id: 15,
+      conversation_id: 12,
+      sender_id: 0,
+      sender_name: "Navas",
+      sender_role: "Managing Director",
+      body: "That is excellent. Let's make sure Abbadi Tech's DEWA substation upgrade stays on track for the inspection.",
+      reactions: [{ emoji: "🤝", count: 1, users: [3] }],
+      attachments: [],
+      created_at: "2026-11-22T10:15:00Z",
+    },
 
-  messages.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    // --- DM 13: Asma & Abrar ---
+    {
+      id: 16,
+      conversation_id: 13,
+      sender_id: 5,
+      sender_name: "Asma",
+      sender_role: "Lead Interior Designer",
+      body: "Hi Abrar, could you please sign off on the variation order for the custom walnut joinery on Arabian Ranches (AED 45,000)? Client sent confirmation via email.",
+      project_ref: "CV-PRJ-2026-001",
+      project_id: 5,
+      reactions: [],
+      attachments: [
+        {
+          file_name: "VO_02_Custom_Walnut_Joinery_AED45000.pdf",
+          file_url: "#",
+          file_type: "application/pdf",
+          file_size: "1.2 MB",
+        },
+      ],
+      created_at: "2026-11-22T10:20:00Z",
+    },
+    {
+      id: 17,
+      conversation_id: 13,
+      sender_id: 3,
+      sender_name: "Abrar",
+      sender_role: "General Manager",
+      body: "Reviewed and approved in the system Asma! Excellent margin. You can proceed with the carpentry workshop cut-lists.",
+      reactions: [{ emoji: "❤️", count: 1, users: [5] }],
+      attachments: [],
+      created_at: "2026-11-22T10:45:00Z",
+    },
+  ];
+
   return messages;
 }

@@ -28,6 +28,8 @@ const Header = () => {
     currentPath = "/projects";
   } else if (matchPath("/meetings/*", location.pathname)) {
     currentPath = "/meetings";
+  } else if (matchPath("/messages/*", location.pathname)) {
+    currentPath = "/messages";
   } else if (matchPath("/companies/*", location.pathname)) {
     currentPath = "/companies";
   } else if (matchPath("/contacts/*", location.pathname)) {
@@ -90,6 +92,11 @@ const Header = () => {
                     label="Meetings"
                     to="/meetings"
                     isActive={currentPath === "/meetings"}
+                  />
+                  <NavigationTab
+                    label="Messages"
+                    to="/messages"
+                    isActive={currentPath === "/messages"}
                   />
                   <NavigationTab
                     label={translate("resources.companies.name", {

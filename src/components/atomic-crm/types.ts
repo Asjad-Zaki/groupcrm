@@ -590,12 +590,16 @@ export type Conversation = {
   tenant_id: number;
   type: "dm" | "channel" | "project" | "issue";
   name?: string;
+  description?: string;
   posting_policy: "everyone" | "managers_only";
   archived_at?: string;
   created_at: string;
   last_activity?: string;
   unread_count: number;
   project_name?: string;
+  project_id?: Identifier;
+  operating_company?: "goldland" | "abbadi" | "casavera" | "group";
+  dm_user_id?: Identifier;
 };
 
 export type ConversationMember = {
@@ -612,11 +616,17 @@ export type Message = {
   id: number;
   conversation_id: number;
   sender_id: Identifier;
+  sender_name?: string;
+  sender_role?: string;
+  sender_avatar?: string;
   body: string;
   reply_to?: number;
   edited_at?: string;
   deleted_at?: string;
-  attachments: Array<{ file_name: string; file_url: string; file_type: string }>;
+  attachments: Array<{ file_name: string; file_url: string; file_type: string; file_size?: string }>;
+  reactions?: Array<{ emoji: string; count: number; users: Identifier[] }>;
+  project_ref?: string;
+  project_id?: Identifier;
   created_at: string;
 };
 

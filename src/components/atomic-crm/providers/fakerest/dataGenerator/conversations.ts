@@ -1,77 +1,209 @@
-export function generateConversations(db: any) {
-  const tasks = db.tasks ?? [];
-  const conversations: any[] = [];
-  let nextId = 1;
+import type { Conversation } from "../../../types";
 
-  // Create project chats for existing projects
-  const projectChats = tasks
-    .filter((t: any) => t.project_id)
-    .map((t: any) => ({
-      id: nextId++,
-      tenant_id: t.tenant_id ?? 1,
-      type: "project" as const,
-      name: `Project Chat - Project ${t.project_id}`,
-      posting_policy: "everyone",
-      archived_at: null,
-      created_at: new Date().toISOString(),
-      last_activity: new Date().toISOString(),
-      unread_count: Math.floor(Math.random() * 50),
-      project_name: `Project ${t.project_id}`,
-    }));
-
-  conversations.push(...projectChats);
-
-  // Create some general channels
-  const channelNames = ["General", "Announcements", "Technical Discussions", "Sales", "Support"];
-  channelNames.forEach((name, i) => {
-    conversations.push({
-      id: nextId++,
+export function generateConversations(_db: any): Conversation[] {
+  const conversations: Conversation[] = [
+    // 1. Group / Entity Channels
+    {
+      id: 1,
       tenant_id: 1,
-      type: "channel" as const,
-      name,
-      posting_policy: i < 2 ? "managers_only" : "everyone",
-      archived_at: null,
-      created_at: new Date(Date.now() - i * 86400000).toISOString(),
-      last_activity: new Date(Date.now() - i * 86400000).toISOString(),
-      unread_count: i === 0 ? 5 : 0,
-    });
-  });
-
-  // Create some DMs
-  const users = [1, 2, 3, 4, 5];
-  for (let i = 0; i < 3; i++) {
-    const participants = users.slice(i * 2, i * 2 + 2);
-    conversations.push({
-      id: nextId++,
+      type: "channel",
+      name: "all-hands-announcements",
+      description: "Group-wide management briefings, UAE official holiday schedules & executive memos.",
+      posting_policy: "managers_only",
+      operating_company: "group",
+      unread_count: 1,
+      created_at: "2026-10-01T08:00:00Z",
+      last_activity: "2026-11-22T08:30:00Z",
+    },
+    {
+      id: 2,
       tenant_id: 1,
-      type: "dm" as const,
-      name: `DM between user ${participants[0]} and user ${participants[1]}`,
+      type: "channel",
+      name: "goldland-permits-approvals",
+      description: "Dubai Municipality (DM), Civil Defence (DCD), and developer permitting coordination.",
       posting_policy: "everyone",
-      archived_at: null,
-      created_at: new Date(Date.now() - i * 86400000).toISOString(),
-      last_activity: new Date(Date.now() - i * 86400000).toISOString(),
-      unread_count: i === 0 ? 2 : 0,
-    });
-  }
-
-  // Create some issue threads
-  const issueStatuses = ["open", "resolved"];
-  Array(5).fill(1).forEach((_, i) => {
-    conversations.push({
-      id: nextId++,
+      operating_company: "goldland",
+      unread_count: 2,
+      created_at: "2026-10-01T08:00:00Z",
+      last_activity: "2026-11-22T09:15:00Z",
+    },
+    {
+      id: 3,
+      tenant_id: 2,
+      type: "channel",
+      name: "abbadi-mep-field-ops",
+      description: "HVAC maintenance, DEWA load sanction testing, electrical switchgear & site reports.",
+      posting_policy: "everyone",
+      operating_company: "abbadi",
+      unread_count: 0,
+      created_at: "2026-10-01T08:00:00Z",
+      last_activity: "2026-11-21T16:45:00Z",
+    },
+    {
+      id: 4,
+      tenant_id: 3,
+      type: "channel",
+      name: "casavera-design-studio",
+      description: "Luxury interior fit-out, Italian marble concepts, joinery drawings & client presentations.",
+      posting_policy: "everyone",
+      operating_company: "casavera",
+      unread_count: 3,
+      created_at: "2026-10-01T08:00:00Z",
+      last_activity: "2026-11-22T10:00:00Z",
+    },
+    {
+      id: 5,
       tenant_id: 1,
-      type: "issue" as const,
-      name: `Technical Issue Thread ${i + 1}`,
+      type: "channel",
+      name: "procurement-and-logistics",
+      description: "Supplier purchase orders, air freight tracking from Italy, site material deliveries.",
       posting_policy: "everyone",
-      archived_at: null,
-      created_at: new Date(Date.now() - i * 43200000).toISOString(),
-      last_activity: new Date(Date.now() - i * 43200000).toISOString(),
-      unread_count: i < 3 ? Math.floor(Math.random() * 30) : 0,
-      ...(issueStatuses[i % 2] === "open"
-        ? { status: "open", open_count: Math.floor(Math.random() * 10) }
-        : { status: "resolved", resolved_by: 1, resolved_at: new Date(Date.now() - i * 86400000).toISOString(), open_count: 0 }),
-    });
-  });
+      operating_company: "group",
+      unread_count: 0,
+      created_at: "2026-10-05T09:00:00Z",
+      last_activity: "2026-11-21T14:20:00Z",
+    },
+
+    // 2. Project-Specific Channels
+    {
+      id: 6,
+      tenant_id: 1,
+      type: "project",
+      project_id: 1,
+      project_name: "GL-PRJ-2026-001",
+      name: "GL-PRJ-2026-001 · Dubai Mall Fashion Avenue Fit-out",
+      description: "Dedicated project thread for Dubai Mall Fashion Avenue retail fit-out & DM approvals.",
+      posting_policy: "everyone",
+      operating_company: "goldland",
+      unread_count: 2,
+      created_at: "2026-09-01T08:00:00Z",
+      last_activity: "2026-11-22T08:45:00Z",
+    },
+    {
+      id: 7,
+      tenant_id: 1,
+      type: "project",
+      project_id: 2,
+      project_name: "GL-PRJ-2026-002",
+      name: "GL-PRJ-2026-002 · Business Bay Commercial Tower Approval",
+      description: "DDA structural comments, egress staircase adjustments & MEP submission coordination.",
+      posting_policy: "everyone",
+      operating_company: "goldland",
+      unread_count: 0,
+      created_at: "2026-10-01T09:00:00Z",
+      last_activity: "2026-11-21T11:00:00Z",
+    },
+    {
+      id: 8,
+      tenant_id: 2,
+      type: "project",
+      project_id: 3,
+      project_name: "AT-PRJ-2026-001",
+      name: "AT-PRJ-2026-001 · Dubai Hills Compound MEP Maintenance",
+      description: "Quarterly preventative maintenance coordination for 24 residential villas.",
+      posting_policy: "everyone",
+      operating_company: "abbadi",
+      unread_count: 0,
+      created_at: "2026-08-15T07:30:00Z",
+      last_activity: "2026-11-21T15:45:00Z",
+    },
+    {
+      id: 9,
+      tenant_id: 2,
+      type: "project",
+      project_id: 4,
+      project_name: "AT-PRJ-2026-002",
+      name: "AT-PRJ-2026-002 · Emirates Hills DEWA Load Sanction 350kW",
+      description: "DEWA main distribution panel upgrade, trenching excavation, earthing resistance testing.",
+      posting_policy: "everyone",
+      operating_company: "abbadi",
+      unread_count: 1,
+      created_at: "2026-10-10T10:00:00Z",
+      last_activity: "2026-11-22T07:15:00Z",
+    },
+    {
+      id: 10,
+      tenant_id: 3,
+      type: "project",
+      project_id: 5,
+      project_name: "CV-PRJ-2026-001",
+      name: "CV-PRJ-2026-001 · Arabian Ranches III Luxury Villa Turnkey",
+      description: "Turnkey luxury villa: marble bookmatching, walk-in closets, kitchen joinery.",
+      posting_policy: "everyone",
+      operating_company: "casavera",
+      unread_count: 1,
+      created_at: "2026-08-01T08:00:00Z",
+      last_activity: "2026-11-22T09:30:00Z",
+    },
+    {
+      id: 11,
+      tenant_id: 3,
+      type: "project",
+      project_id: 6,
+      project_name: "CV-PRJ-2026-002",
+      name: "CV-PRJ-2026-002 · Downtown Penthouse Interior Staging",
+      description: "Calacatta Viola marble feature wall, champagne brass trim, Italian imported furniture.",
+      posting_policy: "everyone",
+      operating_company: "casavera",
+      unread_count: 0,
+      created_at: "2026-09-15T09:30:00Z",
+      last_activity: "2026-11-20T16:00:00Z",
+    },
+
+    // 3. Direct Messages (DMs)
+    {
+      id: 12,
+      tenant_id: 1,
+      type: "dm",
+      dm_user_id: 3, // Abrar (GM)
+      name: "Abrar (Operations Director)",
+      description: "Direct discussion regarding multi-company operations, site allocation & budget approvals.",
+      posting_policy: "everyone",
+      operating_company: "group",
+      unread_count: 1,
+      created_at: "2026-10-01T08:00:00Z",
+      last_activity: "2026-11-22T10:15:00Z",
+    },
+    {
+      id: 13,
+      tenant_id: 3,
+      type: "dm",
+      dm_user_id: 5, // Asma (Interior Designer)
+      name: "Asma (Lead Interior Designer)",
+      description: "Casavera project coordination, VIP client presentations & material selection sign-offs.",
+      posting_policy: "everyone",
+      operating_company: "casavera",
+      unread_count: 2,
+      created_at: "2026-10-05T09:00:00Z",
+      last_activity: "2026-11-22T10:45:00Z",
+    },
+    {
+      id: 14,
+      tenant_id: 1,
+      type: "dm",
+      dm_user_id: 6, // Faseela (Permitting)
+      name: "Faseela (Permitting Specialist)",
+      description: "Dubai Municipality (DM) and Civil Defence (DCD) submission tracking & inspection bookings.",
+      posting_policy: "everyone",
+      operating_company: "goldland",
+      unread_count: 0,
+      created_at: "2026-10-08T09:30:00Z",
+      last_activity: "2026-11-21T14:30:00Z",
+    },
+    {
+      id: 15,
+      tenant_id: 2,
+      type: "dm",
+      dm_user_id: 7, // Sadiq (Senior MEP)
+      name: "Sadiq (Senior MEP Engineer)",
+      description: "Abbadi Tech site testing, chiller inspections, and DEWA power sanction reviews.",
+      posting_policy: "everyone",
+      operating_company: "abbadi",
+      unread_count: 0,
+      created_at: "2026-10-12T11:00:00Z",
+      last_activity: "2026-11-21T16:00:00Z",
+    },
+  ];
 
   return conversations;
 }
