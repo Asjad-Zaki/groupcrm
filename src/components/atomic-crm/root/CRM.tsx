@@ -22,6 +22,7 @@ import { MobileDashboard } from "../dashboard/MobileDashboard";
 import deals from "../deals";
 import leads from "../leads";
 import projects from "../projects";
+import { MyDayPage } from "../my-day/MyDayPage";
 import { PerformancePage } from "../performance/PerformancePage";
 import { Layout } from "../layout/Layout";
 import { MobileLayout } from "../layout/MobileLayout";
@@ -266,6 +267,7 @@ const DesktopAdmin = (
       </CustomRoutes>
 
       <CustomRoutes>
+        <Route path="/my-day" element={<MyDayPage />} />
         <Route path="/performance" element={<PerformancePage />} />
         <Route path={ProfilePage.path} element={<ProfilePage />} />
         <Route path={SettingsPage.path} element={<SettingsPage />} />
@@ -280,6 +282,7 @@ const DesktopAdmin = (
       <Resource name="contact_notes" />
       <Resource name="deal_notes" />
       <Resource name="tasks" />
+      <Resource name="daily_reports" />
       <Resource name="meetings" {...meetings} />
       <Resource name="sales" {...sales} />
       <Resource name="tags" />
@@ -354,6 +357,7 @@ const MobileAdmin = (
           <Route path={OAuthConsentPage.path} element={<OAuthConsentPage />} />
         </CustomRoutes>
         <CustomRoutes>
+          <Route path="/my-day" element={<MyDayPage />} />
           <Route path="/performance" element={<PerformancePage />} />
           <Route
             path={SettingsPageMobile.path}
@@ -373,6 +377,7 @@ const MobileAdmin = (
         <Resource name="contact_notes" />
         <Resource name="deal_notes" />
         <Resource name="tasks" list={MobileTasksList} />
+        <Resource name="daily_reports" />
         <Resource name="meetings" {...meetings} />
         <Resource name="sales" {...sales} />
         <Resource name="tags" />

@@ -20,6 +20,8 @@ const Header = () => {
   let currentPath: string | boolean = "/";
   if (matchPath("/", location.pathname)) {
     currentPath = "/";
+  } else if (matchPath("/my-day/*", location.pathname)) {
+    currentPath = "/my-day";
   } else if (matchPath("/deals/*", location.pathname)) {
     currentPath = "/deals";
   } else if (matchPath("/projects/*", location.pathname)) {
@@ -64,6 +66,11 @@ const Header = () => {
                     label={translate("ra.page.dashboard")}
                     to="/"
                     isActive={currentPath === "/"}
+                  />
+                  <NavigationTab
+                    label="My Day"
+                    to="/my-day"
+                    isActive={currentPath === "/my-day"}
                   />
                   <NavigationTab
                     label={translate("resources.deals.name", {

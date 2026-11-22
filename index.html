@@ -148,7 +148,7 @@
           .catch(function () {});
       }
 
-      // Safety timeout: if React app takes longer than 4s to mount, offer 1-click cache clear & reload
+      // Safety timeout: if React app takes longer than 12s on cold start, offer 1-click cache clear & reload
       setTimeout(function () {
         var loader = document.querySelector(".loader");
         if (
@@ -167,7 +167,7 @@
               "</div>";
           }
         }
-      }, 4000);
+      }, 12000);
     </script>
   </head>
   <body>

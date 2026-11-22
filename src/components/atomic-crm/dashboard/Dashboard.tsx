@@ -9,6 +9,7 @@ import { TasksList } from "./TasksList";
 import { Welcome } from "./Welcome";
 import { EmployeeOfTheMonthWidget } from "./EmployeeOfTheMonthWidget";
 import { UrgentFollowupsWidget } from "./UrgentFollowupsWidget";
+import { MyDayBannerWidget } from "./MyDayBannerWidget";
 
 export const Dashboard = () => {
   const {
@@ -47,6 +48,7 @@ export const Dashboard = () => {
 
   return (
     <div className="space-y-4 mt-1">
+      <MyDayBannerWidget />
       <EmployeeOfTheMonthWidget />
       <UrgentFollowupsWidget />
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">

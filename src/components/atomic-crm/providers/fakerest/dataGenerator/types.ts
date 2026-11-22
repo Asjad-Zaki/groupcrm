@@ -4,6 +4,7 @@ import type {
   ContactNote,
   Conversation,
   ConversationMember,
+  DailyReport,
   Deal,
   DealNote,
   IssueThread,
@@ -32,6 +33,7 @@ export interface Db {
   sales: Sale[];
   tags: Tag[];
   tasks: Task[];
+  daily_reports: DailyReport[];
   task_comments: TaskComment[];
   task_events: TaskEvent[];
   conversations: Conversation[];

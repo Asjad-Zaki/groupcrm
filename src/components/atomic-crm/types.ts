@@ -1,4 +1,5 @@
 import type { Identifier, RaRecord } from "ra-core";
+export type { Identifier, RaRecord };
 import type { ComponentType } from "react";
 
 import type {
@@ -690,6 +691,14 @@ export type Task = {
   project_id?: Identifier;
   creator_id?: Identifier;
   owner_id?: Identifier;
+  sales_id?: Identifier;
+  status?: "pending" | "in_progress" | "completed" | "on_hold";
+  hold_reason?: string;
+  carried_over_count?: number;
+  operating_company?: "goldland" | "abbadi" | "casavera";
+  project_name?: string;
+  assignee_name?: string;
+  task_date?: string;
   type?: string;
   text: string;
   due_date?: string;
@@ -700,6 +709,22 @@ export type Task = {
   escalate_at?: string;
   source_message_id?: number;
   created_at?: string;
+} & Pick<RaRecord, "id">;
+
+export type DailyReport = {
+  id: Identifier;
+  user_id: Identifier;
+  user_name: string;
+  user_role?: string;
+  operating_company: "goldland" | "abbadi" | "casavera";
+  report_date: string; // YYYY-MM-DD
+  status: "draft" | "submitted";
+  summary: string;
+  blockers?: string;
+  submitted_at: string;
+  tasks_completed_count: number;
+  tasks_pending_count: number;
+  tasks_on_hold_count: number;
 } & Pick<RaRecord, "id">;
 
 export type TaskComment = {

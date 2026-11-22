@@ -9,6 +9,7 @@ import { finalize } from "./finalize";
 import { generateSales } from "./sales";
 import { generateTags } from "./tags";
 import { generateTasks } from "./tasks";
+import { generateDailyReports } from "./daily_reports";
 import { generateTaskComments } from "./task_comments";
 import { generateTaskEvents } from "./task_events";
 import { generateConversations } from "./conversations";
@@ -30,6 +31,7 @@ export default (): Db => {
   db.projects = generateProjects(db);
   db.meetings = generateMeetings(db);
   db.tasks = generateTasks(db);
+  db.daily_reports = generateDailyReports(db);
   db.task_comments = generateTaskComments(db);
   db.task_events = generateTaskEvents(db);
   db.conversations = generateConversations(db);
