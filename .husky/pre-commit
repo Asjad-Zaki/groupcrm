@@ -1,0 +1,3 @@
+npm run registry:gen
+npx lint-staged
+git update-index --again

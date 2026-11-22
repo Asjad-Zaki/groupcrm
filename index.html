@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en" translate="no" class="notranslate">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="minimum-scale=1, initial-scale=1, width=device-width"
+    />
+    <meta name="theme-color" content="#000000" />
+    <meta name="google" content="notranslate" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="apple-touch-icon" sizes="40x40" href="./appIcon/40.png" />
+    <link rel="apple-touch-icon" sizes="58x58" href="./appIcon/58.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="./appIcon/60.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="./appIcon/76.png" />
+    <link rel="apple-touch-icon" sizes="80x80" href="./appIcon/80.png" />
+    <link rel="apple-touch-icon" sizes="87x87" href="./appIcon/87.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="./appIcon/114.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="./appIcon/120.png" />
+    <link rel="apple-touch-icon" sizes="128x128" href="./appIcon/128.png" />
+    <link rel="apple-touch-icon" sizes="136x136" href="./appIcon/136.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="./appIcon/152.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="./appIcon/167.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./appIcon/180.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="./appIcon/192.png" />
+    <link rel="apple-touch-icon" sizes="1024x1024" href="./appIcon/1024.png" />
+    <title>Atomic CRM</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
+
+      /* Prevent accidental double-tap zoom on interactive elements */
+      button,
+      input,
+      select,
+      textarea,
+      a {
+        touch-action: manipulation;
+      }
+
+      .loader-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #fafafa;
+      }
+
+      /* CSS Spinner from https://projects.lukehaas.me/css-loaders/ */
+
+      .loader,
+      .loader:before,
+      .loader:after {
+        border-radius: 50%;
+      }
+
+      .loader {
+        color: #283593;
+        font-size: 11px;
+        text-indent: -99999em;
+        margin: 55px auto;
+        position: relative;
+        width: 10em;
+        height: 10em;
+        box-shadow: inset 0 0 0 1em;
+        -webkit-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        transform: translateZ(0);
+      }
+
+      .loader:before,
+      .loader:after {
+        position: absolute;
+        content: "";
+      }
+
+      .loader:before {
+        width: 5.2em;
+        height: 10.2em;
+        background: #fafafa;
+        border-radius: 10.2em 0 0 10.2em;
+        top: -0.1em;
+        left: -0.1em;
+        -webkit-transform-origin: 5.2em 5.1em;
+        transform-origin: 5.2em 5.1em;
+        -webkit-animation: load2 2s infinite ease 1.5s;
+        animation: load2 2s infinite ease 1.5s;
+      }
+
+      .loader:after {
+        width: 5.2em;
+        height: 10.2em;
+        background: #fafafa;
+        border-radius: 0 10.2em 10.2em 0;
+        top: -0.1em;
+        left: 5.1em;
+        -webkit-transform-origin: 0px 5.1em;
+        transform-origin: 0px 5.1em;
+        -webkit-animation: load2 2s infinite ease;
+        animation: load2 2s infinite ease;
+      }
+
+      @-webkit-keyframes load2 {
+        0% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes load2 {
+        0% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <script>
+      // Automatically clean up stale service workers in development to prevent stuck caches
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .getRegistrations()
+          .then(function (registrations) {
+            for (var r of registrations) {
+              r.unregister();
+            }
+          })
+          .catch(function () {});
+      }
+
+      // Safety timeout: if React app takes longer than 4s to mount, offer 1-click cache clear & reload
+      setTimeout(function () {
+        var loader = document.querySelector(".loader");
+        if (
+          loader &&
+          document.getElementById("root") &&
+          document.getElementById("root").contains(loader)
+        ) {
+          var container = document.querySelector(".loader-container");
+          if (container) {
+            container.innerHTML =
+              '<div style="text-align:center;font-family:system-ui,-apple-system,sans-serif;padding:32px;color:#0f172a;max-width:420px;background:#ffffff;border-radius:12px;box-shadow:0 10px 25px -5px rgba(0,0,0,0.1);border:1px solid #e2e8f0;">' +
+              '<div style="font-size:28px;margin-bottom:12px;">🏢</div>' +
+              '<h2 style="font-size:18px;font-weight:700;margin-bottom:8px;color:#0f172a;">Group CRM Operations</h2>' +
+              '<p style="font-size:13px;color:#64748b;margin-bottom:20px;line-height:1.5;">Browser cache or offline storage is taking longer than expected to synchronize.</p>' +
+              '<button onclick="try{localStorage.clear();sessionStorage.clear();}catch(e){}location.href=\'/\';" style="background:#d97706;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;box-shadow:0 2px 4px rgba(217,119,6,0.2);">Reset Cache & Enter Group CRM</button>' +
+              "</div>";
+          }
+        }
+      }, 4000);
+    </script>
+  </head>
+  <body>
+    <div id="root">
+      <div class="loader-container">
+        <div class="loader">Loading...</div>
+      </div>
+    </div>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
