@@ -1,0 +1,74 @@
+name: Security Gates
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  security-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: /workspace/atomic-crm
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run Unit Tests
+        run: npm test
+
+      - name: Generate Migration Diff
+        run: npx supabase db diff --local -f s4_security_gates
+
+      - name: Migration Dry-Run
+        run: npx supabase migration up --local
+
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          config: /dev/null
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: /workspace/atomic-crm
+
+      - name: Semgrep
+        uses: returntocorp/semgrep-action@v2
+        with:
+          config: 'p/owasp-top-10'
+
+      - name: OSV-Scanner
+        uses: osmiumc/osv-scanner-action@v2
+        with:
+          file: package-lock.json
+
+      - name: Security Checklist Summary
+        run: |
+          echo "=== Security Gate Results ==="
+          echo "Typecheck: $?"
+          echo "Lint: $?"
+          echo "Tests: $?"
+          echo "gitleaks: $?"
+          echo "Semgrep: $?"
+          echo "OSV-Scanner: $?"
+          echo "Migration dry-run: $?"

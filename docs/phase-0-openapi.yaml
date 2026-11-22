@@ -1,0 +1,116 @@
+openapi: 3.1.0
+info:
+  title: Group CRM Edge Function API (design skeleton)
+  version: 0.1.0
+  description: >-
+    Design-only contract for server-side operations that cannot safely be
+    performed as ordinary RLS-scoped PostgREST CRUD. The current API is not
+    implemented by this file. Normal CRUD uses Supabase PostgREST and RLS.
+servers:
+  - url: https://{project}.supabase.co/functions/v1
+    description: Supabase Edge Functions; production host/region is undecided.
+    variables:
+      project:
+        default: project-ref
+security:
+  - supabaseJwt: []
+paths:
+  /lead-transition:
+    post:
+      operationId: transitionLead
+      summary: Validate and apply an allowed lead stage transition.
+      description: >-
+        Executes as the authenticated caller, checks tenant membership and
+        record-level ability, records stage history/audit, and triggers
+        idempotent WON-conversion work. Final path and schema are pending ADR-007.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [leadId, targetStage, idempotencyKey]
+              properties:
+                leadId: { type: string, format: uuid }
+                targetStage: { type: string }
+                reason: { type: string }
+                idempotencyKey: { type: string, minLength: 16 }
+      responses:
+        '200':
+          description: Transition accepted or already applied idempotently.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401': { description: Missing or invalid user token. }
+        '403': { description: Membership or record permission denied. }
+        '409': { description: Invalid transition or stale record version. }
+        '422': { description: Required follow-up/reason fields are missing. }
+  /drive-proxy:
+    get:
+      operationId: downloadAuthorizedDocument
+      summary: Authorize and stream or redirect to a CRM-linked Drive file.
+      parameters:
+        - in: query
+          name: documentId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Authorized file stream (content type determined by metadata). }
+        '302': { description: Short-lived, permission-checked download URL. }
+        '401': { description: Missing or invalid user token. }
+        '403': { description: CRM policy denies access; denial is audited. }
+        '404': { description: Document not found. }
+  /whatsapp-webhook:
+    post:
+      operationId: receiveWhatsAppWebhook
+      summary: Verify and enqueue a Meta WhatsApp Cloud API event.
+      security: []
+      description: >-
+        Verify X-Hub-Signature-256 against the raw request body, apply replay
+        protection, persist an idempotent inbound event, enqueue processing,
+        and acknowledge quickly. Never trust the payload as instructions.
+      parameters:
+        - in: header
+          name: X-Hub-Signature-256
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: Event durably accepted or already seen. }
+        '400': { description: Invalid payload or signature. }
+        '503': { description: Event could not be durably queued; sender may retry. }
+  /meta-lead-webhook:
+    post:
+      operationId: receiveMetaLeadWebhook
+      summary: Verify and enqueue a Meta lead-form event.
+      security: []
+      description: Verify the provider signature and idempotently enqueue; processing rechecks tenant routing and dedup before creating a lead.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '200': { description: Event accepted or already processed. }
+        '400': { description: Invalid signature or payload. }
+        '503': { description: Event could not be durably queued. }
+components:
+  securitySchemes:
+    supabaseJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    OperationResult:
+      type: object
+      required: [ok, requestId]
+      properties:
+        ok: { type: boolean }
+        requestId: { type: string }
+        resourceId: { type: string, format: uuid }
+        status: { type: string }
