@@ -193,6 +193,49 @@ export interface ProjectMilestone {
   notes?: string;
 }
 
+export interface ProjectDailyLogEntry {
+  id: string;
+  date: string; // YYYY-MM-DD
+  author_id?: Identifier;
+  author_name: string;
+  author_role: string;
+  work_summary: string;
+  manpower_count: number;
+  manpower_breakdown?: string;
+  materials_received?: string;
+  weather_site_condition?: string;
+  blockers_or_delays?: string;
+  photos_count?: number;
+  created_at: string;
+}
+
+export interface ProjectDocumentNOC {
+  id: string;
+  authority: string; // e.g. "Dubai Municipality (DM)", "Dubai Civil Defence (DCD)", "DEWA", "Emaar"
+  category: "permit" | "drawing" | "noc" | "contract" | "rams" | "handover";
+  title: string;
+  reference_no: string;
+  status: "approved" | "under_review" | "revision_required" | "pending_submission" | "expired";
+  submission_date?: string;
+  approval_date?: string;
+  expiry_date?: string;
+  file_type?: string;
+  file_size?: string;
+  file_url?: string;
+  notes?: string;
+}
+
+export interface ProjectTeamMember {
+  id: string;
+  user_id?: Identifier;
+  name: string;
+  role: string; // "Project Director", "Site Engineer", "Permitting Specialist", "Interior Architect", "Client Rep", "Subcontractor"
+  company: string;
+  phone?: string;
+  email?: string;
+  is_primary_contact?: boolean;
+}
+
 export type Project = {
   name: string;
   reference_no: string;
@@ -211,6 +254,9 @@ export type Project = {
   milestones: ProjectMilestone[];
   site_location: string;
   scope_summary: string;
+  daily_logs?: ProjectDailyLogEntry[];
+  noc_documents?: ProjectDocumentNOC[];
+  team_members?: ProjectTeamMember[];
   created_at: string;
   updated_at: string;
 } & Pick<RaRecord, "id">;

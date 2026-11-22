@@ -378,9 +378,17 @@ export const generateTasks = (db: Db): Task[] => {
       contact.nb_tasks = (contact.nb_tasks ?? 0) + 1;
     }
 
+    const projectId =
+      item.company === "goldland"
+        ? (idx % 2) + 1
+        : item.company === "abbadi"
+          ? (idx % 2) + 3
+          : (idx % 2) + 5;
+
     return {
       id: idx + 1,
       contact_id: contact?.id ?? null,
+      project_id: projectId,
       tenant_id: item.company === "goldland" ? 1 : item.company === "abbadi" ? 2 : 3,
       operating_company: item.company,
       sales_id: item.userId,

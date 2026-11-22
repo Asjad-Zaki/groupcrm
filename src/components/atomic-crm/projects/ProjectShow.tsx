@@ -1,5 +1,18 @@
-import { useParams, Link } from "react-router";
-import { useGetOne, useUpdate, useNotify } from "ra-core";
+import { useState, useEffect } from "react";
+import { useParams, Link, useSearchParams } from "react-router";
+import { useGetOne } from "ra-core";
+import {
+  ArrowLeft,
+  Calendar,
+  CheckCircle2,
+  MapPin,
+  ShieldCheck,
+  User,
+  Users,
+  Building2,
+  FileText,
+  HardHat,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,86 +21,51 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import {
-  ArrowLeft,
-  Calendar,
-  CheckCircle2,
-  Circle,
-  ExternalLink,
-  FileText,
-  FolderOpen,
-  MapPin,
-  ShieldCheck,
-  User,
-} from "lucide-react";
+import { MilestonesTab } from "./MilestonesTab";
+import { DailyLogsTab } from "./DailyLogsTab";
+import { ProjectTasksTab } from "./ProjectTasksTab";
+import { TeamTab } from "./TeamTab";
+import { DocumentsNOCTab } from "./DocumentsNOCTab";
 import type { Project } from "../types";
 
 export const ProjectShow = () => {
   const { id } = useParams<{ id: string }>();
-  const notify = useNotify();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  type TabType = "milestones" | "daily_logs" | "tasks" | "team" | "documents";
+  const validTabs: TabType[] = ["milestones", "daily_logs", "tasks", "team", "documents"];
+
+  const initialTab = searchParams.get("tab") as TabType;
+  const [activeTab, setActiveTab] = useState<TabType>(
+    validTabs.includes(initialTab) ? initialTab : "milestones"
+  );
+
+  useEffect(() => {
+    const currentTabParam = searchParams.get("tab") as TabType;
+    if (currentTabParam && validTabs.includes(currentTabParam) && currentTabParam !== activeTab) {
+      setActiveTab(currentTabParam);
+    }
+  }, [searchParams]);
+
+  const handleTabSelect = (tab: TabType) => {
+    setActiveTab(tab);
+    setSearchParams({ tab });
+  };
 
   const { data: project, isPending, refetch } = useGetOne<Project>("projects", {
     id: id!,
   });
 
-  const [update] = useUpdate();
-
   if (isPending || !project) {
     return (
-      <div className="space-y-4">
+      <div className="w-full space-y-4 p-6">
         <div className="h-8 w-48 bg-muted animate-pulse rounded" />
-        <div className="h-64 bg-muted animate-pulse rounded-lg" />
+        <div className="h-64 bg-muted animate-pulse rounded-2xl" />
+        <div className="h-40 bg-muted animate-pulse rounded-2xl" />
       </div>
     );
   }
-
-  const toggleMilestone = async (milestoneId: string) => {
-    const updatedMilestones = project.milestones.map((m) => {
-      if (m.id === milestoneId) {
-        const nextState = !m.completed;
-        return {
-          ...m,
-          completed: nextState,
-          completed_at: nextState ? new Date().toISOString().split("T")[0] : undefined,
-        };
-      }
-      return m;
-    });
-
-    const completedCount = updatedMilestones.filter((m) => m.completed).length;
-    const progress_percent = Math.round(
-      (completedCount / updatedMilestones.length) * 100
-    );
-
-    // Find current active stage (first incomplete milestone or last stage)
-    const activeMilestone =
-      updatedMilestones.find((m) => !m.completed) ||
-      updatedMilestones[updatedMilestones.length - 1];
-
-    try {
-      await update(
-        "projects",
-        {
-          id: project.id,
-          data: {
-            ...project,
-            milestones: updatedMilestones,
-            progress_percent,
-            current_stage: activeMilestone.title,
-            status: progress_percent === 100 ? "completed" : project.status,
-          },
-          previousData: project,
-        },
-        { mutationMode: "optimistic" }
-      );
-      notify("Milestone updated", { type: "success" });
-      refetch();
-    } catch {
-      notify("Failed to update milestone", { type: "error" });
-    }
-  };
 
   const formatAED = (value: number) => {
     return new Intl.NumberFormat("en-AE", {
@@ -100,242 +78,255 @@ export const ProjectShow = () => {
   const getCompanyLabel = (tenantId: number) => {
     switch (tenantId) {
       case 1:
-        return { name: "Goldland Contracting LLC", code: "GL", color: "bg-amber-500/15 text-amber-500 border-amber-500/30" };
+        return {
+          name: "Goldland Contracting LLC",
+          code: "GL",
+          color: "bg-amber-500/15 text-amber-500 border-amber-500/30",
+        };
       case 2:
-        return { name: "Abbadi Tech Technical Services LLC", code: "AT", color: "bg-blue-500/15 text-blue-500 border-blue-500/30" };
+        return {
+          name: "Abbadi Tech Technical Services LLC",
+          code: "AT",
+          color: "bg-blue-500/15 text-blue-500 border-blue-500/30",
+        };
       case 3:
-        return { name: "Casavera Interiors LLC", code: "CV", color: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30" };
+        return {
+          name: "Casavera Interiors LLC",
+          code: "CV",
+          color: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
+        };
       default:
-        return { name: "Group Project", code: "GP", color: "bg-slate-500/15 text-slate-500 border-slate-500/30" };
+        return {
+          name: "Group Project",
+          code: "GP",
+          color: "bg-slate-500/15 text-slate-500 border-slate-500/30",
+        };
     }
   };
 
   const comp = getCompanyLabel(project.tenant_id);
 
+  const completedMilestonesCount = project.milestones?.filter((m) => m.completed).length || 0;
+  const totalMilestonesCount = project.milestones?.length || 0;
+  const dailyLogsCount = project.daily_logs?.length || 0;
+  const teamMembersCount = project.team_members?.length || 0;
+  const documentsCount = project.noc_documents?.length || 0;
+
   return (
-    <div className="w-full space-y-6 pb-12">
+    <div className="w-full space-y-6 pb-16">
       {/* Top back & actions */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <Link
           to="/projects"
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Projects
+          <ArrowLeft className="w-4 h-4" />
+          Back to Projects Directory
         </Link>
-        <span className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-bold border ${comp.color}`}>
-          {comp.name}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-bold border ${comp.color}`}>
+            {comp.code} · {comp.name}
+          </span>
+          <Badge
+            variant="outline"
+            className="text-xs uppercase font-bold bg-primary/10 text-primary border-primary/25"
+          >
+            {project.status.replace("_", " ")}
+          </Badge>
+        </div>
       </div>
 
       {/* Project Banner Card */}
-      <Card>
-        <CardHeader className="space-y-3">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <span className="text-xs font-mono text-muted-foreground">{project.reference_no}</span>
-              <CardTitle className="text-xl font-bold mt-1">{project.name}</CardTitle>
-              <CardDescription className="text-xs mt-1 max-w-3xl">
+      <Card className="border-border/60 shadow-sm overflow-hidden">
+        <CardHeader className="space-y-4 pb-4">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-xs font-mono text-primary font-bold tracking-wider">
+                {project.reference_no}
+              </span>
+              <CardTitle className="text-2xl font-extrabold tracking-tight mt-0.5">
+                {project.name}
+              </CardTitle>
+              <CardDescription className="text-xs max-w-3xl leading-relaxed text-muted-foreground">
                 {project.scope_summary}
               </CardDescription>
             </div>
-            <div className="text-right shrink-0">
-              <span className="text-xs text-muted-foreground block">Contract Value</span>
-              <span className="text-xl font-extrabold text-foreground">{formatAED(project.contract_value)}</span>
+            <div className="text-left md:text-right shrink-0 p-3 rounded-xl bg-muted/40 border border-border/60">
+              <span className="text-[11px] text-muted-foreground uppercase font-semibold block">
+                Contract Value (AED)
+              </span>
+              <span className="text-2xl font-black text-foreground">
+                {formatAED(project.contract_value)}
+              </span>
             </div>
           </div>
 
-          {/* Progress bar */}
+          {/* Progress bar & Current Milestone */}
           <div className="pt-2 space-y-1.5">
             <div className="flex justify-between text-xs">
               <span className="font-medium text-muted-foreground">
-                Current Milestone Track: <strong className="text-foreground">{project.current_stage}</strong>
+                Active Permitting / Work Stage:{" "}
+                <strong className="text-foreground">{project.current_stage}</strong>
               </span>
               <span className="font-bold text-primary">{project.progress_percent}% Complete</span>
             </div>
-            <Progress value={project.progress_percent} className="h-2" />
+            <Progress value={project.progress_percent} className="h-2.5" />
           </div>
         </CardHeader>
 
-        <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2 border-t border-border/60 text-xs">
+        {/* Project Meta Info Strip */}
+        <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4 py-3 border-t border-border/60 text-xs bg-muted/10">
           <div className="space-y-1">
-            <span className="text-muted-foreground flex items-center gap-1">
-              <MapPin className="h-3 w-3" /> Site Location
+            <span className="text-muted-foreground flex items-center gap-1 font-medium">
+              <MapPin className="w-3.5 h-3.5 text-primary" /> Site Location
             </span>
-            <p className="font-semibold">{project.site_location}</p>
+            <p className="font-semibold text-foreground truncate">{project.site_location}</p>
           </div>
           <div className="space-y-1">
-            <span className="text-muted-foreground flex items-center gap-1">
-              <Calendar className="h-3 w-3" /> Target Handover
+            <span className="text-muted-foreground flex items-center gap-1 font-medium">
+              <Calendar className="w-3.5 h-3.5 text-emerald-500" /> Target Handover
             </span>
-            <p className="font-semibold">{project.target_completion_date}</p>
+            <p className="font-semibold text-foreground font-mono">{project.target_completion_date}</p>
           </div>
           <div className="space-y-1">
-            <span className="text-muted-foreground flex items-center gap-1">
-              <User className="h-3 w-3" /> Assigned Engineer
+            <span className="text-muted-foreground flex items-center gap-1 font-medium">
+              <User className="w-3.5 h-3.5 text-blue-400" /> Assigned Engineer
             </span>
-            <p className="font-semibold">
+            <p className="font-semibold text-foreground">
               {project.engineer_id === 0
                 ? "Navas (MD / Consultant)"
-                : project.engineer_id === 1
-                  ? "Abrar (Operations)"
-                  : project.engineer_id === 2
-                    ? "Junaid (Site Engineer)"
-                    : "Arshad (Site Inspection Eng.)"}
+                : project.engineer_id === 3
+                  ? "Abrar (Operations Director)"
+                  : project.engineer_id === 5
+                    ? "Asma (Interior Designer)"
+                    : project.engineer_id === 6
+                      ? "Faseela (Permitting Specialist)"
+                      : project.engineer_id === 7
+                        ? "Sadiq (Senior MEP Engineer)"
+                        : "Arshad (Site Inspection Eng.)"}
             </p>
           </div>
           <div className="space-y-1">
-            <span className="text-muted-foreground flex items-center gap-1">
-              <ShieldCheck className="h-3 w-3" /> Execution Status
+            <span className="text-muted-foreground flex items-center gap-1 font-medium">
+              <ShieldCheck className="w-3.5 h-3.5 text-primary" /> Authority Stage
             </span>
-            <p className="font-semibold capitalize text-primary">{project.status.replace("_", " ")}</p>
+            <p className="font-semibold text-foreground truncate">{project.current_stage}</p>
           </div>
         </CardContent>
       </Card>
 
-      {/* Workflow Milestones Stepper */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="text-base flex items-center justify-between">
-              <span>Execution Workflow Milestones</span>
-              <span className="text-xs font-normal text-muted-foreground">
-                {project.milestones.filter((m) => m.completed).length} of {project.milestones.length} completed
+      {/* Operational Hub Navigation Tabs */}
+      <div className="border-b border-border/80">
+        <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none">
+          <button
+            type="button"
+            onClick={() => handleTabSelect("milestones")}
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-bold transition-all border-b-2 whitespace-nowrap ${
+              activeTab === "milestones"
+                ? "border-primary text-primary bg-primary/5"
+                : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30"
+            }`}
+          >
+            <Building2 className="w-4 h-4" />
+            Milestones & Approvals
+            <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-primary/10 text-primary">
+              {completedMilestonesCount}/{totalMilestonesCount}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleTabSelect("daily_logs")}
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-bold transition-all border-b-2 whitespace-nowrap ${
+              activeTab === "daily_logs"
+                ? "border-primary text-primary bg-primary/5"
+                : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30"
+            }`}
+          >
+            <HardHat className="w-4 h-4" />
+            Project Daily Log
+            {dailyLogsCount > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-primary/10 text-primary">
+                {dailyLogsCount}
               </span>
-            </CardTitle>
-            <CardDescription className="text-xs">
-              Click checkbox to update milestone progress and coordinate handoff.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {project.milestones.map((milestone, idx) => (
-              <div
-                key={milestone.id}
-                onClick={() => toggleMilestone(milestone.id)}
-                className={`p-3 rounded-lg border transition-all cursor-pointer flex items-center justify-between gap-3 ${
-                  milestone.completed
-                    ? "bg-emerald-500/5 border-emerald-500/20"
-                    : idx === project.milestones.findIndex((m) => !m.completed)
-                      ? "bg-primary/5 border-primary/40 shadow-sm"
-                      : "bg-muted/20 border-border/50 hover:bg-muted/40"
-                }`}
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <button
-                    type="button"
-                    className="shrink-0 focus:outline-none"
-                    title={milestone.completed ? "Mark incomplete" : "Mark completed"}
-                  >
-                    {milestone.completed ? (
-                      <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                    ) : (
-                      <Circle className="h-5 w-5 text-muted-foreground" />
-                    )}
-                  </button>
-                  <div className="min-w-0">
-                    <p
-                      className={`text-xs font-semibold truncate ${
-                        milestone.completed ? "line-through text-muted-foreground" : "text-foreground"
-                      }`}
-                    >
-                      {idx + 1}. {milestone.title}
-                    </p>
-                    {milestone.completed_at && (
-                      <span className="text-[10px] text-emerald-500 font-medium">
-                        Completed on {milestone.completed_at}
-                      </span>
-                    )}
-                  </div>
-                </div>
+            )}
+          </button>
 
-                <div className="shrink-0 text-right">
-                  <span className="text-[10px] font-mono text-muted-foreground">
-                    Due: {milestone.due_date || project.target_completion_date}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+          <button
+            type="button"
+            onClick={() => handleTabSelect("tasks")}
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-bold transition-all border-b-2 whitespace-nowrap ${
+              activeTab === "tasks"
+                ? "border-primary text-primary bg-primary/5"
+                : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30"
+            }`}
+          >
+            <CheckCircle2 className="w-4 h-4" />
+            Project Tasks
+          </button>
 
-        {/* Documents & Site Coordination */}
-        <div className="space-y-6">
-          {/* Google Drive Workspace */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <FolderOpen className="h-4 w-4 text-primary" />
-                Project Documents
-              </CardTitle>
-              <CardDescription className="text-xs">
-                Google Workspace Shared Drive folder
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="p-3 rounded-md bg-muted/30 border border-border/60 text-xs space-y-2">
-                <div className="flex items-center justify-between font-medium">
-                  <span className="flex items-center gap-1.5 truncate">
-                    <FileText className="h-3.5 w-3.5 text-blue-400" />
-                    Approved Drawings & Permitting
-                  </span>
-                  <Badge variant="outline" className="text-[10px]">PDF</Badge>
-                </div>
-                <div className="flex items-center justify-between font-medium">
-                  <span className="flex items-center gap-1.5 truncate">
-                    <FileText className="h-3.5 w-3.5 text-emerald-400" />
-                    Signed Contract & BOQ
-                  </span>
-                  <Badge variant="outline" className="text-[10px]">DOCX</Badge>
-                </div>
-                <div className="flex items-center justify-between font-medium">
-                  <span className="flex items-center gap-1.5 truncate">
-                    <FileText className="h-3.5 w-3.5 text-amber-400" />
-                    Site Inspection Photos
-                  </span>
-                  <Badge variant="outline" className="text-[10px]">12 Photos</Badge>
-                </div>
-              </div>
+          <button
+            type="button"
+            onClick={() => handleTabSelect("team")}
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-bold transition-all border-b-2 whitespace-nowrap ${
+              activeTab === "team"
+                ? "border-primary text-primary bg-primary/5"
+                : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30"
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            Team & Key Contacts
+            {teamMembersCount > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-primary/10 text-primary">
+                {teamMembersCount}
+              </span>
+            )}
+          </button>
 
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full text-xs flex items-center justify-center gap-1.5"
-                onClick={() => notify("Connecting to Google Drive Shared folder...", { type: "info" })}
-              >
-                <ExternalLink className="h-3.5 w-3.5" />
-                Open Google Drive Folder
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Quick Handover Checklist */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-emerald-500" />
-                Site Safety & Compliance
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-xs space-y-2 text-muted-foreground">
-              <div className="flex items-center justify-between py-1 border-b border-border/40">
-                <span>DCD Fire & Safety Permit:</span>
-                <span className="font-semibold text-emerald-400">Compliant</span>
-              </div>
-              <div className="flex items-center justify-between py-1 border-b border-border/40">
-                <span>Site Insurance Coverage:</span>
-                <span className="font-semibold text-foreground">Active (Oman Ins.)</span>
-              </div>
-              <div className="flex items-center justify-between py-1">
-                <span>Contractor Pass:</span>
-                <span className="font-semibold text-foreground">Issued</span>
-              </div>
-            </CardContent>
-          </Card>
+          <button
+            type="button"
+            onClick={() => handleTabSelect("documents")}
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-bold transition-all border-b-2 whitespace-nowrap ${
+              activeTab === "documents"
+                ? "border-primary text-primary bg-primary/5"
+                : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30"
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            Drawings & NOC Documents
+            {documentsCount > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-primary/10 text-primary">
+                {documentsCount}
+              </span>
+            )}
+          </button>
         </div>
+      </div>
+
+      {/* Tab Panes */}
+      <div className="pt-2">
+        {activeTab === "milestones" && (
+          <MilestonesTab project={project} onRefresh={refetch} />
+        )}
+
+        {activeTab === "daily_logs" && (
+          <DailyLogsTab project={project} onRefresh={refetch} />
+        )}
+
+        {activeTab === "tasks" && (
+          <ProjectTasksTab project={project} />
+        )}
+
+        {activeTab === "team" && (
+          <TeamTab project={project} onRefresh={refetch} />
+        )}
+
+        {activeTab === "documents" && (
+          <DocumentsNOCTab project={project} onRefresh={refetch} />
+        )}
       </div>
     </div>
   );
 };
 
 export default ProjectShow;
-
