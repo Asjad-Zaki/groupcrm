@@ -13,6 +13,8 @@ import type {
   MessageLink,
   Project,
   Quotation,
+  Invoice,
+  FeedPost,
   Sale,
   Tag,
   Task,
@@ -43,5 +45,7 @@ export interface Db {
   message_links: MessageLink[];
   issue_threads: IssueThread[];
   quotations: Quotation[];
+  invoices: Invoice[];
+  feed_posts: FeedPost[];
   configuration: Array<{ id: number; config: ConfigurationContextValue }>;
 }

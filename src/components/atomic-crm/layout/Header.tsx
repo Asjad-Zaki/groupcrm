@@ -6,6 +6,7 @@ import { ThemeModeToggle } from "@/components/admin/theme-mode-toggle";
 import { UserMenu } from "@/components/admin/user-menu";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { CompanySwitcher } from "./CompanySwitcher";
+import { WorktimeTrackerWidget } from "./WorktimeTrackerWidget";
 
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { ImportPage } from "../misc/ImportPage";
@@ -28,6 +29,10 @@ const Header = () => {
     currentPath = "/projects";
   } else if (matchPath("/quotes/*", location.pathname)) {
     currentPath = "/quotes";
+  } else if (matchPath("/invoices/*", location.pathname)) {
+    currentPath = "/invoices";
+  } else if (matchPath("/feed/*", location.pathname)) {
+    currentPath = "/feed";
   } else if (matchPath("/meetings/*", location.pathname)) {
     currentPath = "/meetings";
   } else if (matchPath("/messages/*", location.pathname)) {
@@ -96,6 +101,16 @@ const Header = () => {
                     isActive={currentPath === "/quotes"}
                   />
                   <NavigationTab
+                    label="Invoices"
+                    to="/invoices"
+                    isActive={currentPath === "/invoices"}
+                  />
+                  <NavigationTab
+                    label="Feed"
+                    to="/feed"
+                    isActive={currentPath === "/feed"}
+                  />
+                  <NavigationTab
                     label="Meetings"
                     to="/meetings"
                     isActive={currentPath === "/meetings"}
@@ -131,7 +146,8 @@ const Header = () => {
                   />
                 </nav>
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center gap-1.5">
+                <WorktimeTrackerWidget />
                 <GlobalSearchButton />
                 <ThemeModeToggle />
                 <RefreshButton />

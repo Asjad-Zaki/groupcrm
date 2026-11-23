@@ -12,6 +12,7 @@ import {
   Building2,
   FileText,
   HardHat,
+  CalendarRange,
 } from "lucide-react";
 import {
   Card,
@@ -27,14 +28,15 @@ import { DailyLogsTab } from "./DailyLogsTab";
 import { ProjectTasksTab } from "./ProjectTasksTab";
 import { TeamTab } from "./TeamTab";
 import { DocumentsNOCTab } from "./DocumentsNOCTab";
+import { GanttTimelineTab } from "./GanttTimelineTab";
 import type { Project } from "../types";
 
 export const ProjectShow = () => {
   const { id } = useParams<{ id: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  type TabType = "milestones" | "daily_logs" | "tasks" | "team" | "documents";
-  const validTabs: TabType[] = ["milestones", "daily_logs", "tasks", "team", "documents"];
+  type TabType = "milestones" | "daily_logs" | "tasks" | "gantt" | "team" | "documents";
+  const validTabs: TabType[] = ["milestones", "daily_logs", "tasks", "gantt", "team", "documents"];
 
   const initialTab = searchParams.get("tab") as TabType;
   const [activeTab, setActiveTab] = useState<TabType>(
@@ -267,6 +269,22 @@ export const ProjectShow = () => {
 
           <button
             type="button"
+            onClick={() => handleTabSelect("gantt")}
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-bold transition-all border-b-2 whitespace-nowrap ${
+              activeTab === "gantt"
+                ? "border-primary text-primary bg-primary/5"
+                : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30"
+            }`}
+          >
+            <CalendarRange className="w-4 h-4" />
+            Gantt Timeline
+            <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-primary/10 text-primary">
+              Bitrix24
+            </span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => handleTabSelect("team")}
             className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-t-xl text-xs font-bold transition-all border-b-2 whitespace-nowrap ${
               activeTab === "team"
@@ -315,6 +333,10 @@ export const ProjectShow = () => {
 
         {activeTab === "tasks" && (
           <ProjectTasksTab project={project} />
+        )}
+
+        {activeTab === "gantt" && (
+          <GanttTimelineTab project={project} onRefresh={refetch} />
         )}
 
         {activeTab === "team" && (

@@ -18,6 +18,8 @@ import { generateMessages } from "./messages";
 import { generateMessageLinks } from "./message_links";
 import { generateIssueThreads } from "./issue_threads";
 import { generateQuotations } from "./quotations";
+import { generateInvoices } from "./invoices";
+import { generateFeedPosts } from "./feedPosts";
 import type { Db } from "./types";
 
 export default (): Db => {
@@ -41,6 +43,8 @@ export default (): Db => {
   db.message_links = generateMessageLinks(db);
   db.issue_threads = generateIssueThreads(db);
   db.quotations = generateQuotations(db);
+  db.invoices = generateInvoices(db);
+  db.feed_posts = generateFeedPosts(db);
   db.configuration = [
     {
       id: 1,

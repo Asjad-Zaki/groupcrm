@@ -27,6 +27,8 @@ import { PortalsPage } from "../portals/PortalsPage";
 import { PerformancePage } from "../performance/PerformancePage";
 import { MessengerPage } from "../messenger/MessengerPage";
 import { QuotesPage } from "../quotes/QuotesPage";
+import { InvoicesPage } from "../invoices/InvoicesPage";
+import { FeedPage } from "../feed/FeedPage";
 import { Layout } from "../layout/Layout";
 import { MobileLayout } from "../layout/MobileLayout";
 import { LoginPage } from "../login/LoginPage";
@@ -272,6 +274,8 @@ const DesktopAdmin = (
       <CustomRoutes>
         <Route path="/my-day" element={<MyDayPage />} />
         <Route path="/quotes" element={<QuotesPage />} />
+        <Route path="/invoices" element={<InvoicesPage />} />
+        <Route path="/feed" element={<FeedPage />} />
         <Route path="/messages" element={<MessengerPage />} />
         <Route path="/portals" element={<PortalsPage />} />
         <Route path="/performance" element={<PerformancePage />} />
@@ -292,6 +296,8 @@ const DesktopAdmin = (
       <Resource name="conversations" />
       <Resource name="messages" />
       <Resource name="quotations" />
+      <Resource name="invoices" />
+      <Resource name="feed_posts" />
       <Resource name="meetings" {...meetings} />
       <Resource name="sales" {...sales} />
       <Resource name="tags" />
@@ -368,6 +374,8 @@ const MobileAdmin = (
         <CustomRoutes>
           <Route path="/my-day" element={<MyDayPage />} />
           <Route path="/quotes" element={<QuotesPage />} />
+          <Route path="/invoices" element={<InvoicesPage />} />
+          <Route path="/feed" element={<FeedPage />} />
           <Route path="/messages" element={<MessengerPage />} />
           <Route path="/portals" element={<PortalsPage />} />
           <Route path="/performance" element={<PerformancePage />} />
@@ -393,6 +401,8 @@ const MobileAdmin = (
         <Resource name="conversations" />
         <Resource name="messages" />
         <Resource name="quotations" />
+        <Resource name="invoices" />
+        <Resource name="feed_posts" />
         <Resource name="meetings" {...meetings} />
         <Resource name="sales" {...sales} />
         <Resource name="tags" />

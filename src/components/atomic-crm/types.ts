@@ -190,6 +190,7 @@ export interface ProjectMilestone {
   completed: boolean;
   completed_at?: string;
   due_date?: string;
+  authority?: string;
   notes?: string;
 }
 
@@ -694,6 +695,62 @@ export type Quotation = {
   creator_name?: string;
   created_at: string;
   updated_at: string;
+} & Pick<RaRecord, "id">;
+
+export type Invoice = {
+  invoice_number: string;
+  tenant_id: number;
+  operating_company: "goldland" | "abbadi" | "casavera";
+  company_name: string;
+  trn_number: string;
+  quotation_ref?: string;
+  project_id?: Identifier;
+  project_name?: string;
+  client_name: string;
+  client_company: string;
+  client_phone?: string;
+  client_email?: string;
+  issue_date: string;
+  due_date: string;
+  currency: "AED";
+  status: "paid" | "partially_paid" | "pending" | "overdue";
+  gross_amount: number;
+  vat_rate: number;
+  vat_amount: number;
+  retention_rate: number;
+  retention_amount: number;
+  net_payable: number;
+  amount_paid: number;
+  balance_due: number;
+  payment_method?: "bank_transfer" | "cheque" | "card";
+  payment_reference?: string;
+  payment_date?: string;
+  bank_name?: string;
+  bank_iban?: string;
+  notes?: string;
+} & Pick<RaRecord, "id">;
+
+export type FeedPostComment = {
+  id: string;
+  author: string;
+  text: string;
+  created_at: string;
+};
+
+export type FeedPost = {
+  author_name: string;
+  author_role: string;
+  author_avatar?: string;
+  tenant_id?: number;
+  type: "announcement" | "appreciation" | "milestone" | "deal";
+  title: string;
+  content: string;
+  badge?: "star_performer" | "fast_approvals" | "deal_closer" | "safety_champion" | "client_delight";
+  recipient_name?: string;
+  likes_count: number;
+  comments_count: number;
+  created_at: string;
+  comments?: FeedPostComment[];
 } & Pick<RaRecord, "id">;
 
 export type ActivityCompanyCreated = {
