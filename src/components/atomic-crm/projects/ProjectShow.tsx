@@ -279,7 +279,7 @@ export const ProjectShow = () => {
             <CalendarRange className="w-4 h-4" />
             Gantt Timeline
             <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] bg-primary/10 text-primary">
-              Bitrix24
+              GroupCRM
             </span>
           </button>
 

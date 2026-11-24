@@ -38,11 +38,11 @@ export const CompanySwitcher = () => {
     <div className="mr-2">
       <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-background/80 hover:bg-accent/60 text-xs font-medium transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer"
+          className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-lg border bg-background/80 hover:bg-accent/60 text-xs font-medium transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer shrink-0"
           title="Switch Operating Company Context"
         >
           <span
-            className={`inline-flex items-center justify-center h-4 px-1.5 rounded text-[10px] font-bold ${getBadgeColor(
+            className={`inline-flex items-center justify-center h-4 px-1.5 rounded text-[10px] font-bold shrink-0 ${getBadgeColor(
               tenant?.id || "group"
             )}`}
           >
@@ -53,7 +53,7 @@ export const CompanySwitcher = () => {
             )}
             {tenant?.branding.logo || "ALL"}
           </span>
-          <span className="font-semibold max-w-[140px] md:max-w-[180px] truncate">
+          <span className="font-semibold max-w-[90px] md:max-w-[140px] xl:max-w-[180px] truncate hidden sm:inline-block">
             {tenant?.name || "Group Overview"}
           </span>
           <ChevronDown className="h-3 w-3 opacity-60 ml-0.5 shrink-0" />

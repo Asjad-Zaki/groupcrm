@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
   CheckCircle2,
-  Sparkles,
+  Building2,
 } from "lucide-react";
 import type { Deal, Project } from "../types";
 import {
@@ -136,7 +136,7 @@ export const ConvertLeadToProjectModal = ({
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base">
-            <Sparkles className="h-5 w-5 text-amber-500" />
+            <Building2 className="h-5 w-5 text-amber-500" />
             Convert Won Lead to Project
           </DialogTitle>
           <DialogDescription className="text-xs">

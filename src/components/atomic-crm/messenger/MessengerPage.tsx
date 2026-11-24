@@ -14,6 +14,7 @@ import {
   FileText,
   User,
   ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ export const MessengerPage = () => {
   // Active channel id from URL query or default to 1
   const initialConvId = Number(searchParams.get("c")) || 1;
   const [selectedConvId, setSelectedConvId] = useState<number>(initialConvId);
+  const [showMobileChat, setShowMobileChat] = useState<boolean>(true);
 
   const [companyFilter, setCompanyFilter] = useState<"all" | "goldland" | "abbadi" | "casavera">("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -81,6 +83,7 @@ export const MessengerPage = () => {
 
   const selectConversation = (id: number) => {
     setSelectedConvId(id);
+    setShowMobileChat(true);
     setSearchParams({ c: id.toString() });
   };
 
@@ -313,9 +316,9 @@ export const MessengerPage = () => {
       </div>
 
       {/* Main Two-Column Messenger Body */}
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-4 pt-3 min-h-0">
-        {/* Left Sidebar: Channels & DMs (cols 1-3 on LG, 1-4 on MD) */}
-        <div className="md:col-span-1 lg:col-span-3 flex flex-col rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm overflow-hidden min-h-0 shadow-sm">
+      <div className="flex-1 flex flex-col md:flex-row gap-4 pt-3 min-h-0 w-full overflow-hidden">
+        {/* Left Sidebar: Channels & DMs */}
+        <div className={`${showMobileChat ? "hidden md:flex" : "flex"} w-full md:w-72 lg:w-80 shrink-0 flex-col rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm overflow-hidden min-h-0 shadow-sm`}>
           {/* Search channel */}
           <div className="p-3 border-b border-border/60">
             <div className="relative">
@@ -445,11 +448,21 @@ export const MessengerPage = () => {
           </div>
         </div>
 
-        {/* Right Active Chat Pane (cols 4-12 on LG, 2-4 on MD) */}
-        <div className="md:col-span-3 lg:col-span-9 flex flex-col rounded-2xl border border-border/70 bg-card overflow-hidden min-h-0 shadow-sm">
+        {/* Right Active Chat Pane */}
+        <div className={`${showMobileChat ? "flex" : "hidden md:flex"} flex-1 min-w-0 flex-col rounded-2xl border border-border/70 bg-card overflow-hidden min-h-0 shadow-sm`}>
           {/* Active Chat Header */}
           <div className="p-4 border-b border-border/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-muted/20">
             <div className="flex items-center gap-3">
+              {/* Mobile Back Button */}
+              <button
+                type="button"
+                onClick={() => setShowMobileChat(false)}
+                className="md:hidden p-1.5 rounded-lg border border-border text-muted-foreground hover:text-foreground shrink-0"
+                title="Back to Channels"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+
               <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
                 {activeConversation?.type === "project" ? (
                   <FolderKanban className="w-5 h-5" />

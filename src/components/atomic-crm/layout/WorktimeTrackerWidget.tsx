@@ -157,7 +157,7 @@ export const WorktimeTrackerWidget = () => {
 
   return (
     <div className="relative inline-block" ref={containerRef}>
-      {/* Bitrix24 Topbar Tracker Pill */}
+      {/* GroupCRM Topbar Tracker Pill */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -168,7 +168,7 @@ export const WorktimeTrackerWidget = () => {
               ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
               : "bg-muted/40 border-border/80 text-muted-foreground hover:text-foreground hover:bg-muted"
         }`}
-        title="Bitrix24 Live Worktime Tracker"
+        title="GroupCRM Live Worktime Tracker"
       >
         <span className="relative flex h-2 w-2">
           {session.status === "running" && (
@@ -199,13 +199,13 @@ export const WorktimeTrackerWidget = () => {
         <ChevronDown className="w-3 h-3 opacity-60" />
       </button>
 
-      {/* Bitrix24 Worktime Popover Panel */}
+      {/* GroupCRM Worktime Popover Panel */}
       {isOpen && (
         <div className="absolute right-0 top-full mt-2 w-80 bg-popover text-popover-foreground border border-border rounded-xl shadow-2xl p-4 z-50 space-y-4 animate-in fade-in-50 zoom-in-95">
           <div className="flex items-center justify-between border-b border-border/60 pb-3">
             <div>
               <h4 className="text-xs font-bold tracking-wide uppercase text-muted-foreground">
-                Bitrix24 Worktime Tracker
+                GroupCRM Worktime Tracker
               </h4>
               <p className="text-sm font-semibold text-foreground">
                 {session.status === "running"

@@ -36,9 +36,9 @@ export const HotContacts = () => {
     <div className="flex flex-col gap-2">
       <div className="flex items-center">
         <div className="mr-3 flex">
-          <Users className="text-muted-foreground w-6 h-6" />
+          <Users className="text-slate-400 w-6 h-6" />
         </div>
-        <h2 className="text-xl font-semibold text-muted-foreground">
+        <h2 className="text-xl font-semibold text-slate-400">
           {translate("resources.contacts.hot.title")}
         </h2>
         <TooltipProvider>
@@ -50,12 +50,12 @@ export const HotContacts = () => {
                   aria-label={translate("resources.contacts.action.create")}
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "sm" }),
-                    "ml-auto text-muted-foreground",
+                    "ml-auto text-slate-400",
                   )}
                 />
               }
             >
-              <Plus className="w-4 h-4 text-primary" />
+              <Plus className="w-4 h-4 text-indigo-400" />
             </TooltipTrigger>
             <TooltipContent>
               {translate("resources.contacts.action.create")}

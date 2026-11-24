@@ -253,7 +253,7 @@ export const GanttTimelineTab = ({ project, onRefresh }: GanttTimelineTabProps) 
 
   return (
     <div className="space-y-6">
-      {/* Bitrix24 Gantt Control Top Bar */}
+      {/* GroupCRM Gantt Control Top Bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-card/60 backdrop-blur border border-border p-4 rounded-2xl">
         <div className="flex items-center gap-3">
           <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20">
@@ -262,7 +262,7 @@ export const GanttTimelineTab = ({ project, onRefresh }: GanttTimelineTabProps) 
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-base font-bold text-foreground">
-                Bitrix24 Interactive Gantt Timeline
+                GroupCRM Interactive Gantt Timeline
               </h3>
               <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 text-[10px]">
                 Critical Path Engine

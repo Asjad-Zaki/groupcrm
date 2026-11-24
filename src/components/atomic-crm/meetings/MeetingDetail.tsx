@@ -22,7 +22,7 @@ import {
   Link2,
   MessageCircle,
   Shield,
-  Sparkles,
+  CheckCircle2,
   User,
   Users,
   Video,
@@ -273,7 +273,7 @@ export const MeetingDetail = () => {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-amber-500" />
+                <CheckCircle2 className="h-4 w-4 text-primary" />
                 Decisions & Action Items
               </CardTitle>
               <CardDescription className="text-xs">

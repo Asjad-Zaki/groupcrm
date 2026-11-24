@@ -129,7 +129,7 @@ export const InvoicesPage = () => {
             </div>
             <div>
               <h2 className="text-2xl font-bold tracking-tight text-foreground">
-                Bitrix24 Commercial Invoices & Retention
+                GroupCRM Commercial Invoices & Retention
               </h2>
               <p className="text-xs text-muted-foreground">
                 Progressive UAE Tax Invoices with 5% VAT, 10% DLP contract retention, and WhatsApp collections.

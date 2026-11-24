@@ -30,7 +30,6 @@ import {
   MessageCircle,
   Plus,
   Search,
-  Sparkles,
   Users,
   Video,
   Zap,
@@ -449,7 +448,7 @@ export const MeetingsPage = () => {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-base flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" />
+              <Video className="h-4 w-4 text-primary" />
               {newKind === "instant" ? "Start Instant Call" : "Schedule New Meeting"}
             </DialogTitle>
             <DialogDescription className="text-xs">

@@ -36,7 +36,7 @@ export const generateFeedPosts = (_db: Db): FeedPost[] => {
       author_role: "Operations Director",
       tenant_id: 1,
       type: "appreciation",
-      title: "🏅 Bitrix24 Appreciation Badge: Fast Approvals Champion",
+      title: "🏅 GroupCRM Appreciation Badge: Fast Approvals Champion",
       content:
         "Huge shoutout to Faseela for securing the Dubai Civil Defense (DCD) Fire Life Safety NOC for Al Falasi Penthouse in record time — 4 days ahead of authority SLA! Outstanding coordination with the authorities.",
       badge: "fast_approvals",

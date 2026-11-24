@@ -13,15 +13,20 @@ export const Layout = ({ children }: { children: ReactNode }) => {
 
   return (
     <DataImportProvider>
-      <Header />
-      <main className="max-w-screen-xl mx-auto p-4" id="main-content">
-        <ErrorBoundary FallbackComponent={Error}>
-          <Suspense fallback={<Skeleton className="h-12 w-12 rounded-full" />}>
-            {children}
-          </Suspense>
-        </ErrorBoundary>
-      </main>
-      <Notification />
+      <div className="min-h-screen flex flex-col w-full overflow-x-hidden bg-background text-foreground">
+        <Header />
+        <main
+          className="w-full flex-1 max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8 py-4 overflow-x-hidden"
+          id="main-content"
+        >
+          <ErrorBoundary FallbackComponent={Error}>
+            <Suspense fallback={<Skeleton className="h-12 w-12 rounded-full" />}>
+              {children}
+            </Suspense>
+          </ErrorBoundary>
+        </main>
+        <Notification />
+      </div>
     </DataImportProvider>
   );
 };

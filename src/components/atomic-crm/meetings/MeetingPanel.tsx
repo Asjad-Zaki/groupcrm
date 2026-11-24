@@ -6,7 +6,7 @@ import {
   Video,
   VideoOff,
   PhoneOff,
-  Sparkles,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -155,7 +155,7 @@ export const MeetingPanel = ({ meeting, onEndCall }: MeetingPanelProps) => {
         <div className="flex flex-col bg-slate-900 rounded-lg border border-slate-800 p-3 space-y-3">
           <div className="flex items-center justify-between border-b border-slate-800 pb-2">
             <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+              <FileText className="h-3.5 w-3.5 text-primary" />
               Live Meeting Outcomes
             </span>
             <Badge variant="outline" className="text-[10px]">

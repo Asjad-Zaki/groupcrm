@@ -6,7 +6,7 @@ import {
   User,
   Lock,
   ChevronRight,
-  Sparkles,
+  CheckCircle2,
   Briefcase,
   Users,
 } from "lucide-react";
@@ -348,7 +348,7 @@ export const LoginPage = (props: { redirectTo?: string }) => {
             </span>
             <span>•</span>
             <span className="flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
               MFA Enforcement for Admins
             </span>
             <span>•</span>

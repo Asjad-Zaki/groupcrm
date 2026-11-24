@@ -1,10 +1,28 @@
-import { FileText, Import, Settings, User, Users } from "lucide-react";
+import {
+  FileText,
+  Import,
+  Settings,
+  User,
+  Users,
+  ChevronDown,
+  MessageSquare,
+  Megaphone,
+  Video,
+  Building2,
+  Activity,
+  ShieldCheck,
+} from "lucide-react";
 import { CanAccess, useTranslate, useUserMenu } from "ra-core";
 import { Link, matchPath, useLocation } from "react-router";
 import { RefreshButton } from "@/components/admin/refresh-button";
 import { ThemeModeToggle } from "@/components/admin/theme-mode-toggle";
 import { UserMenu } from "@/components/admin/user-menu";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { CompanySwitcher } from "./CompanySwitcher";
 import { WorktimeTrackerWidget } from "./WorktimeTrackerWidget";
 
@@ -49,30 +67,56 @@ const Header = () => {
     currentPath = false;
   }
 
+  const moreTabs = [
+    { label: "Messages", to: "/messages", match: "/messages", icon: MessageSquare },
+    { label: "Feed", to: "/feed", match: "/feed", icon: Megaphone },
+    { label: "Meetings", to: "/meetings", match: "/meetings", icon: Video },
+    {
+      label: translate("resources.companies.name", { smart_count: 2 }),
+      to: "/companies",
+      match: "/companies",
+      icon: Building2,
+    },
+    {
+      label: translate("resources.contacts.name", { smart_count: 2 }),
+      to: "/contacts",
+      match: "/contacts",
+      icon: Users,
+    },
+    { label: "Performance", to: "/performance", match: "/performance", icon: Activity },
+    { label: "Portals", to: "/portals", match: "/portals", icon: ShieldCheck },
+  ];
+
+  const activeMoreItem = moreTabs.find((item) => currentPath === item.match);
+  const isMoreActive = Boolean(activeMoreItem);
+
   return (
     <>
-      <nav className="grow">
-        <header className="bg-secondary">
-          <div className="px-4">
-            <div className="flex justify-between items-center flex-1">
+      <nav className="grow w-full overflow-hidden">
+        <header className="bg-secondary border-b border-border/40 w-full">
+          <div className="w-full max-w-[1600px] mx-auto px-3 sm:px-4">
+            <div className="flex justify-between items-center h-14 gap-2">
               <Link
                 to="/"
-                className="flex items-center gap-2 text-secondary-foreground no-underline"
+                className="flex items-center gap-2 text-secondary-foreground no-underline shrink-0"
               >
                 <img
-                  className="[.light_&]:hidden h-6"
+                  className="[.light_&]:hidden h-6 w-auto shrink-0"
                   src={darkModeLogo}
                   alt={title}
                 />
                 <img
-                  className="[.dark_&]:hidden h-6"
+                  className="[.dark_&]:hidden h-6 w-auto shrink-0"
                   src={lightModeLogo}
                   alt={title}
                 />
-                <h1 className="text-xl font-semibold">{title}</h1>
+                <h1 className="text-base sm:text-lg font-bold shrink-0 hidden md:inline-block tracking-tight">
+                  {title}
+                </h1>
               </Link>
-              <div>
-                <nav className="flex items-center gap-1">
+
+              <div className="flex-1 flex justify-center min-w-0 px-1">
+                <nav className="flex items-center gap-0.5 sm:gap-1 overflow-x-auto no-scrollbar py-0.5">
                   <NavigationTab
                     label={translate("ra.page.dashboard")}
                     to="/"
@@ -105,50 +149,56 @@ const Header = () => {
                     to="/invoices"
                     isActive={currentPath === "/invoices"}
                   />
-                  <NavigationTab
-                    label="Feed"
-                    to="/feed"
-                    isActive={currentPath === "/feed"}
-                  />
-                  <NavigationTab
-                    label="Meetings"
-                    to="/meetings"
-                    isActive={currentPath === "/meetings"}
-                  />
-                  <NavigationTab
-                    label="Messages"
-                    to="/messages"
-                    isActive={currentPath === "/messages"}
-                  />
-                  <NavigationTab
-                    label={translate("resources.companies.name", {
-                      smart_count: 2,
-                    })}
-                    to="/companies"
-                    isActive={currentPath === "/companies"}
-                  />
-                  <NavigationTab
-                    label={translate("resources.contacts.name", {
-                      smart_count: 2,
-                    })}
-                    to="/contacts"
-                    isActive={currentPath === "/contacts"}
-                  />
-                  <NavigationTab
-                    label="Performance"
-                    to="/performance"
-                    isActive={currentPath === "/performance"}
-                  />
-                  <NavigationTab
-                    label="Portals"
-                    to="/portals"
-                    isActive={currentPath === "/portals"}
-                  />
+
+                  {/* Responsive More Dropdown for Secondary Modules */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      className={`px-2 sm:px-2.5 py-1.5 text-xs xl:px-3 xl:py-2 xl:text-sm font-medium transition-colors border-b-2 flex items-center gap-1 cursor-pointer focus:outline-none whitespace-nowrap shrink-0 ${
+                        isMoreActive
+                          ? "text-secondary-foreground border-secondary-foreground font-semibold"
+                          : "text-secondary-foreground/70 border-transparent hover:text-secondary-foreground/80"
+                      }`}
+                    >
+                      <span>{activeMoreItem ? activeMoreItem.label : "More"}</span>
+                      <ChevronDown className="w-3.5 h-3.5 opacity-70 shrink-0" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48 p-1 z-50">
+                      {moreTabs.map((item) => {
+                        const Icon = item.icon;
+                        const isItemActive = currentPath === item.match;
+                        return (
+                          <DropdownMenuItem
+                            key={item.to}
+                            className={`cursor-pointer rounded-md ${
+                              isItemActive
+                                ? "bg-primary/10 text-primary font-bold"
+                                : "text-foreground hover:bg-muted"
+                            }`}
+                            render={
+                              <Link
+                                to={item.to}
+                                className="flex items-center gap-2.5 w-full px-2.5 py-2 text-xs"
+                              />
+                            }
+                          >
+                            <Icon className="w-4 h-4 text-muted-foreground shrink-0" />
+                            <span>{item.label}</span>
+                          </DropdownMenuItem>
+                        );
+                      })}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </nav>
               </div>
-              <div className="flex items-center gap-1.5">
+
+              <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
                 <WorktimeTrackerWidget />
-                <GlobalSearchButton />
+                <div className="hidden 2xl:block">
+                  <GlobalSearchButton />
+                </div>
+                <div className="2xl:hidden">
+                  <GlobalSearchButton variant="icon" />
+                </div>
                 <ThemeModeToggle />
                 <RefreshButton />
                 <CompanySwitcher />
@@ -183,9 +233,9 @@ const NavigationTab = ({
 }) => (
   <Link
     to={to}
-    className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
+    className={`px-2 sm:px-2.5 py-1.5 text-xs xl:px-3 xl:py-2 xl:text-sm font-medium transition-colors border-b-2 whitespace-nowrap shrink-0 ${
       isActive
-        ? "text-secondary-foreground border-secondary-foreground"
+        ? "text-secondary-foreground border-secondary-foreground font-semibold"
         : "text-secondary-foreground/70 border-transparent hover:text-secondary-foreground/80"
     }`}
   >

@@ -69,7 +69,7 @@ export const CreatePostModal = ({
             <div>
               <h3 className="text-base font-bold text-foreground">Post to Company Feed</h3>
               <p className="text-xs text-muted-foreground">
-                Broadcast announcements, celebrate milestones, or award Bitrix24 recognition badges.
+                Broadcast announcements, celebrate milestones, or award GroupCRM recognition badges.
               </p>
             </div>
           </div>

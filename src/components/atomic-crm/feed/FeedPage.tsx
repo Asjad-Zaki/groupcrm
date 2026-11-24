@@ -131,7 +131,7 @@ export const FeedPage = () => {
           </div>
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-foreground">
-              Bitrix24 Company Feed & Recognitions
+              GroupCRM Company Feed & Recognitions
             </h2>
             <p className="text-xs text-muted-foreground">
               Live group pulse, project milestone celebrations, and peer appreciation badges.
@@ -280,7 +280,7 @@ export const FeedPage = () => {
                   </p>
                 </div>
 
-                {/* If Appreciation: Bitrix24 Recognition Badge Widget */}
+                {/* If Appreciation: GroupCRM Recognition Badge Widget */}
                 {post.type === "appreciation" && badgeMeta && (
                   <div className={`p-4 rounded-xl border flex items-center gap-4 ${badgeMeta.color}`}>
                     <div className="p-3 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 shrink-0">
@@ -288,7 +288,7 @@ export const FeedPage = () => {
                     </div>
                     <div>
                       <span className="text-[10px] font-bold tracking-wider uppercase text-amber-400">
-                        Bitrix24 Appreciation Award
+                        GroupCRM Appreciation Award
                       </span>
                       <p className="text-sm font-bold text-foreground">
                         Awarded to: <strong className="text-amber-300">{post.recipient_name}</strong>
