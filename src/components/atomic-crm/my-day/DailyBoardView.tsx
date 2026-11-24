@@ -4,9 +4,13 @@ import {
   CheckCircle2,
   Clock,
   AlertTriangle,
+  AlertCircle,
   Search,
   Eye,
   TrendingUp,
+  X,
+  FolderKanban,
+  PauseCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TEAM_MEMBERS } from "../providers/fakerest/dataGenerator/sales";
@@ -24,12 +28,14 @@ export const DailyBoardView = ({
   activeTenantId = "group",
 }: DailyBoardViewProps) => {
   const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split("T")[0]
+    new Date().toISOString().split("T")[0],
   );
   const [companyFilter, setCompanyFilter] = useState<string>(
-    activeTenantId === "group" ? "all" : activeTenantId
+    activeTenantId === "group" ? "all" : activeTenantId,
   );
-  const [statusFilter, setStatusFilter] = useState<"all" | "submitted" | "pending" | "blocked">("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "submitted" | "pending" | "blocked"
+  >("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedReportMember, setSelectedReportMember] = useState<{
     member: (typeof TEAM_MEMBERS)[0];
@@ -57,11 +63,14 @@ export const DailyBoardView = ({
   // Calculate metrics
   const totalStaffCount = filteredMembers.length;
   const staffWithReports = filteredMembers.filter((m) =>
-    reports.some((r) => r.user_id === m.id && r.status === "submitted")
+    reports.some((r) => r.user_id === m.id && r.status === "submitted"),
   );
   const submittedCount = staffWithReports.length;
   const pendingCount = totalStaffCount - submittedCount;
-  const submissionRate = totalStaffCount > 0 ? Math.round((submittedCount / totalStaffCount) * 100) : 0;
+  const submissionRate =
+    totalStaffCount > 0
+      ? Math.round((submittedCount / totalStaffCount) * 100)
+      : 0;
 
   const relevantTasks = tasks.filter((t) => {
     if (companyFilter === "goldland") return t.operating_company === "goldland";
@@ -71,7 +80,9 @@ export const DailyBoardView = ({
   });
 
   const totalTasksCount = relevantTasks.length;
-  const completedTasksCount = relevantTasks.filter((t) => t.status === "completed").length;
+  const completedTasksCount = relevantTasks.filter(
+    (t) => t.status === "completed",
+  ).length;
   const blockersCount = reports.filter((r) => !!r.blockers).length;
 
   return (
@@ -160,7 +171,9 @@ export const DailyBoardView = ({
           </div>
           <div className="text-2xl font-bold text-white mt-2">
             {submittedCount} / {totalStaffCount}
-            <span className="text-sm font-normal text-emerald-400 ml-2">({submissionRate}%)</span>
+            <span className="text-sm font-normal text-emerald-400 ml-2">
+              ({submissionRate}%)
+            </span>
           </div>
           <div className="w-full bg-slate-950 rounded-full h-1.5 mt-3 overflow-hidden">
             <div
@@ -177,10 +190,13 @@ export const DailyBoardView = ({
           </div>
           <div className="text-2xl font-bold text-white mt-2">
             {completedTasksCount} / {totalTasksCount}
-            <span className="text-sm font-normal text-slate-400 ml-2">Done</span>
+            <span className="text-sm font-normal text-slate-400 ml-2">
+              Done
+            </span>
           </div>
           <div className="text-xs text-slate-500 mt-2">
-            {totalTasksCount - completedTasksCount} in-flight across site &amp; office
+            {totalTasksCount - completedTasksCount} in-flight across site &amp;
+            office
           </div>
         </div>
 
@@ -191,7 +207,9 @@ export const DailyBoardView = ({
           </div>
           <div className="text-2xl font-bold text-amber-400 mt-2">
             {pendingCount}
-            <span className="text-sm font-normal text-slate-400 ml-2">Employees</span>
+            <span className="text-sm font-normal text-slate-400 ml-2">
+              Employees
+            </span>
           </div>
           <div className="text-xs text-slate-500 mt-2">
             Automated 17:00 nudge sent via email &amp; in-app
@@ -205,7 +223,9 @@ export const DailyBoardView = ({
           </div>
           <div className="text-2xl font-bold text-rose-400 mt-2">
             {blockersCount}
-            <span className="text-sm font-normal text-slate-400 ml-2">Items</span>
+            <span className="text-sm font-normal text-slate-400 ml-2">
+              Items
+            </span>
           </div>
           <div className="text-xs text-rose-400/80 mt-2">
             Requires manager review &amp; authority follow-up
@@ -217,10 +237,10 @@ export const DailyBoardView = ({
       <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
         <button
           type="button"
-          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
             statusFilter === "all"
-              ? "bg-slate-800 text-white"
-              : "text-slate-400 hover:text-slate-200"
+              ? "bg-secondary text-secondary-foreground font-bold shadow-xs"
+              : "text-muted-foreground hover:text-foreground"
           }`}
           onClick={() => setStatusFilter("all")}
         >
@@ -228,44 +248,47 @@ export const DailyBoardView = ({
         </button>
         <button
           type="button"
-          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
             statusFilter === "submitted"
-              ? "bg-emerald-950 text-emerald-300 border border-emerald-800"
-              : "text-slate-400 hover:text-slate-200"
+              ? "bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 font-bold"
+              : "text-muted-foreground hover:text-foreground"
           }`}
           onClick={() => setStatusFilter("submitted")}
         >
-          ✓ Submitted ({submittedCount})
+          <CheckCircle2 className="w-3.5 h-3.5" />
+          Submitted ({submittedCount})
         </button>
         <button
           type="button"
-          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
             statusFilter === "pending"
-              ? "bg-amber-950 text-amber-300 border border-amber-800"
-              : "text-slate-400 hover:text-slate-200"
+              ? "bg-amber-500/15 text-amber-500 border border-amber-500/30 font-bold"
+              : "text-muted-foreground hover:text-foreground"
           }`}
           onClick={() => setStatusFilter("pending")}
         >
-          ⏳ Pending ({pendingCount})
+          <Clock className="w-3.5 h-3.5" />
+          Pending ({pendingCount})
         </button>
         <button
           type="button"
-          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+          className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
             statusFilter === "blocked"
-              ? "bg-rose-950 text-rose-300 border border-rose-800"
-              : "text-slate-400 hover:text-slate-200"
+              ? "bg-rose-500/15 text-rose-500 border border-rose-500/30 font-bold"
+              : "text-muted-foreground hover:text-foreground"
           }`}
           onClick={() => setStatusFilter("blocked")}
         >
-          ⚠️ Has Blockers ({blockersCount})
+          <AlertCircle className="w-3.5 h-3.5" />
+          Has Blockers ({blockersCount})
         </button>
       </div>
 
       {/* Staff Daily Status Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+      <div className="bg-card border border-border/70 rounded-xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-950/70 text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-800">
+            <thead className="bg-muted/50 text-muted-foreground uppercase tracking-wider text-[11px] border-b border-border/60">
               <tr>
                 <th className="py-3 px-4">Employee</th>
                 <th className="py-3 px-4">Entity &amp; Discipline</th>
@@ -289,9 +312,11 @@ export const DailyBoardView = ({
                   const report = reports.find((r) => r.user_id === member.id);
                   const isSubmitted = report?.status === "submitted";
                   const memberTasks = tasks.filter(
-                    (t) => t.sales_id === member.id || t.owner_id === member.id
+                    (t) => t.sales_id === member.id || t.owner_id === member.id,
                   );
-                  const doneTasks = memberTasks.filter((t) => t.status === "completed").length;
+                  const doneTasks = memberTasks.filter(
+                    (t) => t.status === "completed",
+                  ).length;
 
                   return (
                     <tr
@@ -302,7 +327,10 @@ export const DailyBoardView = ({
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
                           <img
-                            src={member.avatar?.src || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop"}
+                            src={
+                              member.avatar?.src ||
+                              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop"
+                            }
                             alt={member.first_name}
                             className="w-8 h-8 rounded-full object-cover border border-slate-700"
                           />
@@ -327,11 +355,15 @@ export const DailyBoardView = ({
                                 t === "goldland"
                                   ? "bg-amber-950/60 text-amber-300 border-amber-800/50"
                                   : t === "abbadi"
-                                  ? "bg-blue-950/60 text-blue-300 border-blue-800/50"
-                                  : "bg-emerald-950/60 text-emerald-300 border-emerald-800/50"
+                                    ? "bg-blue-950/60 text-blue-300 border-blue-800/50"
+                                    : "bg-emerald-950/60 text-emerald-300 border-emerald-800/50"
                               }`}
                             >
-                              {t === "goldland" ? "GL" : t === "abbadi" ? "AT" : "CV"}
+                              {t === "goldland"
+                                ? "GL"
+                                : t === "abbadi"
+                                  ? "AT"
+                                  : "CV"}
                             </span>
                           ))}
                         </div>
@@ -345,7 +377,16 @@ export const DailyBoardView = ({
                         {isSubmitted ? (
                           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-950/60 text-emerald-300 border border-emerald-800/50">
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                            Submitted ({report.submitted_at ? new Date(report.submitted_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "17:30"})
+                            Submitted (
+                            {report.submitted_at
+                              ? new Date(
+                                  report.submitted_at,
+                                ).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                              : "17:30"}
+                            )
                           </div>
                         ) : (
                           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-950/60 text-amber-300 border border-amber-800/50">
@@ -382,12 +423,16 @@ export const DailyBoardView = ({
                             {report.blockers && (
                               <div className="flex items-center gap-1 text-[11px] text-rose-400 mt-1 font-medium">
                                 <AlertTriangle className="w-3 h-3 shrink-0" />
-                                <span className="truncate">{report.blockers}</span>
+                                <span className="truncate">
+                                  {report.blockers}
+                                </span>
                               </div>
                             )}
                           </div>
                         ) : (
-                          <span className="text-slate-500 italic">No report submitted yet</span>
+                          <span className="text-slate-500 italic">
+                            No report submitted yet
+                          </span>
                         )}
                       </td>
 
@@ -424,26 +469,31 @@ export const DailyBoardView = ({
             <div className="flex items-start justify-between pb-4 border-b border-slate-800">
               <div className="flex items-center gap-3">
                 <img
-                  src={selectedReportMember.member.avatar?.src || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop"}
+                  src={
+                    selectedReportMember.member.avatar?.src ||
+                    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop"
+                  }
                   alt={selectedReportMember.member.first_name}
                   className="w-10 h-10 rounded-full object-cover border border-slate-700"
                 />
                 <div>
                   <h3 className="text-base font-bold text-white">
-                    {selectedReportMember.member.first_name} {selectedReportMember.member.last_name}
+                    {selectedReportMember.member.first_name}{" "}
+                    {selectedReportMember.member.last_name}
                   </h3>
                   <p className="text-xs text-slate-400">
-                    {selectedReportMember.member.job_title} • {selectedReportMember.member.department}
+                    {selectedReportMember.member.job_title} •{" "}
+                    {selectedReportMember.member.department}
                   </p>
                 </div>
               </div>
 
               <button
                 type="button"
-                className="text-slate-400 hover:text-white text-lg p-1"
+                className="text-muted-foreground hover:text-foreground p-1 rounded-md"
                 onClick={() => setSelectedReportMember(null)}
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -451,52 +501,60 @@ export const DailyBoardView = ({
               {/* Report Summary */}
               {selectedReportMember.report ? (
                 <>
-                  <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-                    <div className="text-[11px] font-semibold uppercase text-slate-400 mb-1">
+                  <div className="p-3.5 rounded-xl bg-card border border-border/70">
+                    <div className="text-[11px] font-semibold uppercase text-muted-foreground mb-1">
                       Submitted Summary
                     </div>
-                    <p className="text-xs text-slate-200 leading-relaxed">
+                    <p className="text-xs text-foreground leading-relaxed">
                       {selectedReportMember.report.summary}
                     </p>
                   </div>
 
                   {selectedReportMember.report.blockers && (
-                    <div className="p-3.5 rounded-xl bg-rose-950/30 border border-rose-800/50">
-                      <div className="text-[11px] font-semibold uppercase text-rose-400 flex items-center gap-1.5 mb-1">
+                    <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30">
+                      <div className="text-[11px] font-semibold uppercase text-rose-500 flex items-center gap-1.5 mb-1">
                         <AlertTriangle className="w-3.5 h-3.5" />
                         Reported Site Blocker
                       </div>
-                      <p className="text-xs text-rose-200 leading-relaxed">
+                      <p className="text-xs text-foreground leading-relaxed">
                         {selectedReportMember.report.blockers}
                       </p>
                     </div>
                   )}
                 </>
               ) : (
-                <div className="p-4 rounded-xl bg-amber-950/20 border border-amber-800/40 text-xs text-amber-300">
-                  ⏳ This employee has not submitted their end-of-day check-in yet for today.
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-500 flex items-center gap-2">
+                  <Clock className="w-4 h-4 shrink-0" />
+                  <span>
+                    This employee has not submitted their end-of-day check-in
+                    yet for today.
+                  </span>
                 </div>
               )}
 
               {/* Assigned Tasks Checklist */}
               <div>
-                <div className="text-[11px] font-semibold uppercase text-slate-400 mb-2">
+                <div className="text-[11px] font-semibold uppercase text-muted-foreground mb-2">
                   Today's Tasks ({selectedReportMember.memberTasks.length})
                 </div>
                 <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                   {selectedReportMember.memberTasks.map((t) => (
                     <div
                       key={t.id}
-                      className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-xs flex items-center justify-between"
+                      className="p-2.5 rounded-lg bg-card border border-border/70 text-xs flex items-center justify-between"
                     >
                       <div className="flex-1 min-w-0 pr-2">
-                        <div className="text-slate-200 truncate">{t.text}</div>
+                        <div className="text-foreground truncate">{t.text}</div>
                         {t.project_name && (
-                          <div className="text-[10px] text-slate-500">📌 {t.project_name}</div>
+                          <div className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                            <FolderKanban className="w-3 h-3 text-muted-foreground" />
+                            <span>{t.project_name}</span>
+                          </div>
                         )}
                         {t.hold_reason && (
-                          <div className="text-[10px] text-amber-400 mt-0.5">
-                            ⏸️ Hold reason: {t.hold_reason}
+                          <div className="text-[10px] text-amber-500 mt-0.5 flex items-center gap-1">
+                            <PauseCircle className="w-3 h-3 text-amber-500" />
+                            <span>Hold reason: {t.hold_reason}</span>
                           </div>
                         )}
                       </div>
@@ -504,17 +562,17 @@ export const DailyBoardView = ({
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-semibold shrink-0 ${
                           t.status === "completed"
-                            ? "bg-emerald-950 text-emerald-300 border border-emerald-800"
+                            ? "bg-emerald-500/15 text-emerald-500 border border-emerald-500/30"
                             : t.status === "on_hold"
-                            ? "bg-amber-950 text-amber-300 border border-amber-800"
-                            : "bg-indigo-950 text-indigo-300 border border-indigo-800"
+                              ? "bg-amber-500/15 text-amber-500 border border-amber-500/30"
+                              : "bg-primary/15 text-primary border border-primary/30"
                         }`}
                       >
                         {t.status === "completed"
                           ? "Done"
                           : t.status === "on_hold"
-                          ? "On Hold"
-                          : "In Progress"}
+                            ? "On Hold"
+                            : "In Progress"}
                       </span>
                     </div>
                   ))}

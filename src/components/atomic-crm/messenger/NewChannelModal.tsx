@@ -7,7 +7,9 @@ interface NewChannelModalProps {
   isOpen: boolean;
   onClose: () => void;
   projects: Project[];
-  onCreateChannel: (channel: Omit<Conversation, "id" | "created_at" | "unread_count">) => void;
+  onCreateChannel: (
+    channel: Omit<Conversation, "id" | "created_at" | "unread_count">,
+  ) => void;
 }
 
 export const NewChannelModal = ({
@@ -19,9 +21,15 @@ export const NewChannelModal = ({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState<"channel" | "project">("channel");
-  const [operatingCompany, setOperatingCompany] = useState<"group" | "goldland" | "abbadi" | "casavera">("group");
-  const [selectedProjectId, setSelectedProjectId] = useState<number>(projects[0]?.id ? Number(projects[0].id) : 1);
-  const [postingPolicy, setPostingPolicy] = useState<"everyone" | "managers_only">("everyone");
+  const [operatingCompany, setOperatingCompany] = useState<
+    "group" | "goldland" | "abbadi" | "casavera"
+  >("group");
+  const [selectedProjectId, setSelectedProjectId] = useState<number>(
+    projects[0]?.id ? Number(projects[0].id) : 1,
+  );
+  const [postingPolicy, setPostingPolicy] = useState<
+    "everyone" | "managers_only"
+  >("everyone");
 
   if (!isOpen) return null;
 
@@ -29,9 +37,22 @@ export const NewChannelModal = ({
     e.preventDefault();
     if (!name.trim()) return;
 
-    const selectedProj = type === "project" ? projects.find((p) => Number(p.id) === selectedProjectId) : undefined;
-    const finalName = name.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "-");
-    const tenantId = operatingCompany === "goldland" ? 1 : operatingCompany === "abbadi" ? 2 : operatingCompany === "casavera" ? 3 : 1;
+    const selectedProj =
+      type === "project"
+        ? projects.find((p) => Number(p.id) === selectedProjectId)
+        : undefined;
+    const finalName = name
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9_-]/g, "-");
+    const tenantId =
+      operatingCompany === "goldland"
+        ? 1
+        : operatingCompany === "abbadi"
+          ? 2
+          : operatingCompany === "casavera"
+            ? 3
+            : 1;
 
     onCreateChannel({
       name: finalName,
@@ -72,14 +93,18 @@ export const NewChannelModal = ({
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="font-semibold text-muted-foreground">Conversation Scope</label>
+              <label className="font-semibold text-muted-foreground">
+                Conversation Scope
+              </label>
               <select
                 value={type}
-                onChange={(e) => setType(e.target.value as "channel" | "project")}
+                onChange={(e) =>
+                  setType(e.target.value as "channel" | "project")
+                }
                 className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
               >
-                <option value="channel">📢 Public Departmental Channel</option>
-                <option value="project">🏗️ Project-Specific Site Thread</option>
+                <option value="channel">Public Departmental Channel</option>
+                <option value="project">Project-Specific Site Thread</option>
               </select>
             </div>
 
@@ -112,7 +137,12 @@ export const NewChannelModal = ({
                   setSelectedProjectId(idNum);
                   const p = projects.find((pr) => Number(pr.id) === idNum);
                   if (p) {
-                    setName(`${p.reference_no.toLowerCase()}-${p.name.slice(0, 20).toLowerCase().replace(/[^a-z0-9]/g, "-")}`);
+                    setName(
+                      `${p.reference_no.toLowerCase()}-${p.name
+                        .slice(0, 20)
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]/g, "-")}`,
+                    );
                   }
                 }}
                 className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
@@ -131,7 +161,9 @@ export const NewChannelModal = ({
               Channel Name *
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-2 text-muted-foreground font-mono">#</span>
+              <span className="absolute left-3 top-2 text-muted-foreground font-mono">
+                #
+              </span>
               <input
                 type="text"
                 required
@@ -162,11 +194,15 @@ export const NewChannelModal = ({
             </label>
             <select
               value={postingPolicy}
-              onChange={(e) => setPostingPolicy(e.target.value as "everyone" | "managers_only")}
+              onChange={(e) =>
+                setPostingPolicy(e.target.value as "everyone" | "managers_only")
+              }
               className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option value="everyone">Everyone can post</option>
-              <option value="managers_only">Broadcast only (Directors & Managers)</option>
+              <option value="managers_only">
+                Broadcast only (Directors & Managers)
+              </option>
             </select>
           </div>
 

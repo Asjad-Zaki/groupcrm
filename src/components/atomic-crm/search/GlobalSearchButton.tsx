@@ -64,7 +64,7 @@ const isEditableTarget = (target: EventTarget | null): boolean => {
 const SHORTCUT_LABEL =
   typeof navigator !== "undefined" &&
   /Mac|iPhone|iPad/.test(navigator.userAgent)
-    ? "⌘K"
+    ? "Cmd K"
     : "Ctrl K";
 
 /**

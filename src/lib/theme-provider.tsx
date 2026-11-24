@@ -5,6 +5,7 @@
  */
 
 import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
 
 // Import types from theme.ts instead of redefining them
 import { applyTenantBranding, applyDensity } from "./theme";
@@ -146,7 +147,7 @@ export const CommandPalette = ({
         className="absolute top-4 right-4 hidden sm:block bg-white dark:bg-gray-800 rounded-full p-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
         aria-label="Open command palette (Cmd+K)"
       >
-        ✨
+        <Search className="w-4 h-4 text-muted-foreground" />
       </button>
 
       {open && (

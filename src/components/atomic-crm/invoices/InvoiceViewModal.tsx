@@ -1,4 +1,10 @@
-import { X, MessageCircle, Printer, Building2, CheckCircle2 } from "lucide-react";
+import {
+  X,
+  MessageCircle,
+  Printer,
+  Building2,
+  CheckCircle2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Invoice } from "../types";
@@ -31,13 +37,16 @@ export const InvoiceViewModal = ({
   };
 
   const handleWhatsApp = () => {
-    const cleanPhone = (invoice.client_phone || "+971501234567").replace(/[^0-9]/g, "");
+    const cleanPhone = (invoice.client_phone || "+971501234567").replace(
+      /[^0-9]/g,
+      "",
+    );
     const statusText =
       invoice.status === "paid"
-        ? "✅ *PAID IN FULL*"
+        ? "[PAID IN FULL]"
         : invoice.status === "partially_paid"
-          ? "🟡 *PARTIALLY PAID*"
-          : "⏳ *PAYMENT DUE*";
+          ? "[PARTIALLY PAID]"
+          : "[PAYMENT DUE]";
 
     const message = [
       `*TAX INVOICE NOTIFICATION*`,
@@ -144,7 +153,10 @@ export const InvoiceViewModal = ({
                 <h2 className="text-xl font-bold">{invoice.company_name}</h2>
               </div>
               <p className="text-xs text-muted-foreground mt-1 print:text-gray-600">
-                Tax Registration No (TRN): <span className="font-mono font-bold text-foreground print:text-black">{invoice.trn_number}</span>
+                Tax Registration No (TRN):{" "}
+                <span className="font-mono font-bold text-foreground print:text-black">
+                  {invoice.trn_number}
+                </span>
               </p>
               <p className="text-xs text-muted-foreground print:text-gray-600">
                 Dubai, United Arab Emirates • info@groupcrm.ae
@@ -162,7 +174,10 @@ export const InvoiceViewModal = ({
                 Issue Date: {invoice.issue_date}
               </p>
               <p className="text-xs text-muted-foreground print:text-gray-600">
-                Due Date: <span className="font-semibold text-foreground print:text-black">{invoice.due_date}</span>
+                Due Date:{" "}
+                <span className="font-semibold text-foreground print:text-black">
+                  {invoice.due_date}
+                </span>
               </p>
             </div>
           </div>
@@ -176,9 +191,15 @@ export const InvoiceViewModal = ({
               <p className="font-bold text-sm text-foreground mt-1 print:text-black">
                 {invoice.client_name}
               </p>
-              <p className="text-muted-foreground print:text-gray-600">{invoice.client_company}</p>
-              <p className="text-muted-foreground print:text-gray-600">Mobile: {invoice.client_phone}</p>
-              <p className="text-muted-foreground print:text-gray-600">Email: {invoice.client_email}</p>
+              <p className="text-muted-foreground print:text-gray-600">
+                {invoice.client_company}
+              </p>
+              <p className="text-muted-foreground print:text-gray-600">
+                Mobile: {invoice.client_phone}
+              </p>
+              <p className="text-muted-foreground print:text-gray-600">
+                Email: {invoice.client_email}
+              </p>
             </div>
 
             <div>
@@ -190,7 +211,10 @@ export const InvoiceViewModal = ({
               </p>
               {invoice.quotation_ref && (
                 <p className="text-muted-foreground print:text-gray-600">
-                  Quotation Ref: <span className="font-mono font-semibold">{invoice.quotation_ref}</span>
+                  Quotation Ref:{" "}
+                  <span className="font-mono font-semibold">
+                    {invoice.quotation_ref}
+                  </span>
                 </p>
               )}
               <p className="text-muted-foreground print:text-gray-600">
@@ -217,7 +241,8 @@ export const InvoiceViewModal = ({
                   <td className="p-3 text-foreground print:text-black font-medium">
                     Certified Commercial Milestone Progress Billing
                     <p className="text-[11px] text-muted-foreground print:text-gray-600">
-                      As per agreed contractual stages and engineer inspection sign-off.
+                      As per agreed contractual stages and engineer inspection
+                      sign-off.
                     </p>
                   </td>
                   <td className="p-3 text-right font-mono font-semibold text-foreground print:text-black">
@@ -231,27 +256,39 @@ export const InvoiceViewModal = ({
             <div className="p-4 bg-muted/20 border-t border-border/60 space-y-2 text-xs print:bg-transparent print:border-black/20">
               <div className="flex justify-between text-muted-foreground print:text-gray-600">
                 <span>Gross Milestone Subtotal:</span>
-                <span className="font-mono font-medium">{formatAED(invoice.gross_amount)}</span>
+                <span className="font-mono font-medium">
+                  {formatAED(invoice.gross_amount)}
+                </span>
               </div>
               <div className="flex justify-between text-amber-500 print:text-black">
                 <span>UAE Federal VAT (5%):</span>
-                <span className="font-mono font-medium">+{formatAED(invoice.vat_amount)}</span>
+                <span className="font-mono font-medium">
+                  +{formatAED(invoice.vat_amount)}
+                </span>
               </div>
               <div className="flex justify-between text-blue-400 print:text-black">
                 <span>Less: 10% Defect Liability Retention (DLP Escrow):</span>
-                <span className="font-mono font-medium">-{formatAED(invoice.retention_amount)}</span>
+                <span className="font-mono font-medium">
+                  -{formatAED(invoice.retention_amount)}
+                </span>
               </div>
               <div className="border-t border-border/60 pt-2 flex justify-between text-sm font-bold text-foreground print:text-black">
                 <span>Net Invoice Payable:</span>
-                <span className="font-mono">{formatAED(invoice.net_payable)}</span>
+                <span className="font-mono">
+                  {formatAED(invoice.net_payable)}
+                </span>
               </div>
               <div className="flex justify-between text-emerald-400 print:text-black">
                 <span>Collections Received to Date:</span>
-                <span className="font-mono font-semibold">{formatAED(invoice.amount_paid)}</span>
+                <span className="font-mono font-semibold">
+                  {formatAED(invoice.amount_paid)}
+                </span>
               </div>
               <div className="border-t border-border/80 pt-2 flex justify-between text-base font-black text-foreground print:text-black">
                 <span>Balance Outstanding Due:</span>
-                <span className="font-mono text-primary print:text-black">{formatAED(invoice.balance_due)}</span>
+                <span className="font-mono text-primary print:text-black">
+                  {formatAED(invoice.balance_due)}
+                </span>
               </div>
             </div>
           </div>
@@ -264,11 +301,15 @@ export const InvoiceViewModal = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-muted-foreground print:text-gray-700">
               <div>
                 <span>Bank: </span>
-                <span className="font-semibold text-foreground print:text-black">{invoice.bank_name || "Emirates NBD"}</span>
+                <span className="font-semibold text-foreground print:text-black">
+                  {invoice.bank_name || "Emirates NBD"}
+                </span>
               </div>
               <div>
                 <span>IBAN: </span>
-                <span className="font-mono font-bold text-foreground print:text-black">{invoice.bank_iban || "AE450260001002345678001"}</span>
+                <span className="font-mono font-bold text-foreground print:text-black">
+                  {invoice.bank_iban || "AE450260001002345678001"}
+                </span>
               </div>
             </div>
             {invoice.notes && (

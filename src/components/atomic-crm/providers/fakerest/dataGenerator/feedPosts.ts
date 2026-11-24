@@ -9,7 +9,7 @@ export const generateFeedPosts = (_db: Db): FeedPost[] => {
       author_role: "Managing Director",
       tenant_id: 1,
       type: "announcement",
-      title: "🎉 Q4 2026 Commercial Expansion & UAE Group Record",
+      title: "Q4 2026 Commercial Expansion & UAE Group Record",
       content:
         "Team, proud to announce that across Goldland Contracting, Abbadi Tech, and Casavera Interiors, our active pipeline has crossed AED 15,000,000! Great collaboration between our engineering and interior fitout teams on the Al Barari and Palm Jumeirah luxury projects.",
       likes_count: 14,
@@ -36,7 +36,7 @@ export const generateFeedPosts = (_db: Db): FeedPost[] => {
       author_role: "Operations Director",
       tenant_id: 1,
       type: "appreciation",
-      title: "🏅 GroupCRM Appreciation Badge: Fast Approvals Champion",
+      title: "GroupCRM Appreciation Badge: Fast Approvals Champion",
       content:
         "Huge shoutout to Faseela for securing the Dubai Civil Defense (DCD) Fire Life Safety NOC for Al Falasi Penthouse in record time — 4 days ahead of authority SLA! Outstanding coordination with the authorities.",
       badge: "fast_approvals",
@@ -59,7 +59,8 @@ export const generateFeedPosts = (_db: Db): FeedPost[] => {
       author_role: "Senior MEP Engineer",
       tenant_id: 2,
       type: "milestone",
-      title: "⚡ Milestone Achieved: DEWA Substation Pad & Transformer Energization",
+      title:
+        "Milestone Achieved: DEWA Substation Pad & Transformer Energization",
       content:
         "Milestone completed on the Emirates Hills Project (AT-PRJ-2026-002)! DEWA site inspection passed with zero non-conformances. Ready to pull the 4x300 sq mm XLPE heavy power feeders on Sunday.",
       likes_count: 12,
@@ -80,7 +81,7 @@ export const generateFeedPosts = (_db: Db): FeedPost[] => {
       author_role: "Interior Design Director",
       tenant_id: 3,
       type: "deal",
-      title: "💼 Contract Signed: AED 450,000 Downtown Luxury Penthouse",
+      title: "Contract Signed: AED 450,000 Downtown Luxury Penthouse",
       content:
         "Casavera Interiors has officially secured the contract for Sarah Kensington's luxury penthouse! Complete bespoke Italian joinery, ambient lighting control, and marble floor accents.",
       badge: "deal_closer",

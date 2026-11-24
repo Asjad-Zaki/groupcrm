@@ -15,6 +15,11 @@ import {
   User,
   ArrowRight,
   ArrowLeft,
+  ThumbsUp,
+  Heart,
+  Check,
+  Star,
+  X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,11 +38,14 @@ export const MessengerPage = () => {
   const [selectedConvId, setSelectedConvId] = useState<number>(initialConvId);
   const [showMobileChat, setShowMobileChat] = useState<boolean>(true);
 
-  const [companyFilter, setCompanyFilter] = useState<"all" | "goldland" | "abbadi" | "casavera">("all");
+  const [companyFilter, setCompanyFilter] = useState<
+    "all" | "goldland" | "abbadi" | "casavera"
+  >("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [inputText, setInputText] = useState("");
   const [isNewChannelModalOpen, setIsNewChannelModalOpen] = useState(false);
-  const [isAttachProjectModalOpen, setIsAttachProjectModalOpen] = useState(false);
+  const [isAttachProjectModalOpen, setIsAttachProjectModalOpen] =
+    useState(false);
   const [stagedAttachment, setStagedAttachment] = useState<{
     file_name: string;
     file_type: string;
@@ -47,15 +55,17 @@ export const MessengerPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Fetch conversations, messages, and projects
-  const { data: serverConversations = [], refetch: refetchConversations } = useGetList<Conversation>("conversations", {
-    pagination: { page: 1, perPage: 100 },
-    sort: { field: "id", order: "ASC" },
-  });
+  const { data: serverConversations = [], refetch: refetchConversations } =
+    useGetList<Conversation>("conversations", {
+      pagination: { page: 1, perPage: 100 },
+      sort: { field: "id", order: "ASC" },
+    });
 
-  const { data: serverMessages = [], refetch: refetchMessages } = useGetList<Message>("messages", {
-    pagination: { page: 1, perPage: 300 },
-    sort: { field: "created_at", order: "ASC" },
-  });
+  const { data: serverMessages = [], refetch: refetchMessages } =
+    useGetList<Message>("messages", {
+      pagination: { page: 1, perPage: 300 },
+      sort: { field: "created_at", order: "ASC" },
+    });
 
   const { data: projects = [] } = useGetList<Project>("projects", {
     pagination: { page: 1, perPage: 50 },
@@ -63,11 +73,13 @@ export const MessengerPage = () => {
   });
 
   // Local state for optimistic updates
-  const [localConversations, setLocalConversations] = useState<Conversation[]>(serverConversations);
+  const [localConversations, setLocalConversations] =
+    useState<Conversation[]>(serverConversations);
   const [localMessages, setLocalMessages] = useState<Message[]>(serverMessages);
 
   useEffect(() => {
-    if (serverConversations.length > 0) setLocalConversations(serverConversations);
+    if (serverConversations.length > 0)
+      setLocalConversations(serverConversations);
   }, [serverConversations]);
 
   useEffect(() => {
@@ -93,16 +105,21 @@ export const MessengerPage = () => {
   }, [selectedConvId, localMessages.length]);
 
   const activeConversation =
-    localConversations.find((c) => c.id === selectedConvId) || localConversations[0];
+    localConversations.find((c) => c.id === selectedConvId) ||
+    localConversations[0];
 
   const currentMessages = localMessages.filter(
-    (m) => m.conversation_id === selectedConvId
+    (m) => m.conversation_id === selectedConvId,
   );
 
   // Filter conversations based on entity and search
   const filteredConversations = localConversations.filter((c) => {
     if (companyFilter !== "all") {
-      if (c.operating_company && c.operating_company !== "group" && c.operating_company !== companyFilter) {
+      if (
+        c.operating_company &&
+        c.operating_company !== "group" &&
+        c.operating_company !== companyFilter
+      ) {
         return false;
       }
     }
@@ -115,13 +132,18 @@ export const MessengerPage = () => {
     return true;
   });
 
-  const channelsList = filteredConversations.filter((c) => c.type === "channel");
-  const projectChatsList = filteredConversations.filter((c) => c.type === "project");
+  const channelsList = filteredConversations.filter(
+    (c) => c.type === "channel",
+  );
+  const projectChatsList = filteredConversations.filter(
+    (c) => c.type === "project",
+  );
   const dmChatsList = filteredConversations.filter((c) => c.type === "dm");
 
   // Current logged in persona (default to Navas)
   const currentUserId = 0;
-  const currentPersona = TEAM_MEMBERS.find((m) => m.id === currentUserId) || TEAM_MEMBERS[0];
+  const currentPersona =
+    TEAM_MEMBERS.find((m) => m.id === currentUserId) || TEAM_MEMBERS[0];
 
   const handleSendMessage = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -134,7 +156,9 @@ export const MessengerPage = () => {
 
     if (matchTag) {
       linkedProjRef = matchTag[0].toUpperCase();
-      const found = projects.find((p) => p.reference_no.toUpperCase() === linkedProjRef);
+      const found = projects.find(
+        (p) => p.reference_no.toUpperCase() === linkedProjRef,
+      );
       if (found) linkedProjId = Number(found.id);
     } else if (activeConversation?.project_id) {
       linkedProjId = Number(activeConversation.project_id);
@@ -177,14 +201,16 @@ export const MessengerPage = () => {
           onSuccess: () => {
             refetchMessages();
           },
-        }
+        },
       );
     } catch {
       // Local state already updated
     }
   };
 
-  const handleCreateChannel = async (newChan: Omit<Conversation, "id" | "created_at" | "unread_count">) => {
+  const handleCreateChannel = async (
+    newChan: Omit<Conversation, "id" | "created_at" | "unread_count">,
+  ) => {
     const created: Conversation = {
       ...newChan,
       id: Date.now(),
@@ -206,7 +232,7 @@ export const MessengerPage = () => {
             notify("Channel created successfully", { type: "success" });
             refetchConversations();
           },
-        }
+        },
       );
     } catch {
       notify("Channel created locally", { type: "info" });
@@ -222,7 +248,9 @@ export const MessengerPage = () => {
 
         let updatedReactions;
         if (foundReaction) {
-          const userHasReacted = foundReaction.users.includes(currentPersona.id);
+          const userHasReacted = foundReaction.users.includes(
+            currentPersona.id,
+          );
           if (userHasReacted) {
             updatedReactions = existingReactions
               .map((r) =>
@@ -232,7 +260,7 @@ export const MessengerPage = () => {
                       count: r.count - 1,
                       users: r.users.filter((u) => u !== currentPersona.id),
                     }
-                  : r
+                  : r,
               )
               .filter((r) => r.count > 0);
           } else {
@@ -243,7 +271,7 @@ export const MessengerPage = () => {
                     count: r.count + 1,
                     users: [...r.users, currentPersona.id],
                   }
-                : r
+                : r,
             );
           }
         } else {
@@ -254,20 +282,48 @@ export const MessengerPage = () => {
         }
 
         return { ...msg, reactions: updatedReactions };
-      })
+      }),
     );
   };
 
   const getCompanyBadge = (comp?: string) => {
     switch (comp) {
       case "goldland":
-        return <Badge variant="outline" className="text-[10px] bg-amber-500/10 text-amber-500 border-amber-500/20">GL · Goldland</Badge>;
+        return (
+          <Badge
+            variant="outline"
+            className="text-[10px] bg-amber-500/10 text-amber-500 border-amber-500/20"
+          >
+            GL · Goldland
+          </Badge>
+        );
       case "abbadi":
-        return <Badge variant="outline" className="text-[10px] bg-blue-500/10 text-blue-400 border-blue-500/20">AT · Abbadi Tech</Badge>;
+        return (
+          <Badge
+            variant="outline"
+            className="text-[10px] bg-blue-500/10 text-blue-400 border-blue-500/20"
+          >
+            AT · Abbadi Tech
+          </Badge>
+        );
       case "casavera":
-        return <Badge variant="outline" className="text-[10px] bg-emerald-500/10 text-emerald-500 border-emerald-500/20">CV · Casavera</Badge>;
+        return (
+          <Badge
+            variant="outline"
+            className="text-[10px] bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+          >
+            CV · Casavera
+          </Badge>
+        );
       default:
-        return <Badge variant="outline" className="text-[10px] bg-slate-500/10 text-slate-400 border-slate-500/20">Group</Badge>;
+        return (
+          <Badge
+            variant="outline"
+            className="text-[10px] bg-slate-500/10 text-slate-400 border-slate-500/20"
+          >
+            Group
+          </Badge>
+        );
     }
   };
 
@@ -281,27 +337,36 @@ export const MessengerPage = () => {
             Group Team Messenger & Project Rooms
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Internal departmental coordination, site issue channels, and 1-on-1 team messaging.
+            Internal departmental coordination, site issue channels, and 1-on-1
+            team messaging.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           {/* Company filter */}
           <div className="flex items-center gap-1 p-1 bg-muted/40 rounded-xl border border-border text-xs">
-            {(["all", "goldland", "abbadi", "casavera"] as const).map((comp) => (
-              <button
-                key={comp}
-                type="button"
-                onClick={() => setCompanyFilter(comp)}
-                className={`px-3 py-1 font-semibold rounded-lg capitalize transition-colors ${
-                  companyFilter === comp
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {comp === "all" ? "All Channels" : comp === "goldland" ? "Goldland" : comp === "abbadi" ? "Abbadi" : "Casavera"}
-              </button>
-            ))}
+            {(["all", "goldland", "abbadi", "casavera"] as const).map(
+              (comp) => (
+                <button
+                  key={comp}
+                  type="button"
+                  onClick={() => setCompanyFilter(comp)}
+                  className={`px-3 py-1 font-semibold rounded-lg capitalize transition-colors ${
+                    companyFilter === comp
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {comp === "all"
+                    ? "All Channels"
+                    : comp === "goldland"
+                      ? "Goldland"
+                      : comp === "abbadi"
+                        ? "Abbadi"
+                        : "Casavera"}
+                </button>
+              ),
+            )}
           </div>
 
           <Button
@@ -318,7 +383,9 @@ export const MessengerPage = () => {
       {/* Main Two-Column Messenger Body */}
       <div className="flex-1 flex flex-col md:flex-row gap-4 pt-3 min-h-0 w-full overflow-hidden">
         {/* Left Sidebar: Channels & DMs */}
-        <div className={`${showMobileChat ? "hidden md:flex" : "flex"} w-full md:w-72 lg:w-80 shrink-0 flex-col rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm overflow-hidden min-h-0 shadow-sm`}>
+        <div
+          className={`${showMobileChat ? "hidden md:flex" : "flex"} w-full md:w-72 lg:w-80 shrink-0 flex-col rounded-2xl border border-border/70 bg-card/60 backdrop-blur-sm overflow-hidden min-h-0 shadow-sm`}
+        >
           {/* Search channel */}
           <div className="p-3 border-b border-border/60">
             <div className="relative">
@@ -338,7 +405,7 @@ export const MessengerPage = () => {
             {/* 1. Departmental Channels */}
             <div className="space-y-1">
               <span className="px-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 flex items-center justify-between">
-                <span>📢 Channels</span>
+                <span>Channels</span>
                 <span>{channelsList.length}</span>
               </span>
               <div className="space-y-0.5 pt-1">
@@ -375,7 +442,7 @@ export const MessengerPage = () => {
             {/* 2. Project Site Threads */}
             <div className="space-y-1">
               <span className="px-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 flex items-center justify-between">
-                <span>🏗️ Project Rooms</span>
+                <span>Project Rooms</span>
                 <span>{projectChatsList.length}</span>
               </span>
               <div className="space-y-0.5 pt-1">
@@ -412,7 +479,7 @@ export const MessengerPage = () => {
             {/* 3. Direct Messages */}
             <div className="space-y-1">
               <span className="px-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 flex items-center justify-between">
-                <span>💬 Direct Messages</span>
+                <span>Direct Messages</span>
                 <span>{dmChatsList.length}</span>
               </span>
               <div className="space-y-0.5 pt-1">
@@ -449,7 +516,9 @@ export const MessengerPage = () => {
         </div>
 
         {/* Right Active Chat Pane */}
-        <div className={`${showMobileChat ? "flex" : "hidden md:flex"} flex-1 min-w-0 flex-col rounded-2xl border border-border/70 bg-card overflow-hidden min-h-0 shadow-sm`}>
+        <div
+          className={`${showMobileChat ? "flex" : "hidden md:flex"} flex-1 min-w-0 flex-col rounded-2xl border border-border/70 bg-card overflow-hidden min-h-0 shadow-sm`}
+        >
           {/* Active Chat Header */}
           <div className="p-4 border-b border-border/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-muted/20">
             <div className="flex items-center gap-3">
@@ -481,7 +550,8 @@ export const MessengerPage = () => {
                   {getCompanyBadge(activeConversation?.operating_company)}
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                  {activeConversation?.description || "Active team discussion thread."}
+                  {activeConversation?.description ||
+                    "Active team discussion thread."}
                 </p>
               </div>
             </div>
@@ -506,9 +576,12 @@ export const MessengerPage = () => {
             {currentMessages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-8 text-muted-foreground space-y-2">
                 <Hash className="w-10 h-10 stroke-1 opacity-50" />
-                <p className="font-semibold text-sm">Welcome to #{activeConversation?.name}</p>
+                <p className="font-semibold text-sm">
+                  Welcome to #{activeConversation?.name}
+                </p>
                 <p className="text-xs max-w-sm">
-                  This is the start of the #{activeConversation?.name} conversation. Send the first update!
+                  This is the start of the #{activeConversation?.name}{" "}
+                  conversation. Send the first update!
                 </p>
               </div>
             ) : (
@@ -524,11 +597,14 @@ export const MessengerPage = () => {
                     {showDateHeader && (
                       <div className="flex items-center justify-center my-3">
                         <span className="px-3 py-1 rounded-full text-[10px] font-semibold bg-muted/60 text-muted-foreground border border-border/50">
-                          {new Date(msg.created_at).toLocaleDateString("en-AE", {
-                            weekday: "short",
-                            month: "short",
-                            day: "numeric",
-                          })}
+                          {new Date(msg.created_at).toLocaleDateString(
+                            "en-AE",
+                            {
+                              weekday: "short",
+                              month: "short",
+                              day: "numeric",
+                            },
+                          )}
                         </span>
                       </div>
                     )}
@@ -549,10 +625,13 @@ export const MessengerPage = () => {
                             </span>
                           )}
                           <span className="text-[10px] text-muted-foreground/70 font-mono ml-auto">
-                            {new Date(msg.created_at).toLocaleTimeString("en-AE", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                            {new Date(msg.created_at).toLocaleTimeString(
+                              "en-AE",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              },
+                            )}
                           </span>
                         </div>
 
@@ -571,7 +650,8 @@ export const MessengerPage = () => {
                                 to={`/projects/${msg.project_id}/show`}
                                 className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-semibold"
                               >
-                                Jump to Project Hub <ArrowRight className="w-3 h-3" />
+                                Jump to Project Hub{" "}
+                                <ArrowRight className="w-3 h-3" />
                               </Link>
                             </div>
                           )}
@@ -602,7 +682,11 @@ export const MessengerPage = () => {
                                   size="sm"
                                   variant="ghost"
                                   className="h-7 w-7 p-0 shrink-0"
-                                  onClick={() => notify(`Downloading ${att.file_name}...`, { type: "info" })}
+                                  onClick={() =>
+                                    notify(`Downloading ${att.file_name}...`, {
+                                      type: "info",
+                                    })
+                                  }
                                 >
                                   <Download className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground" />
                                 </Button>
@@ -613,35 +697,54 @@ export const MessengerPage = () => {
 
                         {/* Reactions bar */}
                         <div className="flex items-center gap-1 pt-1">
-                          {msg.reactions && msg.reactions.map((react, i) => {
-                            const userHasReacted = react.users.includes(currentPersona.id);
-                            return (
-                              <button
-                                key={i}
-                                type="button"
-                                onClick={() => toggleReaction(msg.id, react.emoji)}
-                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] border transition-colors ${
-                                  userHasReacted
-                                    ? "bg-primary/15 border-primary text-primary font-bold"
-                                    : "bg-muted/40 border-border/60 text-muted-foreground hover:bg-muted"
-                                }`}
-                              >
-                                <span>{react.emoji}</span>
-                                <span>{react.count}</span>
-                              </button>
-                            );
-                          })}
+                          {msg.reactions &&
+                            msg.reactions.map((react, i) => {
+                              const userHasReacted = react.users.includes(
+                                currentPersona.id,
+                              );
+                              return (
+                                <button
+                                  key={i}
+                                  type="button"
+                                  onClick={() =>
+                                    toggleReaction(msg.id, react.emoji)
+                                  }
+                                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] border transition-colors ${
+                                    userHasReacted
+                                      ? "bg-primary/15 border-primary text-primary font-bold"
+                                      : "bg-muted/40 border-border/60 text-muted-foreground hover:bg-muted"
+                                  }`}
+                                >
+                                  {react.emoji === "like" ? (
+                                    <ThumbsUp className="w-3 h-3 text-primary" />
+                                  ) : react.emoji === "love" ? (
+                                    <Heart className="w-3 h-3 text-rose-500" />
+                                  ) : react.emoji === "check" ? (
+                                    <Check className="w-3 h-3 text-emerald-500" />
+                                  ) : (
+                                    <Star className="w-3 h-3 text-amber-500" />
+                                  )}
+                                  <span>{react.count}</span>
+                                </button>
+                              );
+                            })}
 
                           {/* Quick Add Reaction Popover triggers */}
                           <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5 ml-1">
-                            {["👍", "❤️", "🚀", "✅"].map((em) => (
+                            {[
+                              { key: "like", icon: ThumbsUp, label: "Like" },
+                              { key: "check", icon: Check, label: "Check" },
+                              { key: "star", icon: Star, label: "Star" },
+                              { key: "love", icon: Heart, label: "Love" },
+                            ].map((item) => (
                               <button
-                                key={em}
+                                key={item.key}
                                 type="button"
-                                onClick={() => toggleReaction(msg.id, em)}
-                                className="p-1 rounded hover:bg-muted text-xs transition-colors"
+                                title={item.label}
+                                onClick={() => toggleReaction(msg.id, item.key)}
+                                className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                               >
-                                {em}
+                                <item.icon className="w-3 h-3" />
                               </button>
                             ))}
                           </div>
@@ -661,14 +764,15 @@ export const MessengerPage = () => {
               <div className="flex items-center justify-between p-2 rounded-xl bg-primary/10 border border-primary/30 text-xs">
                 <span className="flex items-center gap-1.5 font-medium text-foreground">
                   <FileText className="w-3.5 h-3.5 text-primary" />
-                  Attachment: <strong>{stagedAttachment.file_name}</strong> ({stagedAttachment.file_size})
+                  Attachment: <strong>{stagedAttachment.file_name}</strong> (
+                  {stagedAttachment.file_size})
                 </span>
                 <button
                   type="button"
                   onClick={() => setStagedAttachment(null)}
                   className="text-muted-foreground hover:text-foreground p-0.5"
                 >
-                  ✕
+                  <X className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
@@ -725,7 +829,9 @@ export const MessengerPage = () => {
                         file_type: "application/pdf",
                         file_size: "1.8 MB",
                       });
-                      notify("Attached Inspection_Remedy_Notice_Rev1.pdf", { type: "info" });
+                      notify("Attached Inspection_Remedy_Notice_Rev1.pdf", {
+                        type: "info",
+                      });
                     }}
                     className="h-7 text-xs flex items-center gap-1 text-muted-foreground hover:text-foreground"
                   >
@@ -735,7 +841,10 @@ export const MessengerPage = () => {
                 </div>
 
                 <span className="text-[11px] text-muted-foreground">
-                  Posting as <strong>{currentPersona.first_name} {currentPersona.last_name}</strong>
+                  Posting as{" "}
+                  <strong>
+                    {currentPersona.first_name} {currentPersona.last_name}
+                  </strong>
                 </span>
               </div>
             </form>
@@ -757,7 +866,9 @@ export const MessengerPage = () => {
         onClose={() => setIsAttachProjectModalOpen(false)}
         projects={projects}
         onSelectProject={(proj) => {
-          setInputText((prev) => (prev ? `${prev} #${proj.reference_no}` : `#${proj.reference_no} `));
+          setInputText((prev) =>
+            prev ? `${prev} #${proj.reference_no}` : `#${proj.reference_no} `,
+          );
         }}
       />
     </div>

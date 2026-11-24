@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useTranslate } from "ra-core";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { useTenantContext } from "@/hooks/useTenant";
-import { Clock, Phone } from "lucide-react";
+import { Clock, Phone, AlertTriangle } from "lucide-react";
 
 // Safe client placeholder for client-side evaluation
 const supabaseAdmin: any = null;
@@ -30,7 +36,8 @@ export const LeadShow = () => {
         // Fetch lead with related data
         const { data, error } = await supabaseAdmin
           .from("leads")
-          .select(`
+          .select(
+            `
             *,
             sales:tenant_memberships!inner (role_id),
             contacts (
@@ -45,7 +52,8 @@ export const LeadShow = () => {
               *,
               sales:tenant_memberships!inner (role_id)
             )
-          `)
+          `,
+          )
           .eq("id", leadId)
           .eq("tenant_id", activeTenantId)
           .single();
@@ -68,7 +76,9 @@ export const LeadShow = () => {
             priority: data.priority || "normal",
             risk_flag: data.risk_flag,
             next_followup_at: data.next_followup_at || undefined,
-            estimated_value: data.estimated_value ? Number(data.estimated_value) : undefined,
+            estimated_value: data.estimated_value
+              ? Number(data.estimated_value)
+              : undefined,
             lost_reason: data.lost_reason || undefined,
             junk_reason: data.junk_reason || undefined,
             normalized_phone: data.normalized_phone || undefined,
@@ -78,15 +88,18 @@ export const LeadShow = () => {
             created_at: data.created_at?.toString() || undefined,
             updated_at: data.updated_at?.toString() || undefined,
             // Related data
-            contact: data.contacts ? {
-              id: data.contacts.id?.toString() || undefined,
-              first_name: data.contacts.first_name || "",
-              last_name: data.contacts.last_name || "",
-              email: data.contacts.email || "",
-              phone: data.contacts.phone || "",
-              title: data.contacts.title || undefined,
-              organization_id: data.contacts.organization_id?.toString() || undefined,
-            } : undefined,
+            contact: data.contacts
+              ? {
+                  id: data.contacts.id?.toString() || undefined,
+                  first_name: data.contacts.first_name || "",
+                  last_name: data.contacts.last_name || "",
+                  email: data.contacts.email || "",
+                  phone: data.contacts.phone || "",
+                  title: data.contacts.title || undefined,
+                  organization_id:
+                    data.contacts.organization_id?.toString() || undefined,
+                }
+              : undefined,
             stageHistory: data.lead_stage_history || [],
           });
         }
@@ -98,7 +111,10 @@ export const LeadShow = () => {
             ?.select("*")
             ?.eq("lead_id", leadId)
             ?.eq("tenant_id", activeTenantId)
-            ?.order("created_at", { ascending: false })) || { data: [], error: null };
+            ?.order("created_at", { ascending: false })) || {
+            data: [],
+            error: null,
+          };
 
           if (!msgError && mounted) {
             const { data: notes, error: notesError } = (await supabaseAdmin
@@ -106,11 +122,14 @@ export const LeadShow = () => {
               ?.select("*")
               ?.eq("contact_id", data.contact_id)
               ?.eq("tenant_id", activeTenantId)
-              ?.order("created_at", { ascending: false })) || { data: [], error: null };
+              ?.order("created_at", { ascending: false })) || {
+              data: [],
+              error: null,
+            };
 
             if (!notesError && mounted) {
               const events: any[] = [];
-              
+
               // Add messages to timeline
               if (messages) {
                 messages.forEach((m: any) => {
@@ -141,9 +160,13 @@ export const LeadShow = () => {
                 });
               }
 
-              setTimelineEvents(events.sort((a: any, b: any) => 
-                new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-              ));
+              setTimelineEvents(
+                events.sort(
+                  (a: any, b: any) =>
+                    new Date(a.created_at).getTime() -
+                    new Date(b.created_at).getTime(),
+                ),
+              );
             }
           }
         }
@@ -191,11 +214,17 @@ export const LeadShow = () => {
         <CardHeader>
           <CardTitle>
             {lead.stage ? (
-              <span className={`inline-flex items-center gap-2 px-2 py-1 rounded text-xs font-medium ${
-                lead.priority === "urgent" ? "bg-red-100 text-red-800" :
-                lead.priority === "high" ? "bg-orange-100 text-orange-800" :
-                lead.priority === "normal" ? "bg-gray-100 text-gray-800" : ""
-              }`}>
+              <span
+                className={`inline-flex items-center gap-2 px-2 py-1 rounded text-xs font-medium ${
+                  lead.priority === "urgent"
+                    ? "bg-red-100 text-red-800"
+                    : lead.priority === "high"
+                      ? "bg-orange-100 text-orange-800"
+                      : lead.priority === "normal"
+                        ? "bg-gray-100 text-gray-800"
+                        : ""
+                }`}
+              >
                 {stageNames[lead.stage] || lead.stage}
               </span>
             ) : (
@@ -215,11 +244,15 @@ export const LeadShow = () => {
                 {lead.owner_id && (
                   <div className="p-3 rounded-md border bg-muted/50">
                     <div className="font-medium">{lead.owner_id}</div>
-                    <div className="text-xs text-muted-foreground">{translate("crm.general.role")}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {translate("crm.general.role")}
+                    </div>
                   </div>
                 )}
                 {!lead.owner_id && (
-                  <p className="text-sm text-muted-foreground">{translate("crm.lead.no_owner")}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {translate("crm.lead.no_owner")}
+                  </p>
                 )}
               </div>
 
@@ -263,7 +296,9 @@ export const LeadShow = () => {
               )}
 
               {!lead.estimated_value && (
-                <p className="text-sm text-muted-foreground">{translate("crm.lead.no_estimated_value")}</p>
+                <p className="text-sm text-muted-foreground">
+                  {translate("crm.lead.no_estimated_value")}
+                </p>
               )}
             </div>
 
@@ -277,7 +312,10 @@ export const LeadShow = () => {
                 <div className="h-2 rounded-full bg-muted/50 overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-colors ${lead.priority === "urgent" ? "bg-red-500" : lead.priority === "high" ? "bg-orange-500" : lead.priority === "normal" ? "bg-gray-500" : "bg-green-500"}`}
-                    style={{ width: lead.stage === "WON_CONVERTED" ? "100%" : "percentage" }}
+                    style={{
+                      width:
+                        lead.stage === "WON_CONVERTED" ? "100%" : "percentage",
+                    }}
                   ></div>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -291,12 +329,20 @@ export const LeadShow = () => {
                   <label className="block text-sm font-medium text-muted-foreground mb-1">
                     {translate("crm.lead.next_followup")}
                   </label>
-                  <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${
-                    new Date(lead.next_followup_at) < new Date() ? "border-red-500" : "border-green-500"
-                  }`}>
+                  <div
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${
+                      new Date(lead.next_followup_at) < new Date()
+                        ? "border-red-500"
+                        : "border-green-500"
+                    }`}
+                  >
                     <Clock className="h-3.5 w-3.5" />
                     <span>
-                      {new Date(lead.next_followup_at).toLocaleDateString()} {new Date(lead.next_followup_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                      {new Date(lead.next_followup_at).toLocaleDateString()}{" "}
+                      {new Date(lead.next_followup_at).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
                   </div>
                 </div>
@@ -305,8 +351,13 @@ export const LeadShow = () => {
               {/* Risk Flag */}
               {lead.risk_flag && (
                 <div className="mb-4 p-3 rounded-md bg-red-50 text-red-800">
-                  <div className="font-medium">⚠️ {translate("crm.lead.high_risk")}</div>
-                  <p className="text-sm mt-1">{lead.risk_flag.mitigation || "Risk mitigation in progress"}</p>
+                  <div className="font-medium flex items-center gap-1.5">
+                    <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+                    <span>{translate("crm.lead.high_risk")}</span>
+                  </div>
+                  <p className="text-sm mt-1">
+                    {lead.risk_flag.mitigation || "Risk mitigation in progress"}
+                  </p>
                 </div>
               )}
 
@@ -319,18 +370,26 @@ export const LeadShow = () => {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <Phone className="h-4 w-4 text-primary" />
-                      <a href={`tel:${lead.contact.phone}`} className="font-medium text-primary hover:underline">
+                      <a
+                        href={`tel:${lead.contact.phone}`}
+                        className="font-medium text-primary hover:underline"
+                      >
                         {lead.contact.phone || "—"}
                       </a>
                     </div>
                     {lead.contact.email && (
-                      <a href={`mailto:${lead.contact.email}`} className="font-medium text-primary hover:underline">
+                      <a
+                        href={`mailto:${lead.contact.email}`}
+                        className="font-medium text-primary hover:underline"
+                      >
                         {lead.contact.email}
                       </a>
                     )}
                     {(lead.contact.first_name || lead.contact.last_name) && (
                       <div className="text-sm">
-                        <span>{`${lead.contact.first_name || ""} ${lead.contact.last_name || ""}`.trim()}</span>
+                        <span>
+                          {`${lead.contact.first_name || ""} ${lead.contact.last_name || ""}`.trim()}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -341,16 +400,19 @@ export const LeadShow = () => {
               {lead.stageHistory && lead.stageHistory.length > 0 && (
                 <div className="mb-4 p-3 rounded-md bg-muted/50">
                   <div className="text-xs font-medium text-muted-foreground mb-2">
-                    {translate("crm.lead.stage_history")} ({lead.stageHistory.length})
+                    {translate("crm.lead.stage_history")} (
+                    {lead.stageHistory.length})
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {lead.stageHistory.slice(0, 5).map((h: any) => (
                       <span
                         key={h.id}
                         className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs ${
-                          h.from_stage === "WON_CONVERTED" ? "bg-green-100 text-green-800" :
-                          h.to_stage === "WON_CONVERTED" ? "bg-green-100 text-green-800" :
-                          "text-muted-foreground"
+                          h.from_stage === "WON_CONVERTED"
+                            ? "bg-green-100 text-green-800"
+                            : h.to_stage === "WON_CONVERTED"
+                              ? "bg-green-100 text-green-800"
+                              : "text-muted-foreground"
                         }`}
                       >
                         {h.from_stage} → {h.to_stage}
@@ -358,7 +420,9 @@ export const LeadShow = () => {
                     ))}
                   </div>
                   {lead.stageHistory.length > 5 && (
-                    <span className="text-xs text-muted-foreground">+{lead.stageHistory.length - 5} more</span>
+                    <span className="text-xs text-muted-foreground">
+                      +{lead.stageHistory.length - 5} more
+                    </span>
                   )}
                 </div>
               )}
@@ -366,13 +430,21 @@ export const LeadShow = () => {
               {/* Action buttons */}
               <div className="flex gap-2">
                 <button
-                  onClick={() => window.dispatchEvent(new CustomEvent("editLead", { detail: { lead } }))}
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("editLead", { detail: { lead } }),
+                    )
+                  }
                   className="flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors hover:bg-primary/10 text-primary"
                 >
                   {translate("crm.lead.edit")}
                 </button>
                 <button
-                  onClick={() => window.dispatchEvent(new CustomEvent("convertLead", { detail: { lead } }))}
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("convertLead", { detail: { lead } }),
+                    )
+                  }
                   className="flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors bg-green-600 text-white"
                 >
                   {translate("crm.lead.convert_to_project")}

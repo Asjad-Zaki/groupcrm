@@ -44,7 +44,8 @@ const EMPLOYEES_DATA: EmployeeScore[] = [
     family: "engineering",
     company: "Goldland",
     companyCode: "GL",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=128&h=128&fit=crop&crop=faces",
+    avatar:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=128&h=128&fit=crop&crop=faces",
     quality: 34.0,
     ownership: 24.5,
     collaboration: 14.0,
@@ -62,7 +63,8 @@ const EMPLOYEES_DATA: EmployeeScore[] = [
     family: "engineering",
     company: "Abbadi Tech",
     companyCode: "AT",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=128&h=128&fit=crop&crop=faces",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=128&h=128&fit=crop&crop=faces",
     quality: 32.5,
     ownership: 24.0,
     collaboration: 14.5,
@@ -77,7 +79,8 @@ const EMPLOYEES_DATA: EmployeeScore[] = [
     family: "operations",
     company: "Goldland",
     companyCode: "GL",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=128&h=128&fit=crop&crop=faces",
+    avatar:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=128&h=128&fit=crop&crop=faces",
     quality: 33.0,
     ownership: 23.5,
     collaboration: 14.0,
@@ -92,7 +95,8 @@ const EMPLOYEES_DATA: EmployeeScore[] = [
     family: "operations",
     company: "Casavera",
     companyCode: "CV",
-    avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=128&h=128&fit=crop&crop=faces",
+    avatar:
+      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=128&h=128&fit=crop&crop=faces",
     quality: 31.5,
     ownership: 24.0,
     collaboration: 13.5,
@@ -107,7 +111,8 @@ const EMPLOYEES_DATA: EmployeeScore[] = [
     family: "sales",
     company: "Goldland",
     companyCode: "GL",
-    avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=128&h=128&fit=crop&crop=faces",
+    avatar:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=128&h=128&fit=crop&crop=faces",
     quality: 30.0,
     ownership: 23.0,
     collaboration: 13.0,
@@ -122,7 +127,8 @@ const EMPLOYEES_DATA: EmployeeScore[] = [
     family: "sales",
     company: "Group",
     companyCode: "GP",
-    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=128&h=128&fit=crop&crop=faces",
+    avatar:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=128&h=128&fit=crop&crop=faces",
     quality: 30.5,
     ownership: 22.0,
     collaboration: 14.0,
@@ -141,9 +147,24 @@ export const PerformancePage = () => {
   const filteredEmployees = EMPLOYEES_DATA.filter((e) => {
     // Filter by company
     if (!isGroup) {
-      if (activeTenantId === "goldland" && e.companyCode !== "GL" && e.companyCode !== "GP") return false;
-      if (activeTenantId === "abbadi" && e.companyCode !== "AT" && e.companyCode !== "GP") return false;
-      if (activeTenantId === "casavera" && e.companyCode !== "CV" && e.companyCode !== "GP") return false;
+      if (
+        activeTenantId === "goldland" &&
+        e.companyCode !== "GL" &&
+        e.companyCode !== "GP"
+      )
+        return false;
+      if (
+        activeTenantId === "abbadi" &&
+        e.companyCode !== "AT" &&
+        e.companyCode !== "GP"
+      )
+        return false;
+      if (
+        activeTenantId === "casavera" &&
+        e.companyCode !== "CV" &&
+        e.companyCode !== "GP"
+      )
+        return false;
     }
     // Filter by role family
     if (selectedFamily !== "all" && e.family !== selectedFamily) return false;
@@ -154,9 +175,12 @@ export const PerformancePage = () => {
     <div className="w-full space-y-6 pb-12">
       {/* Title */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Performance & Recognition</h1>
+        <h1 className="text-2xl font-bold tracking-tight">
+          Performance & Recognition
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Recognizing verified outcomes, milestone execution, and reliable contribution across Goldland, Abbadi Tech & Casavera.
+          Recognizing verified outcomes, milestone execution, and reliable
+          contribution across Goldland, Abbadi Tech & Casavera.
         </p>
       </div>
 
@@ -177,8 +201,9 @@ export const PerformancePage = () => {
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <Badge className="bg-amber-500 text-slate-950 hover:bg-amber-400 font-bold text-[10px]">
-                    ★ EMPLOYEE OF THE MONTH · NOVEMBER 2026
+                  <Badge className="bg-amber-500 text-slate-950 hover:bg-amber-400 font-bold text-[10px] flex items-center gap-1">
+                    <Trophy className="h-3 w-3" />
+                    EMPLOYEE OF THE MONTH · NOVEMBER 2026
                   </Badge>
                   <span className="text-[11px] font-semibold text-amber-500">
                     [{winner.companyCode}] {winner.company}
@@ -193,9 +218,15 @@ export const PerformancePage = () => {
             </div>
 
             <div className="text-right shrink-0 border-l border-border/60 pl-6 space-y-1">
-              <span className="text-xs text-muted-foreground block font-medium">Balanced Contribution Score</span>
-              <span className="text-3xl font-extrabold text-amber-500">{winner.total}</span>
-              <span className="text-xs text-muted-foreground block">/ 100 points</span>
+              <span className="text-xs text-muted-foreground block font-medium">
+                Balanced Contribution Score
+              </span>
+              <span className="text-3xl font-extrabold text-amber-500">
+                {winner.total}
+              </span>
+              <span className="text-xs text-muted-foreground block">
+                / 100 points
+              </span>
             </div>
           </div>
         </CardContent>
@@ -208,35 +239,45 @@ export const PerformancePage = () => {
             <Award className="h-4 w-4" /> Quality & Outcomes
           </div>
           <div className="text-lg font-bold mt-1">35%</div>
-          <p className="text-[10px] text-muted-foreground">Completed work, accuracy, zero rework</p>
+          <p className="text-[10px] text-muted-foreground">
+            Completed work, accuracy, zero rework
+          </p>
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2 text-xs font-semibold text-blue-400">
             <CheckCircle2 className="h-4 w-4" /> Task Ownership
           </div>
           <div className="text-lg font-bold mt-1">25%</div>
-          <p className="text-[10px] text-muted-foreground">On-time delivery, follow-through</p>
+          <p className="text-[10px] text-muted-foreground">
+            On-time delivery, follow-through
+          </p>
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2 text-xs font-semibold text-emerald-400">
             <HeartHandshake className="h-4 w-4" /> Collaboration
           </div>
           <div className="text-lg font-bold mt-1">15%</div>
-          <p className="text-[10px] text-muted-foreground">Handoffs & cross-company support</p>
+          <p className="text-[10px] text-muted-foreground">
+            Handoffs & cross-company support
+          </p>
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2 text-xs font-semibold text-purple-400">
             <Shield className="h-4 w-4" /> Reliability
           </div>
           <div className="text-lg font-bold mt-1">15%</div>
-          <p className="text-[10px] text-muted-foreground">Commitment follow-through & SLA adherence</p>
+          <p className="text-[10px] text-muted-foreground">
+            Commitment follow-through & SLA adherence
+          </p>
         </Card>
         <Card className="p-3">
           <div className="flex items-center gap-2 text-xs font-semibold text-amber-400">
             <GraduationCap className="h-4 w-4" /> Learning
           </div>
           <div className="text-lg font-bold mt-1">10%</div>
-          <p className="text-[10px] text-muted-foreground">Process improvement & knowledge sharing</p>
+          <p className="text-[10px] text-muted-foreground">
+            Process improvement & knowledge sharing
+          </p>
         </Card>
       </div>
 
@@ -244,7 +285,11 @@ export const PerformancePage = () => {
       <div className="p-3 rounded-lg bg-muted/40 border border-border/60 flex items-start gap-3 text-xs text-muted-foreground">
         <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
         <div>
-          <strong className="text-foreground">Fair Scoring Principle:</strong> Employees are compared exclusively within similar job families. Scoring is based on verified work output, milestone sign-offs, and client satisfaction—not keystroke tracking, covert monitoring, or screen time.
+          <strong className="text-foreground">Fair Scoring Principle:</strong>{" "}
+          Employees are compared exclusively within similar job families.
+          Scoring is based on verified work output, milestone sign-offs, and
+          client satisfaction—not keystroke tracking, covert monitoring, or
+          screen time.
         </div>
       </div>
 
@@ -290,9 +335,28 @@ export const PerformancePage = () => {
               </thead>
               <tbody className="divide-y divide-border/40">
                 {filteredEmployees.map((emp, idx) => (
-                  <tr key={emp.id} className="hover:bg-muted/30 transition-colors">
+                  <tr
+                    key={emp.id}
+                    className="hover:bg-muted/30 transition-colors"
+                  >
                     <td className="px-4 py-3 font-bold text-center w-12">
-                      {idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${idx + 1}`}
+                      {idx === 0 ? (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/20 text-amber-500 font-bold text-xs">
+                          1
+                        </span>
+                      ) : idx === 1 ? (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-400/20 text-slate-400 font-bold text-xs">
+                          2
+                        </span>
+                      ) : idx === 2 ? (
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-700/20 text-amber-600 font-bold text-xs">
+                          3
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground font-semibold">
+                          #{idx + 1}
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
@@ -302,21 +366,38 @@ export const PerformancePage = () => {
                           className="h-7 w-7 rounded-full object-cover shrink-0"
                         />
                         <div>
-                          <p className="font-semibold text-foreground">{emp.name}</p>
-                          <p className="text-[10px] text-muted-foreground">{emp.role}</p>
+                          <p className="font-semibold text-foreground">
+                            {emp.name}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground">
+                            {emp.role}
+                          </p>
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <Badge variant="outline" className="text-[10px] font-bold">
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] font-bold"
+                      >
                         {emp.companyCode} · {emp.company}
                       </Badge>
                     </td>
-                    <td className="px-3 py-3 text-center font-mono">{emp.quality.toFixed(1)}</td>
-                    <td className="px-3 py-3 text-center font-mono">{emp.ownership.toFixed(1)}</td>
-                    <td className="px-3 py-3 text-center font-mono">{emp.collaboration.toFixed(1)}</td>
-                    <td className="px-3 py-3 text-center font-mono">{emp.reliability.toFixed(1)}</td>
-                    <td className="px-3 py-3 text-center font-mono">{emp.learning.toFixed(1)}</td>
+                    <td className="px-3 py-3 text-center font-mono">
+                      {emp.quality.toFixed(1)}
+                    </td>
+                    <td className="px-3 py-3 text-center font-mono">
+                      {emp.ownership.toFixed(1)}
+                    </td>
+                    <td className="px-3 py-3 text-center font-mono">
+                      {emp.collaboration.toFixed(1)}
+                    </td>
+                    <td className="px-3 py-3 text-center font-mono">
+                      {emp.reliability.toFixed(1)}
+                    </td>
+                    <td className="px-3 py-3 text-center font-mono">
+                      {emp.learning.toFixed(1)}
+                    </td>
                     <td className="px-4 py-3 text-right">
                       <span className="font-extrabold text-sm text-primary">
                         {emp.total.toFixed(1)}
@@ -334,4 +415,3 @@ export const PerformancePage = () => {
 };
 
 export default PerformancePage;
-

@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { X, Award, Megaphone, Building2, Briefcase, CheckCircle2 } from "lucide-react";
+import {
+  X,
+  Award,
+  Megaphone,
+  Building2,
+  Briefcase,
+  CheckCircle2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNotify } from "ra-core";
 import type { FeedPost } from "../types";
@@ -52,7 +59,7 @@ export const CreatePostModal = ({
       type === "appreciation"
         ? `Awarded recognition badge to ${recipientName}!`
         : "Published update to company stream",
-      { type: "success" }
+      { type: "success" },
     );
     onClose();
   };
@@ -67,9 +74,12 @@ export const CreatePostModal = ({
               <Megaphone className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-foreground">Post to Company Feed</h3>
+              <h3 className="text-base font-bold text-foreground">
+                Post to Company Feed
+              </h3>
               <p className="text-xs text-muted-foreground">
-                Broadcast announcements, celebrate milestones, or award GroupCRM recognition badges.
+                Broadcast announcements, celebrate milestones, or award GroupCRM
+                recognition badges.
               </p>
             </div>
           </div>
@@ -148,26 +158,46 @@ export const CreatePostModal = ({
                   onChange={(e) => setBadge(e.target.value as any)}
                   className="w-full bg-muted/40 border border-border rounded-lg px-2.5 py-2 text-foreground text-xs"
                 >
-                  <option value="star_performer">⭐ Star Performer of the Month</option>
-                  <option value="fast_approvals">⚡ Fast Approvals & NOC Champion</option>
-                  <option value="deal_closer">🎯 High-Value Deal Closer</option>
-                  <option value="safety_champion">🛡️ Zero Incident Site Safety Champion</option>
-                  <option value="client_delight">💎 Client Delight & Luxury Standards</option>
+                  <option value="star_performer">
+                    Star Performer of the Month
+                  </option>
+                  <option value="fast_approvals">
+                    Fast Approvals & NOC Champion
+                  </option>
+                  <option value="deal_closer">High-Value Deal Closer</option>
+                  <option value="safety_champion">
+                    Zero Incident Site Safety Champion
+                  </option>
+                  <option value="client_delight">
+                    Client Delight & Luxury Standards
+                  </option>
                 </select>
               </div>
 
               <div className="space-y-1.5 text-xs">
-                <label className="text-muted-foreground font-medium">Award To Colleague</label>
+                <label className="text-muted-foreground font-medium">
+                  Award To Colleague
+                </label>
                 <select
                   value={recipientName}
                   onChange={(e) => setRecipientName(e.target.value)}
                   className="w-full bg-muted/40 border border-border rounded-lg px-2.5 py-2 text-foreground text-xs"
                 >
-                  <option value="Sadiq (Senior MEP)">Sadiq (Senior MEP Engineer)</option>
-                  <option value="Faseela (Permits Specialist)">Faseela (Permits & Authority Specialist)</option>
-                  <option value="Asma (Interior Designer)">Asma (Lead Interior Designer)</option>
-                  <option value="Arshad (Site Inspection)">Arshad (Site Inspection Engineer)</option>
-                  <option value="Abrar (Operations Director)">Abrar (Operations Director)</option>
+                  <option value="Sadiq (Senior MEP)">
+                    Sadiq (Senior MEP Engineer)
+                  </option>
+                  <option value="Faseela (Permits Specialist)">
+                    Faseela (Permits & Authority Specialist)
+                  </option>
+                  <option value="Asma (Interior Designer)">
+                    Asma (Lead Interior Designer)
+                  </option>
+                  <option value="Arshad (Site Inspection)">
+                    Arshad (Site Inspection Engineer)
+                  </option>
+                  <option value="Abrar (Operations Director)">
+                    Abrar (Operations Director)
+                  </option>
                 </select>
               </div>
             </div>
@@ -175,7 +205,9 @@ export const CreatePostModal = ({
 
           {/* Title */}
           <div className="space-y-1.5 text-xs">
-            <label className="text-foreground font-semibold">Post Title *</label>
+            <label className="text-foreground font-semibold">
+              Post Title *
+            </label>
             <input
               type="text"
               placeholder={
@@ -192,7 +224,9 @@ export const CreatePostModal = ({
 
           {/* Content */}
           <div className="space-y-1.5 text-xs">
-            <label className="text-foreground font-semibold">Message & Details *</label>
+            <label className="text-foreground font-semibold">
+              Message & Details *
+            </label>
             <textarea
               rows={4}
               placeholder="Write your update or recognition note..."
@@ -205,7 +239,12 @@ export const CreatePostModal = ({
 
           {/* Actions */}
           <div className="pt-3 border-t border-border flex items-center justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onClose} className="text-xs">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="text-xs"
+            >
               Cancel
             </Button>
             <Button

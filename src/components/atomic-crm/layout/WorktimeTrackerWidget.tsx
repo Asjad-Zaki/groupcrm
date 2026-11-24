@@ -1,6 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router";
-import { Play, Pause, Square, Clock, ChevronDown, CheckCircle2, Building2 } from "lucide-react";
+import {
+  Play,
+  Pause,
+  Square,
+  Clock,
+  ChevronDown,
+  CheckCircle2,
+  Building2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useGetList, useNotify } from "ra-core";
@@ -98,7 +106,10 @@ export const WorktimeTrackerWidget = () => {
   // Click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -123,7 +134,8 @@ export const WorktimeTrackerWidget = () => {
       startTime: prev.startTime || Date.now(),
       lastTickTime: Date.now(),
       projectId: prev.projectId || defaultProject?.id || null,
-      projectName: prev.projectName || defaultProject?.name || "General Site Operations",
+      projectName:
+        prev.projectName || defaultProject?.name || "General Site Operations",
     }));
     notify("Clocked In: Worktime tracking started", { type: "info" });
   };
@@ -207,12 +219,21 @@ export const WorktimeTrackerWidget = () => {
               <h4 className="text-xs font-bold tracking-wide uppercase text-muted-foreground">
                 GroupCRM Worktime Tracker
               </h4>
-              <p className="text-sm font-semibold text-foreground">
+              <p className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                <span
+                  className={`inline-block w-2 h-2 rounded-full shrink-0 ${
+                    session.status === "running"
+                      ? "bg-emerald-500"
+                      : session.status === "paused"
+                        ? "bg-amber-500"
+                        : "bg-muted-foreground"
+                  }`}
+                />
                 {session.status === "running"
-                  ? "🟢 Active Working Shift"
+                  ? "Active Working Shift"
                   : session.status === "paused"
-                    ? "🟡 On Break / Pause"
-                    : "⚪ Shift Not Started"}
+                    ? "On Break / Pause"
+                    : "Shift Not Started"}
               </p>
             </div>
             <Badge
@@ -279,7 +300,10 @@ export const WorktimeTrackerWidget = () => {
               type="text"
               value={session.taskDescription}
               onChange={(e) =>
-                setSession((prev) => ({ ...prev, taskDescription: e.target.value }))
+                setSession((prev) => ({
+                  ...prev,
+                  taskDescription: e.target.value,
+                }))
               }
               placeholder="e.g., DEWA Single Line Diagram submission..."
               className="w-full text-xs bg-muted/50 border border-border rounded-lg px-2.5 py-2 text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
@@ -294,7 +318,8 @@ export const WorktimeTrackerWidget = () => {
                 onClick={handleStart}
                 className="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold gap-1.5"
               >
-                <Play className="w-3.5 h-3.5 fill-current" /> Clock In (Start Shift)
+                <Play className="w-3.5 h-3.5 fill-current" /> Clock In (Start
+                Shift)
               </Button>
             ) : (
               <>
@@ -332,7 +357,10 @@ export const WorktimeTrackerWidget = () => {
           {/* UAE Shift Notice */}
           <div className="text-[10px] text-muted-foreground/80 flex items-center gap-1.5 bg-muted/20 p-2 rounded-lg">
             <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
-            <span>Shift hours automatically sync with Project Daily Logs & EOD report.</span>
+            <span>
+              Shift hours automatically sync with Project Daily Logs & EOD
+              report.
+            </span>
           </div>
         </div>
       )}
