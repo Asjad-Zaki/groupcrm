@@ -1,13 +1,30 @@
 import { useState } from "react";
-import { X, Plus, Trash2, Calculator, Building2, User, Calendar, FileText } from "lucide-react";
+import {
+  X,
+  Plus,
+  Trash2,
+  Calculator,
+  Building2,
+  User,
+  Calendar,
+  FileText,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { Quotation, QuoteLineItem, QuotePaymentMilestone, Project } from "../types";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
+import type {
+  Quotation,
+  QuoteLineItem,
+  QuotePaymentMilestone,
+  Project,
+} from "../types";
 
 interface CreateQuoteModalProps {
   isOpen: boolean;
   onClose: () => void;
   projects: Project[];
-  onCreateQuote: (quote: Omit<Quotation, "id" | "created_at" | "updated_at">) => void;
+  onCreateQuote: (
+    quote: Omit<Quotation, "id" | "created_at" | "updated_at">,
+  ) => void;
 }
 
 export const CreateQuoteModal = ({
@@ -16,21 +33,26 @@ export const CreateQuoteModal = ({
   projects,
   onCreateQuote,
 }: CreateQuoteModalProps) => {
-  const [operatingCompany, setOperatingCompany] = useState<"goldland" | "abbadi" | "casavera">("goldland");
+  const [operatingCompany, setOperatingCompany] = useState<
+    "goldland" | "abbadi" | "casavera"
+  >("goldland");
   const [clientName, setClientName] = useState("");
   const [clientCompany, setClientCompany] = useState("");
   const [clientPhone, setClientPhone] = useState("+971 ");
   const [clientEmail, setClientEmail] = useState("");
-  const [selectedProjectId, setSelectedProjectId] = useState<number | "none">("none");
+  const [selectedProjectId, setSelectedProjectId] = useState<number | "none">(
+    "none",
+  );
   const [validDays, setValidDays] = useState<number>(30);
   const [notes, setNotes] = useState(
-    "Official governmental authority fees (DM/DCD/DEWA) billed at actuals. Subject to Dubai Courts jurisdiction and UAE commercial laws."
+    "Official governmental authority fees (DM/DCD/DEWA) billed at actuals. Subject to Dubai Courts jurisdiction and UAE commercial laws.",
   );
 
   const [lineItems, setLineItems] = useState<QuoteLineItem[]>([
     {
       id: "item-1",
-      description: "Dubai Municipality (DM) and civil defense permitting package",
+      description:
+        "Dubai Municipality (DM) and civil defense permitting package",
       unit: "L.S.",
       quantity: 1,
       unit_price: 35000,
@@ -38,7 +60,8 @@ export const CreateQuoteModal = ({
     },
     {
       id: "item-2",
-      description: "Supply and installation of architectural decor framing and partitions",
+      description:
+        "Supply and installation of architectural decor framing and partitions",
       unit: "SQM",
       quantity: 150,
       unit_price: 180,
@@ -46,15 +69,22 @@ export const CreateQuoteModal = ({
     },
   ]);
 
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
+
   if (!isOpen) return null;
 
-  const handleLineItemChange = (index: number, field: keyof QuoteLineItem, value: any) => {
+  const handleLineItemChange = (
+    index: number,
+    field: keyof QuoteLineItem,
+    value: any,
+  ) => {
     setLineItems((prev) => {
       const updated = [...prev];
       const item = { ...updated[index], [field]: value };
       if (field === "quantity" || field === "unit_price") {
         const qty = Number(field === "quantity" ? value : item.quantity) || 0;
-        const price = Number(field === "unit_price" ? value : item.unit_price) || 0;
+        const price =
+          Number(field === "unit_price" ? value : item.unit_price) || 0;
         item.total = Math.round(qty * price);
       }
       updated[index] = item;
@@ -89,10 +119,30 @@ export const CreateQuoteModal = ({
 
   // Staged payment milestones
   const milestones: QuotePaymentMilestone[] = [
-    { id: "ms-1", percentage: 10, description: "Advance Payment upon Contract Signing & Mobilization", amount: Math.round(totalAmount * 0.1) },
-    { id: "ms-2", percentage: 30, description: "Upon Authority (DM/DEWA/DDA) Approvals & 1st Fix", amount: Math.round(totalAmount * 0.3) },
-    { id: "ms-3", percentage: 30, description: "Upon Workshop Joinery & Finishes Delivery to Site", amount: Math.round(totalAmount * 0.3) },
-    { id: "ms-4", percentage: 30, description: "Upon Final Inspection Passed & Occupancy Handover (COC)", amount: Math.round(totalAmount * 0.3) },
+    {
+      id: "ms-1",
+      percentage: 10,
+      description: "Advance Payment upon Contract Signing & Mobilization",
+      amount: Math.round(totalAmount * 0.1),
+    },
+    {
+      id: "ms-2",
+      percentage: 30,
+      description: "Upon Authority (DM/DEWA/DDA) Approvals & 1st Fix",
+      amount: Math.round(totalAmount * 0.3),
+    },
+    {
+      id: "ms-3",
+      percentage: 30,
+      description: "Upon Workshop Joinery & Finishes Delivery to Site",
+      amount: Math.round(totalAmount * 0.3),
+    },
+    {
+      id: "ms-4",
+      percentage: 30,
+      description: "Upon Final Inspection Passed & Occupancy Handover (COC)",
+      amount: Math.round(totalAmount * 0.3),
+    },
   ];
 
   const getCompanyDetails = (comp: "goldland" | "abbadi" | "casavera") => {
@@ -128,10 +178,15 @@ export const CreateQuoteModal = ({
     if (!clientName.trim()) return;
 
     const todayStr = new Date().toISOString().split("T")[0];
-    const validUntilDate = new Date(Date.now() + validDays * 86400000).toISOString().split("T")[0];
+    const validUntilDate = new Date(Date.now() + validDays * 86400000)
+      .toISOString()
+      .split("T")[0];
     const quoteNumber = `${compDetails.prefix}-QT-2026-${Math.floor(100 + Math.random() * 900)}`;
 
-    const linkedProj = selectedProjectId !== "none" ? projects.find((p) => Number(p.id) === selectedProjectId) : undefined;
+    const linkedProj =
+      selectedProjectId !== "none"
+        ? projects.find((p) => Number(p.id) === selectedProjectId)
+        : undefined;
 
     onCreateQuote({
       quote_number: quoteNumber,
@@ -171,8 +226,11 @@ export const CreateQuoteModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="w-full max-w-4xl bg-card rounded-2xl border border-border shadow-2xl p-6 space-y-6 my-8 animate-in fade-in zoom-in-95 duration-200">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-150"
+    >
+      <div className="w-full max-w-4xl bg-card rounded-2xl border border-border shadow-2xl p-6 space-y-6 my-8 animate-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between pb-3 border-b border-border">
           <div className="space-y-0.5">
             <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
@@ -180,16 +238,23 @@ export const CreateQuoteModal = ({
               Interactive UAE Quotation & BOQ Generator
             </h2>
             <p className="text-xs text-muted-foreground">
-              Official commercial proposal with 5% UAE VAT and staged payment terms in AED.
+              Official commercial proposal with 5% UAE VAT and staged payment
+              terms in AED.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded">
+              ESC
+            </kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              title="Close (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5 text-xs">
@@ -204,9 +269,15 @@ export const CreateQuoteModal = ({
                 onChange={(e) => setOperatingCompany(e.target.value as any)}
                 className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground font-semibold focus:outline-none focus:ring-1 focus:ring-primary"
               >
-                <option value="goldland">Goldland Contracting LLC (Approvals & Fit-out)</option>
-                <option value="abbadi">Abbadi Tech Technical Services (MEP & DEWA)</option>
-                <option value="casavera">Casavera Interiors LLC (Turnkey Luxury Interiors)</option>
+                <option value="goldland">
+                  Goldland Contracting LLC (Approvals & Fit-out)
+                </option>
+                <option value="abbadi">
+                  Abbadi Tech Technical Services (MEP & DEWA)
+                </option>
+                <option value="casavera">
+                  Casavera Interiors LLC (Turnkey Luxury Interiors)
+                </option>
               </select>
               <span className="text-[10px] text-muted-foreground block font-mono">
                 TRN: {compDetails.trn}
@@ -219,7 +290,11 @@ export const CreateQuoteModal = ({
               </label>
               <select
                 value={selectedProjectId}
-                onChange={(e) => setSelectedProjectId(e.target.value === "none" ? "none" : Number(e.target.value))}
+                onChange={(e) =>
+                  setSelectedProjectId(
+                    e.target.value === "none" ? "none" : Number(e.target.value),
+                  )
+                }
                 className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
               >
                 <option value="none">-- Standalone New Quotation --</option>
@@ -264,7 +339,9 @@ export const CreateQuoteModal = ({
             </div>
 
             <div className="space-y-1">
-              <label className="font-semibold text-muted-foreground">Client Organization</label>
+              <label className="font-semibold text-muted-foreground">
+                Client Organization
+              </label>
               <input
                 type="text"
                 placeholder="e.g., Al Falasi Properties LLC"
@@ -275,7 +352,9 @@ export const CreateQuoteModal = ({
             </div>
 
             <div className="space-y-1">
-              <label className="font-semibold text-muted-foreground">Client WhatsApp / Phone *</label>
+              <label className="font-semibold text-muted-foreground">
+                Client WhatsApp / Phone *
+              </label>
               <input
                 type="text"
                 required
@@ -287,7 +366,9 @@ export const CreateQuoteModal = ({
             </div>
 
             <div className="space-y-1">
-              <label className="font-semibold text-muted-foreground">Client Email</label>
+              <label className="font-semibold text-muted-foreground">
+                Client Email
+              </label>
               <input
                 type="email"
                 placeholder="client@company.ae"
@@ -301,7 +382,9 @@ export const CreateQuoteModal = ({
           {/* Line Items Table Builder */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-foreground text-sm">Quotation Line Items (BOQ Schedule)</span>
+              <span className="font-bold text-foreground text-sm">
+                Quotation Line Items (BOQ Schedule)
+              </span>
               <Button
                 type="button"
                 variant="outline"
@@ -319,32 +402,48 @@ export const CreateQuoteModal = ({
                 <thead className="bg-muted/50 border-b border-border text-muted-foreground uppercase text-[10px]">
                   <tr>
                     <th className="py-2.5 px-3 font-semibold">#</th>
-                    <th className="py-2.5 px-3 font-semibold w-1/2">Scope Description</th>
+                    <th className="py-2.5 px-3 font-semibold w-1/2">
+                      Scope Description
+                    </th>
                     <th className="py-2.5 px-2 font-semibold">Unit</th>
                     <th className="py-2.5 px-2 font-semibold w-16">Qty</th>
-                    <th className="py-2.5 px-3 font-semibold text-right">Unit Rate (AED)</th>
-                    <th className="py-2.5 px-3 font-semibold text-right">Total (AED)</th>
+                    <th className="py-2.5 px-3 font-semibold text-right">
+                      Unit Rate (AED)
+                    </th>
+                    <th className="py-2.5 px-3 font-semibold text-right">
+                      Total (AED)
+                    </th>
                     <th className="py-2.5 px-2 text-center w-10"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/60">
                   {lineItems.map((item, idx) => (
                     <tr key={item.id} className="hover:bg-muted/20">
-                      <td className="py-2 px-3 font-mono text-muted-foreground">{idx + 1}</td>
+                      <td className="py-2 px-3 font-mono text-muted-foreground">
+                        {idx + 1}
+                      </td>
                       <td className="py-2 px-3">
                         <input
                           type="text"
                           required
                           placeholder="Scope of works description..."
                           value={item.description}
-                          onChange={(e) => handleLineItemChange(idx, "description", e.target.value)}
+                          onChange={(e) =>
+                            handleLineItemChange(
+                              idx,
+                              "description",
+                              e.target.value,
+                            )
+                          }
                           className="w-full px-2 py-1 rounded bg-background border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                       </td>
                       <td className="py-2 px-2">
                         <select
                           value={item.unit}
-                          onChange={(e) => handleLineItemChange(idx, "unit", e.target.value)}
+                          onChange={(e) =>
+                            handleLineItemChange(idx, "unit", e.target.value)
+                          }
                           className="w-full px-1.5 py-1 rounded bg-background border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary font-mono"
                         >
                           <option value="L.S.">L.S.</option>
@@ -361,7 +460,13 @@ export const CreateQuoteModal = ({
                           min={1}
                           required
                           value={item.quantity}
-                          onChange={(e) => handleLineItemChange(idx, "quantity", Number(e.target.value))}
+                          onChange={(e) =>
+                            handleLineItemChange(
+                              idx,
+                              "quantity",
+                              Number(e.target.value),
+                            )
+                          }
                           className="w-full px-2 py-1 rounded bg-background border border-border text-foreground font-mono focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                       </td>
@@ -371,7 +476,13 @@ export const CreateQuoteModal = ({
                           min={0}
                           required
                           value={item.unit_price}
-                          onChange={(e) => handleLineItemChange(idx, "unit_price", Number(e.target.value))}
+                          onChange={(e) =>
+                            handleLineItemChange(
+                              idx,
+                              "unit_price",
+                              Number(e.target.value),
+                            )
+                          }
                           className="w-full px-2 py-1 rounded bg-background border border-border text-foreground font-mono text-right focus:outline-none focus:ring-1 focus:ring-primary"
                         />
                       </td>
@@ -399,14 +510,21 @@ export const CreateQuoteModal = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Payment Schedule breakdown */}
             <div className="p-3.5 rounded-xl bg-muted/20 border border-border/60 space-y-2">
-              <span className="font-bold text-foreground block">Proposed UAE Milestone Payment Schedule</span>
+              <span className="font-bold text-foreground block">
+                Proposed UAE Milestone Payment Schedule
+              </span>
               <div className="space-y-1.5">
                 {milestones.map((ms, i) => (
-                  <div key={i} className="flex items-center justify-between text-[11px] text-muted-foreground py-0.5 border-b border-border/40 last:border-0">
+                  <div
+                    key={i}
+                    className="flex items-center justify-between text-[11px] text-muted-foreground py-0.5 border-b border-border/40 last:border-0"
+                  >
                     <span className="truncate pr-2">
                       <strong>{ms.percentage}%</strong> {ms.description}
                     </span>
-                    <strong className="font-mono text-foreground shrink-0">{formatAED(ms.amount)}</strong>
+                    <strong className="font-mono text-foreground shrink-0">
+                      {formatAED(ms.amount)}
+                    </strong>
                   </div>
                 ))}
               </div>
@@ -416,22 +534,30 @@ export const CreateQuoteModal = ({
             <div className="p-4 rounded-xl bg-muted/30 border border-border space-y-2 text-right">
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>Subtotal (Net of Tax):</span>
-                <span className="font-mono font-bold text-foreground">{formatAED(subtotal)}</span>
+                <span className="font-mono font-bold text-foreground">
+                  {formatAED(subtotal)}
+                </span>
               </div>
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>UAE Federal VAT (5%):</span>
-                <span className="font-mono font-bold text-amber-500">{formatAED(vatAmount)}</span>
+                <span className="font-mono font-bold text-amber-500">
+                  {formatAED(vatAmount)}
+                </span>
               </div>
               <div className="flex justify-between text-base font-extrabold text-foreground pt-2 border-t border-border">
                 <span>Grand Total (AED):</span>
-                <span className="text-primary font-black">{formatAED(totalAmount)}</span>
+                <span className="text-primary font-black">
+                  {formatAED(totalAmount)}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Notes & Terms */}
           <div className="space-y-1">
-            <label className="font-semibold text-muted-foreground">Proposal Terms & Conditions</label>
+            <label className="font-semibold text-muted-foreground">
+              Proposal Terms & Conditions
+            </label>
             <textarea
               rows={2}
               value={notes}

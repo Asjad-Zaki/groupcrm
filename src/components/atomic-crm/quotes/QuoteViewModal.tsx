@@ -1,6 +1,13 @@
-import { X, MessageCircle, Printer, CheckCircle2, Building2 } from "lucide-react";
+import {
+  X,
+  MessageCircle,
+  Printer,
+  CheckCircle2,
+  Building2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 import type { Quotation } from "../types";
 
 interface QuoteViewModalProps {
@@ -16,6 +23,8 @@ export const QuoteViewModal = ({
   onClose,
   onStatusChange,
 }: QuoteViewModalProps) => {
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
+
   if (!isOpen || !quote) return null;
 
   const formatAED = (value: number) => {
@@ -35,7 +44,10 @@ export const QuoteViewModal = ({
   const cleanPhone = getCleanPhone(quote.client_phone);
   const waMilestonesText = quote.payment_milestones
     ? quote.payment_milestones
-        .map((m) => `• ${m.percentage}%: ${formatAED(m.amount)} (${m.description})`)
+        .map(
+          (m) =>
+            `• ${m.percentage}%: ${formatAED(m.amount)} (${m.description})`,
+        )
         .join("\n")
     : "";
 
@@ -68,25 +80,46 @@ Please reply to this WhatsApp message to confirm approval or request any revisio
   const getCompanyBrandColor = (comp: string) => {
     switch (comp) {
       case "goldland":
-        return { border: "border-amber-500", text: "text-amber-500", bg: "bg-amber-500/10" };
+        return {
+          border: "border-amber-500",
+          text: "text-amber-500",
+          bg: "bg-amber-500/10",
+        };
       case "abbadi":
-        return { border: "border-blue-500", text: "text-blue-500", bg: "bg-blue-500/10" };
+        return {
+          border: "border-blue-500",
+          text: "text-blue-500",
+          bg: "bg-blue-500/10",
+        };
       case "casavera":
-        return { border: "border-emerald-500", text: "text-emerald-500", bg: "bg-emerald-500/10" };
+        return {
+          border: "border-emerald-500",
+          text: "text-emerald-500",
+          bg: "bg-emerald-500/10",
+        };
       default:
-        return { border: "border-primary", text: "text-primary", bg: "bg-primary/10" };
+        return {
+          border: "border-primary",
+          text: "text-primary",
+          bg: "bg-primary/10",
+        };
     }
   };
 
   const brand = getCompanyBrandColor(quote.operating_company);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="w-full max-w-4xl bg-card rounded-2xl border border-border shadow-2xl p-6 space-y-6 my-6 animate-in fade-in zoom-in-95 duration-200 print:border-none print:shadow-none print:p-0 print:my-0">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-150"
+    >
+      <div className="w-full max-w-4xl bg-card rounded-2xl border border-border shadow-2xl p-6 space-y-6 my-6 animate-in zoom-in-95 duration-150 print:border-none print:shadow-none print:p-0 print:my-0">
         {/* Top Action Bar (hidden when printing) */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border print:hidden">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-sm font-bold text-primary">{quote.quote_number}</span>
+            <span className="font-mono text-sm font-bold text-primary">
+              {quote.quote_number}
+            </span>
             <Badge
               variant="outline"
               className={`text-[10px] capitalize font-bold ${
@@ -136,10 +169,14 @@ Please reply to this WhatsApp message to confirm approval or request any revisio
               </Button>
             )}
 
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded ml-1">
+              ESC
+            </kbd>
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 ml-1"
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              title="Close (Esc)"
             >
               <X className="w-5 h-5" />
             </button>
@@ -153,16 +190,24 @@ Please reply to this WhatsApp message to confirm approval or request any revisio
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <Building2 className={`w-5 h-5 ${brand.text}`} />
-                <h1 className="text-xl font-black tracking-tight">{quote.company_name}</h1>
+                <h1 className="text-xl font-black tracking-tight">
+                  {quote.company_name}
+                </h1>
               </div>
               <p className="text-xs text-muted-foreground">
                 Office 1402, Business Bay, Dubai, United Arab Emirates
               </p>
               <p className="text-xs font-mono text-muted-foreground">
-                Tax Registration No (TRN): <strong className="text-foreground">{quote.trn_number}</strong>
+                Tax Registration No (TRN):{" "}
+                <strong className="text-foreground">{quote.trn_number}</strong>
               </p>
               <p className="text-xs text-muted-foreground">
-                Phone: +971 4 220 1890 · Email: info@{quote.operating_company === "goldland" ? "goldlandcontracting.com" : quote.operating_company === "abbadi" ? "abbaditech.com" : "casaverainteriors.com"}
+                Phone: +971 4 220 1890 · Email: info@
+                {quote.operating_company === "goldland"
+                  ? "goldlandcontracting.com"
+                  : quote.operating_company === "abbadi"
+                    ? "abbaditech.com"
+                    : "casaverainteriors.com"}
               </p>
             </div>
 
@@ -170,10 +215,22 @@ Please reply to this WhatsApp message to confirm approval or request any revisio
               <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground block">
                 COMMERCIAL PROPOSAL / QUOTATION
               </span>
-              <p className="text-base font-black font-mono text-primary">{quote.quote_number}</p>
+              <p className="text-base font-black font-mono text-primary">
+                {quote.quote_number}
+              </p>
               <div className="text-xs text-muted-foreground space-y-0.5 pt-1">
-                <p>Date: <strong className="text-foreground font-mono">{quote.issue_date}</strong></p>
-                <p>Valid Until: <strong className="text-foreground font-mono">{quote.valid_until}</strong></p>
+                <p>
+                  Date:{" "}
+                  <strong className="text-foreground font-mono">
+                    {quote.issue_date}
+                  </strong>
+                </p>
+                <p>
+                  Valid Until:{" "}
+                  <strong className="text-foreground font-mono">
+                    {quote.valid_until}
+                  </strong>
+                </p>
               </div>
             </div>
           </div>
@@ -181,24 +238,38 @@ Please reply to this WhatsApp message to confirm approval or request any revisio
           {/* Client & Project Information */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div className="p-3.5 rounded-xl bg-muted/20 border border-border/60 space-y-1">
-              <span className="font-bold text-muted-foreground uppercase text-[10px]">Client / Recipient:</span>
-              <p className="font-bold text-foreground text-sm">{quote.client_name}</p>
+              <span className="font-bold text-muted-foreground uppercase text-[10px]">
+                Client / Recipient:
+              </span>
+              <p className="font-bold text-foreground text-sm">
+                {quote.client_name}
+              </p>
               <p className="text-muted-foreground">{quote.client_company}</p>
               {quote.client_phone && (
-                <p className="text-muted-foreground font-mono">Mobile: {quote.client_phone}</p>
+                <p className="text-muted-foreground font-mono">
+                  Mobile: {quote.client_phone}
+                </p>
               )}
               {quote.client_email && (
-                <p className="text-muted-foreground">Email: {quote.client_email}</p>
+                <p className="text-muted-foreground">
+                  Email: {quote.client_email}
+                </p>
               )}
             </div>
 
             <div className="p-3.5 rounded-xl bg-muted/20 border border-border/60 space-y-1">
-              <span className="font-bold text-muted-foreground uppercase text-[10px]">Project Particulars:</span>
+              <span className="font-bold text-muted-foreground uppercase text-[10px]">
+                Project Particulars:
+              </span>
               <p className="font-bold text-foreground text-sm">
                 {quote.project_name || "General Commercial Scope"}
               </p>
-              <p className="text-muted-foreground">Currency: UAE Dirham (AED)</p>
-              <p className="text-muted-foreground">Tax Status: Standard 5% UAE Federal VAT</p>
+              <p className="text-muted-foreground">
+                Currency: UAE Dirham (AED)
+              </p>
+              <p className="text-muted-foreground">
+                Tax Status: Standard 5% UAE Federal VAT
+              </p>
             </div>
           </div>
 
@@ -208,22 +279,44 @@ Please reply to this WhatsApp message to confirm approval or request any revisio
               <thead className="bg-muted/60 border-b border-border text-muted-foreground uppercase text-[10px]">
                 <tr>
                   <th className="py-2.5 px-3 font-bold w-12 text-center">#</th>
-                  <th className="py-2.5 px-3 font-bold">Scope of Works / Specification</th>
-                  <th className="py-2.5 px-3 font-bold w-16 text-center">Unit</th>
-                  <th className="py-2.5 px-3 font-bold w-16 text-center">Qty</th>
-                  <th className="py-2.5 px-3 font-bold text-right w-28">Rate (AED)</th>
-                  <th className="py-2.5 px-3 font-bold text-right w-32">Total (AED)</th>
+                  <th className="py-2.5 px-3 font-bold">
+                    Scope of Works / Specification
+                  </th>
+                  <th className="py-2.5 px-3 font-bold w-16 text-center">
+                    Unit
+                  </th>
+                  <th className="py-2.5 px-3 font-bold w-16 text-center">
+                    Qty
+                  </th>
+                  <th className="py-2.5 px-3 font-bold text-right w-28">
+                    Rate (AED)
+                  </th>
+                  <th className="py-2.5 px-3 font-bold text-right w-32">
+                    Total (AED)
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60">
                 {quote.line_items.map((item, idx) => (
                   <tr key={item.id} className="hover:bg-muted/10">
-                    <td className="py-2.5 px-3 text-center font-mono text-muted-foreground">{idx + 1}</td>
-                    <td className="py-2.5 px-3 font-medium text-foreground">{item.description}</td>
-                    <td className="py-2.5 px-3 text-center font-mono text-muted-foreground">{item.unit}</td>
-                    <td className="py-2.5 px-3 text-center font-mono text-foreground font-semibold">{item.quantity}</td>
-                    <td className="py-2.5 px-3 text-right font-mono text-muted-foreground">{formatAED(item.unit_price)}</td>
-                    <td className="py-2.5 px-3 text-right font-mono font-bold text-foreground">{formatAED(item.total)}</td>
+                    <td className="py-2.5 px-3 text-center font-mono text-muted-foreground">
+                      {idx + 1}
+                    </td>
+                    <td className="py-2.5 px-3 font-medium text-foreground">
+                      {item.description}
+                    </td>
+                    <td className="py-2.5 px-3 text-center font-mono text-muted-foreground">
+                      {item.unit}
+                    </td>
+                    <td className="py-2.5 px-3 text-center font-mono text-foreground font-semibold">
+                      {item.quantity}
+                    </td>
+                    <td className="py-2.5 px-3 text-right font-mono text-muted-foreground">
+                      {formatAED(item.unit_price)}
+                    </td>
+                    <td className="py-2.5 px-3 text-right font-mono font-bold text-foreground">
+                      {formatAED(item.total)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -234,14 +327,24 @@ Please reply to this WhatsApp message to confirm approval or request any revisio
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
             {/* Payment Schedule */}
             <div className="p-3.5 rounded-xl bg-muted/20 border border-border/60 space-y-2 text-xs">
-              <span className="font-bold text-foreground block">Proposed Milestone Payment Schedule:</span>
+              <span className="font-bold text-foreground block">
+                Proposed Milestone Payment Schedule:
+              </span>
               <div className="space-y-1.5">
                 {quote.payment_milestones.map((ms, i) => (
-                  <div key={i} className="flex items-center justify-between py-1 border-b border-border/40 last:border-0">
+                  <div
+                    key={i}
+                    className="flex items-center justify-between py-1 border-b border-border/40 last:border-0"
+                  >
                     <span className="truncate pr-2">
-                      <strong className="text-primary font-mono">{ms.percentage}%</strong> {ms.description}
+                      <strong className="text-primary font-mono">
+                        {ms.percentage}%
+                      </strong>{" "}
+                      {ms.description}
                     </span>
-                    <strong className="font-mono text-foreground shrink-0">{formatAED(ms.amount)}</strong>
+                    <strong className="font-mono text-foreground shrink-0">
+                      {formatAED(ms.amount)}
+                    </strong>
                   </div>
                 ))}
               </div>
@@ -251,15 +354,21 @@ Please reply to this WhatsApp message to confirm approval or request any revisio
             <div className="p-4 rounded-xl bg-muted/40 border border-border space-y-2 text-xs text-right">
               <div className="flex justify-between text-muted-foreground">
                 <span>Subtotal (Net of Tax):</span>
-                <span className="font-mono font-bold text-foreground">{formatAED(quote.subtotal)}</span>
+                <span className="font-mono font-bold text-foreground">
+                  {formatAED(quote.subtotal)}
+                </span>
               </div>
               <div className="flex justify-between text-muted-foreground">
                 <span>UAE Federal VAT (5%):</span>
-                <span className="font-mono font-bold text-amber-500">{formatAED(quote.vat_amount)}</span>
+                <span className="font-mono font-bold text-amber-500">
+                  {formatAED(quote.vat_amount)}
+                </span>
               </div>
               <div className="flex justify-between text-base font-extrabold text-foreground pt-2 border-t border-border">
                 <span>Total Payable (AED):</span>
-                <span className="text-primary font-black text-lg">{formatAED(quote.total_amount)}</span>
+                <span className="text-primary font-black text-lg">
+                  {formatAED(quote.total_amount)}
+                </span>
               </div>
             </div>
           </div>
@@ -275,14 +384,18 @@ Please reply to this WhatsApp message to confirm approval or request any revisio
           {/* Signature & Stamp Area */}
           <div className="grid grid-cols-2 gap-8 pt-8 border-t border-border text-xs">
             <div className="space-y-4">
-              <span className="text-muted-foreground font-semibold">For & On Behalf of {quote.company_name}:</span>
+              <span className="text-muted-foreground font-semibold">
+                For & On Behalf of {quote.company_name}:
+              </span>
               <div className="h-16 border-b border-dashed border-border/80 flex items-end pb-1 font-mono text-[11px] text-muted-foreground">
                 Authorized Signatory & Stamp
               </div>
             </div>
 
             <div className="space-y-4 text-right">
-              <span className="text-muted-foreground font-semibold">Client Acceptance & Confirmation:</span>
+              <span className="text-muted-foreground font-semibold">
+                Client Acceptance & Confirmation:
+              </span>
               <div className="h-16 border-b border-dashed border-border/80 flex items-end justify-end pb-1 font-mono text-[11px] text-muted-foreground">
                 Signature & Official Stamp
               </div>

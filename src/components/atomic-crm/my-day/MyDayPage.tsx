@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useGetIdentity, useGetList, useNotify } from "ra-core";
 import {
   Calendar,
@@ -51,15 +51,34 @@ export const MyDayPage = () => {
   const [viewMode, setViewMode] = useState<"personal" | "board">("personal");
 
   // Fetch Tasks
-  const { data: rawTasks } = useGetList<Task>("tasks", {
+  const { data: rawTasks, refetch: refetchTasks } = useGetList<Task>("tasks", {
     pagination: { page: 1, perPage: 100 },
     sort: { field: "id", order: "ASC" },
   });
 
   // Fetch Daily Reports
-  const { data: rawReports } = useGetList<DailyReport>("daily_reports", {
-    pagination: { page: 1, perPage: 100 },
-  });
+  const { data: rawReports, refetch: refetchReports } = useGetList<DailyReport>(
+    "daily_reports",
+    {
+      pagination: { page: 1, perPage: 100 },
+    },
+  );
+
+  // Real-time synchronization for tasks and reports
+  useEffect(() => {
+    const handleTaskSync = () => {
+      refetchTasks();
+      refetchReports();
+    };
+    window.addEventListener("group-crm:task-update", handleTaskSync);
+    window.addEventListener("group-crm:mutation", handleTaskSync);
+    const interval = setInterval(handleTaskSync, 5000);
+    return () => {
+      window.removeEventListener("group-crm:task-update", handleTaskSync);
+      window.removeEventListener("group-crm:mutation", handleTaskSync);
+      clearInterval(interval);
+    };
+  }, [refetchTasks, refetchReports]);
 
   // Fetch Projects
   const { data: rawProjects } = useGetList<Project>("projects", {

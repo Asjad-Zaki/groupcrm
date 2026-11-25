@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, Calendar, User, Flag, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 import { TEAM_MEMBERS } from "../providers/fakerest/dataGenerator/sales";
 import type { Task, Project } from "../types";
 
@@ -17,13 +18,16 @@ export const AddProjectTaskModal = ({
   project,
   onAddTask,
 }: AddProjectTaskModalProps) => {
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
   const [text, setText] = useState("");
   const [assigneeId, setAssigneeId] = useState<number>(
-    typeof project.engineer_id === "number" ? project.engineer_id : 3
+    typeof project.engineer_id === "number" ? project.engineer_id : 3,
   );
-  const [priority, setPriority] = useState<"urgent" | "high" | "normal">("high");
+  const [priority, setPriority] = useState<"urgent" | "high" | "normal">(
+    "high",
+  );
   const [dueDate, setDueDate] = useState<string>(
-    new Date(Date.now() + 86400000 * 2).toISOString().split("T")[0]
+    new Date(Date.now() + 86400000 * 2).toISOString().split("T")[0],
   );
   const [taskType, setTaskType] = useState<string>("follow-up");
 
@@ -36,7 +40,11 @@ export const AddProjectTaskModal = ({
     if (!text.trim()) return;
 
     const opCompany =
-      project.tenant_id === 1 ? "goldland" : project.tenant_id === 2 ? "abbadi" : "casavera";
+      project.tenant_id === 1
+        ? "goldland"
+        : project.tenant_id === 2
+          ? "abbadi"
+          : "casavera";
 
     onAddTask({
       text: text.trim(),
@@ -62,27 +70,40 @@ export const AddProjectTaskModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-lg bg-card rounded-2xl border border-border shadow-2xl p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-150"
+    >
+      <div className="w-full max-w-lg bg-card rounded-2xl border border-border shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between pb-3 border-b border-border">
           <div className="space-y-0.5">
-            <h2 className="text-base font-bold text-foreground">Add Project Task</h2>
+            <h2 className="text-base font-bold text-foreground">
+              Add Project Task
+            </h2>
             <p className="text-xs text-muted-foreground">
               Assign an actionable deliverable scoped to {project.reference_no}.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded">
+              ESC
+            </kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              title="Close (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div className="space-y-1">
-            <label className="font-semibold text-muted-foreground">Task Deliverable *</label>
+            <label className="font-semibold text-muted-foreground">
+              Task Deliverable *
+            </label>
             <textarea
               required
               rows={3}
@@ -117,7 +138,9 @@ export const AddProjectTaskModal = ({
               </label>
               <select
                 value={priority}
-                onChange={(e) => setPriority(e.target.value as "urgent" | "high" | "normal")}
+                onChange={(e) =>
+                  setPriority(e.target.value as "urgent" | "high" | "normal")
+                }
                 className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
               >
                 <option value="urgent">Urgent (Red)</option>
@@ -159,8 +182,12 @@ export const AddProjectTaskModal = ({
           </div>
 
           <div className="p-3 rounded-lg bg-muted/40 border border-border text-muted-foreground space-y-1">
-            <span className="font-semibold text-foreground">Attached Project:</span>
-            <p>{project.reference_no} · {project.name}</p>
+            <span className="font-semibold text-foreground">
+              Attached Project:
+            </span>
+            <p>
+              {project.reference_no} · {project.name}
+            </p>
           </div>
 
           <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-border">

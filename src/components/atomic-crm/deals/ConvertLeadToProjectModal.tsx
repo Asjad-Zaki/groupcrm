@@ -12,10 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  CheckCircle2,
-  Building2,
-} from "lucide-react";
+import { CheckCircle2, Building2 } from "lucide-react";
 import type { Deal, Project } from "../types";
 import {
   GOLDLAND_STAGES,
@@ -41,8 +38,7 @@ export const ConvertLeadToProjectModal = ({
   const redirect = useRedirect();
 
   const tenantId = deal?.tenant_id || 1;
-  const prefix =
-    tenantId === 1 ? "GL" : tenantId === 2 ? "AT" : "CV";
+  const prefix = tenantId === 1 ? "GL" : tenantId === 2 ? "AT" : "CV";
   const defaultRef = `${prefix}-PRJ-2026-${String(Math.floor(Math.random() * 900) + 100)}`;
 
   const defaultDate = new Date();
@@ -52,9 +48,11 @@ export const ConvertLeadToProjectModal = ({
   const [refNo, setRefNo] = useState(defaultRef);
   const [contractValue, setContractValue] = useState(deal?.amount || 0);
   const [targetDate, setTargetDate] = useState(defaultTargetDate);
-  const [siteLocation, setSiteLocation] = useState("Dubai, United Arab Emirates");
+  const [siteLocation, setSiteLocation] = useState(
+    "Dubai, United Arab Emirates",
+  );
   const [engineerId, setEngineerId] = useState<number>(
-    tenantId === 1 ? 4 : tenantId === 2 ? 2 : 1
+    tenantId === 1 ? 4 : tenantId === 2 ? 2 : 1,
   );
   const [scope, setScope] = useState(deal?.description || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,7 +79,8 @@ export const ConvertLeadToProjectModal = ({
         id: `m-${idx + 1}`,
         title,
         completed: idx === 0, // First milestone initiated
-        completed_at: idx === 0 ? new Date().toISOString().split("T")[0] : undefined,
+        completed_at:
+          idx === 0 ? new Date().toISOString().split("T")[0] : undefined,
         due_date: targetDate,
       }));
 
@@ -124,7 +123,8 @@ export const ConvertLeadToProjectModal = ({
       onClose();
       if (onSuccess) onSuccess();
       redirect(`/projects/${res.data.id}/show`);
-    } catch {
+    } catch (_err) {
+      void _err;
       notify("Failed to convert lead to project", { type: "error" });
     } finally {
       setIsSubmitting(false);
@@ -140,7 +140,8 @@ export const ConvertLeadToProjectModal = ({
             Convert Won Lead to Project
           </DialogTitle>
           <DialogDescription className="text-xs">
-            Initialize project milestones, assign site engineering lead, and schedule handover.
+            Initialize project milestones, assign site engineering lead, and
+            schedule handover.
           </DialogDescription>
         </DialogHeader>
 
@@ -152,7 +153,11 @@ export const ConvertLeadToProjectModal = ({
             </span>
             <div className="flex items-center gap-2 text-muted-foreground">
               <span className="font-bold text-primary">
-                {tenantId === 1 ? "Goldland Approvals" : tenantId === 2 ? "Abbadi MEP Services" : "Casavera Fit-out"}
+                {tenantId === 1
+                  ? "Goldland Approvals"
+                  : tenantId === 2
+                    ? "Abbadi MEP Services"
+                    : "Casavera Fit-out"}
               </span>
               <span>•</span>
               <span>AED {Number(deal.amount || 0).toLocaleString()}</span>
@@ -162,7 +167,9 @@ export const ConvertLeadToProjectModal = ({
           {/* Form fields */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <Label className="text-[11px] font-semibold">Project Ref No.</Label>
+              <Label className="text-[11px] font-semibold">
+                Project Ref No.
+              </Label>
               <Input
                 value={refNo}
                 onChange={(e) => setRefNo(e.target.value)}
@@ -171,7 +178,9 @@ export const ConvertLeadToProjectModal = ({
             </div>
 
             <div className="space-y-1">
-              <Label className="text-[11px] font-semibold">Contract Value (AED)</Label>
+              <Label className="text-[11px] font-semibold">
+                Contract Value (AED)
+              </Label>
               <Input
                 type="number"
                 value={contractValue}
@@ -183,7 +192,9 @@ export const ConvertLeadToProjectModal = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <Label className="text-[11px] font-semibold">Target Completion</Label>
+              <Label className="text-[11px] font-semibold">
+                Target Completion
+              </Label>
               <Input
                 type="date"
                 value={targetDate}
@@ -193,7 +204,9 @@ export const ConvertLeadToProjectModal = ({
             </div>
 
             <div className="space-y-1">
-              <Label className="text-[11px] font-semibold">Site Engineer Lead</Label>
+              <Label className="text-[11px] font-semibold">
+                Site Engineer Lead
+              </Label>
               <select
                 value={engineerId}
                 onChange={(e) => setEngineerId(Number(e.target.value))}
@@ -208,7 +221,9 @@ export const ConvertLeadToProjectModal = ({
           </div>
 
           <div className="space-y-1">
-            <Label className="text-[11px] font-semibold">Site Location in UAE</Label>
+            <Label className="text-[11px] font-semibold">
+              Site Location in UAE
+            </Label>
             <Input
               value={siteLocation}
               onChange={(e) => setSiteLocation(e.target.value)}
@@ -218,7 +233,9 @@ export const ConvertLeadToProjectModal = ({
           </div>
 
           <div className="space-y-1">
-            <Label className="text-[11px] font-semibold">Scope of Work Summary</Label>
+            <Label className="text-[11px] font-semibold">
+              Scope of Work Summary
+            </Label>
             <Textarea
               value={scope}
               onChange={(e) => setScope(e.target.value)}
@@ -229,7 +246,12 @@ export const ConvertLeadToProjectModal = ({
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" size="sm" onClick={onClose} disabled={isSubmitting}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onClose}
+            disabled={isSubmitting}
+          >
             Cancel
           </Button>
           <Button
@@ -248,4 +270,3 @@ export const ConvertLeadToProjectModal = ({
 };
 
 export default ConvertLeadToProjectModal;
-

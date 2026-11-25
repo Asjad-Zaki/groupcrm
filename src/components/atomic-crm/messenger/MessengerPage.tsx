@@ -86,6 +86,22 @@ export const MessengerPage = () => {
     if (serverMessages.length > 0) setLocalMessages(serverMessages);
   }, [serverMessages]);
 
+  // Real-time synchronization for messages and conversations
+  useEffect(() => {
+    const handleMessageSync = () => {
+      refetchMessages();
+      refetchConversations();
+    };
+    window.addEventListener("group-crm:message-sent", handleMessageSync);
+    window.addEventListener("group-crm:mutation", handleMessageSync);
+    const interval = setInterval(handleMessageSync, 4000);
+    return () => {
+      window.removeEventListener("group-crm:message-sent", handleMessageSync);
+      window.removeEventListener("group-crm:mutation", handleMessageSync);
+      clearInterval(interval);
+    };
+  }, [refetchMessages, refetchConversations]);
+
   useEffect(() => {
     const cParam = Number(searchParams.get("c"));
     if (cParam && cParam !== selectedConvId) {

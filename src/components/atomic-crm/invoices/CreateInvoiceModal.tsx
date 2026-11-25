@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { X, Receipt, Calculator, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGetList, useNotify } from "ra-core";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 import type { Invoice, Project, Quotation } from "../types";
 
 interface CreateInvoiceModalProps {
@@ -16,6 +17,7 @@ export const CreateInvoiceModal = ({
   onCreateInvoice,
 }: CreateInvoiceModalProps) => {
   const notify = useNotify();
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
 
   const [tenantId, setTenantId] = useState<number>(1);
   const [projectId, setProjectId] = useState<string>("");
@@ -27,7 +29,7 @@ export const CreateInvoiceModal = ({
   const [grossAmount, setGrossAmount] = useState<number>(85000);
   const [dueDate, setDueDate] = useState<string>("2026-12-15");
   const [notes, setNotes] = useState<string>(
-    "Milestone progress payment. 10% DLP retention held for 12 months."
+    "Milestone progress payment. 10% DLP retention held for 12 months.",
   );
 
   const { data: projects } = useGetList<Project>("projects", {
@@ -74,7 +76,7 @@ export const CreateInvoiceModal = ({
   if (!isOpen) return null;
 
   const vatAmount = Math.round(grossAmount * 0.05);
-  const retentionAmount = Math.round(grossAmount * 0.10);
+  const retentionAmount = Math.round(grossAmount * 0.1);
   const netPayable = grossAmount + vatAmount - retentionAmount;
 
   const formatAED = (value: number) => {
@@ -112,7 +114,9 @@ export const CreateInvoiceModal = ({
       trn_number: entityConfig.trn_number,
       quotation_ref: quotationRef || undefined,
       project_id: projectId ? Number(projectId) : undefined,
-      project_name: selectedProj ? selectedProj.name : "Commercial Fitout Contract",
+      project_name: selectedProj
+        ? selectedProj.name
+        : "Commercial Fitout Contract",
       client_name: clientName,
       client_company: clientCompany,
       client_phone: clientPhone,
@@ -124,7 +128,7 @@ export const CreateInvoiceModal = ({
       gross_amount: grossAmount,
       vat_rate: 0.05,
       vat_amount: vatAmount,
-      retention_rate: 0.10,
+      retention_rate: 0.1,
       retention_amount: retentionAmount,
       net_payable: netPayable,
       amount_paid: 0,
@@ -142,27 +146,38 @@ export const CreateInvoiceModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-card text-card-foreground border border-border rounded-2xl shadow-2xl overflow-hidden my-8">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-150 overflow-y-auto"
+    >
+      <div className="relative w-full max-w-2xl bg-card text-card-foreground border border-border rounded-2xl shadow-2xl overflow-hidden my-8 animate-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between p-5 border-b border-border/80 bg-muted/20">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20">
               <Receipt className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-foreground">Create Progressive Tax Invoice</h3>
+              <h3 className="text-base font-bold text-foreground">
+                Create Progressive Tax Invoice
+              </h3>
               <p className="text-xs text-muted-foreground">
                 Automatic 5% UAE Federal VAT and 10% DLP Retention calculations
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded">
+              ESC
+            </kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              title="Close (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -170,21 +185,30 @@ export const CreateInvoiceModal = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div className="space-y-1.5">
               <label className="text-foreground font-semibold flex items-center gap-1">
-                <Building2 className="w-3.5 h-3.5 text-primary" /> Issuing UAE Entity *
+                <Building2 className="w-3.5 h-3.5 text-primary" /> Issuing UAE
+                Entity *
               </label>
               <select
                 value={tenantId}
                 onChange={(e) => setTenantId(Number(e.target.value))}
                 className="w-full bg-muted/40 border border-border rounded-xl px-3 py-2.5 text-foreground"
               >
-                <option value={1}>Goldland Contracting LLC (TRN: 100234567800003)</option>
-                <option value={2}>Abbadi Tech Technical Services (TRN: 100876543200003)</option>
-                <option value={3}>Casavera Interiors LLC (TRN: 100456789000003)</option>
+                <option value={1}>
+                  Goldland Contracting LLC (TRN: 100234567800003)
+                </option>
+                <option value={2}>
+                  Abbadi Tech Technical Services (TRN: 100876543200003)
+                </option>
+                <option value={3}>
+                  Casavera Interiors LLC (TRN: 100456789000003)
+                </option>
               </select>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-muted-foreground font-medium">Link Active Project</label>
+              <label className="text-muted-foreground font-medium">
+                Link Active Project
+              </label>
               <select
                 value={projectId}
                 onChange={(e) => handleProjectSelect(e.target.value)}
@@ -203,7 +227,9 @@ export const CreateInvoiceModal = ({
           {/* Quotation link & Due Date */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div className="space-y-1.5">
-              <label className="text-muted-foreground font-medium">Quotation Reference</label>
+              <label className="text-muted-foreground font-medium">
+                Quotation Reference
+              </label>
               <select
                 value={quotationRef}
                 onChange={(e) => setQuotationRef(e.target.value)}
@@ -212,14 +238,17 @@ export const CreateInvoiceModal = ({
                 <option value="">-- Select Quotation (Optional) --</option>
                 {quotes?.map((q) => (
                   <option key={q.id} value={q.quote_number}>
-                    {q.quote_number} • {q.client_name} ({formatAED(q.total_amount)})
+                    {q.quote_number} • {q.client_name} (
+                    {formatAED(q.total_amount)})
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-foreground font-semibold">Payment Due Date *</label>
+              <label className="text-foreground font-semibold">
+                Payment Due Date *
+              </label>
               <input
                 type="date"
                 value={dueDate}
@@ -233,7 +262,9 @@ export const CreateInvoiceModal = ({
           {/* Client Details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div className="space-y-1.5">
-              <label className="text-foreground font-semibold">Client Contact Name *</label>
+              <label className="text-foreground font-semibold">
+                Client Contact Name *
+              </label>
               <input
                 type="text"
                 placeholder="e.g., Eng. Tariq Al-Falasi"
@@ -244,7 +275,9 @@ export const CreateInvoiceModal = ({
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-foreground font-semibold">Client Company / Entity *</label>
+              <label className="text-foreground font-semibold">
+                Client Company / Entity *
+              </label>
               <input
                 type="text"
                 placeholder="e.g., Al Falasi Properties LLC"
@@ -258,7 +291,9 @@ export const CreateInvoiceModal = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div className="space-y-1.5">
-              <label className="text-muted-foreground font-medium">WhatsApp / Phone *</label>
+              <label className="text-muted-foreground font-medium">
+                WhatsApp / Phone *
+              </label>
               <input
                 type="text"
                 value={clientPhone}
@@ -268,7 +303,9 @@ export const CreateInvoiceModal = ({
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-muted-foreground font-medium">Client Email</label>
+              <label className="text-muted-foreground font-medium">
+                Client Email
+              </label>
               <input
                 type="email"
                 placeholder="client@domain.ae"
@@ -306,18 +343,24 @@ export const CreateInvoiceModal = ({
               <span className="font-mono">+{formatAED(vatAmount)}</span>
             </div>
             <div className="flex justify-between text-blue-400">
-              <span>Less: 10% Defect Liability Retention (Held in Escrow):</span>
+              <span>
+                Less: 10% Defect Liability Retention (Held in Escrow):
+              </span>
               <span className="font-mono">-{formatAED(retentionAmount)}</span>
             </div>
             <div className="border-t border-border/80 pt-2 flex justify-between text-base font-bold text-foreground">
               <span>Net Invoiced Payable:</span>
-              <span className="font-mono text-primary">{formatAED(netPayable)}</span>
+              <span className="font-mono text-primary">
+                {formatAED(netPayable)}
+              </span>
             </div>
           </div>
 
           {/* Notes */}
           <div className="space-y-1.5 text-xs">
-            <label className="text-muted-foreground font-medium">Terms & Commercial Notes</label>
+            <label className="text-muted-foreground font-medium">
+              Terms & Commercial Notes
+            </label>
             <input
               type="text"
               value={notes}
@@ -328,7 +371,12 @@ export const CreateInvoiceModal = ({
 
           {/* Actions */}
           <div className="pt-3 border-t border-border flex items-center justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onClose} className="text-xs">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="text-xs"
+            >
               Cancel
             </Button>
             <Button

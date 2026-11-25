@@ -9,7 +9,9 @@ export const DEFAULT_USER: Sale = TEAM_MEMBERS[0];
 
 export const USER_STORAGE_KEY = "user";
 
-export async function findUserByCredential(input: string): Promise<Sale | undefined> {
+export async function findUserByCredential(
+  input: string,
+): Promise<Sale | undefined> {
   const query = (input || "").trim().toLowerCase();
   if (!query) return undefined;
 
@@ -51,7 +53,9 @@ export const authProvider: AuthProvider = {
     const user = await findUserByCredential(cred);
 
     if (!user) {
-      throw new Error(`Employee account "${cred}" not found in Group CRM directory.`);
+      throw new Error(
+        `Employee account "${cred}" not found in Group CRM directory.`,
+      );
     }
 
     if (
@@ -64,6 +68,7 @@ export const authProvider: AuthProvider = {
       throw new Error("Invalid password. Please use 'demo' or 'Password123!'.");
     }
 
+    localStorage.removeItem("group-crm:logged-out");
     localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
 
     // Update active tenant context if user belongs to specific single tenant
@@ -89,6 +94,7 @@ export const authProvider: AuthProvider = {
     return;
   },
   logout: () => {
+    localStorage.setItem("group-crm:logged-out", "true");
     localStorage.removeItem(USER_STORAGE_KEY);
     if (typeof window !== "undefined") {
       window.dispatchEvent(
@@ -99,9 +105,15 @@ export const authProvider: AuthProvider = {
   },
   checkError: () => Promise.resolve(),
   checkAuth: () => {
+    const isLoggedOut = localStorage.getItem("group-crm:logged-out") === "true";
     const userItem = localStorage.getItem(USER_STORAGE_KEY);
     if (!userItem) {
-      return Promise.reject({ redirectTo: "/login" });
+      if (isLoggedOut) {
+        return Promise.reject({ redirectTo: "/login" });
+      }
+      // First visit or initial load: auto-seed default Navas (MD) session
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(DEFAULT_USER));
+      return Promise.resolve();
     }
     try {
       const user = JSON.parse(userItem);
@@ -132,7 +144,8 @@ export const authProvider: AuthProvider = {
       fullName: `${user.first_name} ${user.last_name}`,
       avatar: user.avatar?.src,
       email: user.email,
-      role: user.role_name || (user.administrator ? "Administrator" : "Employee"),
+      role:
+        user.role_name || (user.administrator ? "Administrator" : "Employee"),
       title: user.job_title || user.department,
       tenants: user.tenant_ids || ["goldland", "abbadi", "casavera"],
     });

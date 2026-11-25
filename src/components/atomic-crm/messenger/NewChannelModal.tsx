@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, Hash, Building2, FolderKanban, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 import type { Conversation, Project } from "../types";
 
 interface NewChannelModalProps {
@@ -18,6 +19,7 @@ export const NewChannelModal = ({
   projects,
   onCreateChannel,
 }: NewChannelModalProps) => {
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState<"channel" | "project">("channel");
@@ -69,8 +71,11 @@ export const NewChannelModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-lg bg-card rounded-2xl border border-border shadow-2xl p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-150"
+    >
+      <div className="w-full max-w-lg bg-card rounded-2xl border border-border shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between pb-3 border-b border-border">
           <div className="space-y-0.5">
             <h2 className="text-base font-bold text-foreground flex items-center gap-2">
@@ -81,13 +86,19 @@ export const NewChannelModal = ({
               Add a new departmental channel or dedicated site project room.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded">
+              ESC
+            </kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              title="Close (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">

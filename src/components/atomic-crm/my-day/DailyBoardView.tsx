@@ -13,6 +13,7 @@ import {
   PauseCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 import { TEAM_MEMBERS } from "../providers/fakerest/dataGenerator/sales";
 import type { DailyReport, Task } from "../types";
 
@@ -42,6 +43,11 @@ export const DailyBoardView = ({
     report?: DailyReport;
     memberTasks: Task[];
   } | null>(null);
+
+  const { handleBackdropClick } = useModalShortcuts({
+    isOpen: Boolean(selectedReportMember),
+    onClose: () => setSelectedReportMember(null),
+  });
 
   // Filter team members based on company
   const filteredMembers = TEAM_MEMBERS.filter((m) => {
@@ -464,9 +470,12 @@ export const DailyBoardView = ({
 
       {/* Drill-Down Modal for Selected Member */}
       {selectedReportMember && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 text-slate-100 rounded-2xl max-w-xl w-full shadow-2xl p-6">
-            <div className="flex items-start justify-between pb-4 border-b border-slate-800">
+        <div
+          onClick={handleBackdropClick}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-150"
+        >
+          <div className="bg-card border border-border/80 text-card-foreground rounded-2xl max-w-xl w-full shadow-2xl p-6 animate-in zoom-in-95 duration-150">
+            <div className="flex items-start justify-between pb-4 border-b border-border/60">
               <div className="flex items-center gap-3">
                 <img
                   src={
@@ -474,27 +483,33 @@ export const DailyBoardView = ({
                     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop"
                   }
                   alt={selectedReportMember.member.first_name}
-                  className="w-10 h-10 rounded-full object-cover border border-slate-700"
+                  className="w-10 h-10 rounded-full object-cover border border-border"
                 />
                 <div>
-                  <h3 className="text-base font-bold text-white">
+                  <h3 className="text-base font-bold text-foreground">
                     {selectedReportMember.member.first_name}{" "}
                     {selectedReportMember.member.last_name}
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-muted-foreground">
                     {selectedReportMember.member.job_title} •{" "}
                     {selectedReportMember.member.department}
                   </p>
                 </div>
               </div>
 
-              <button
-                type="button"
-                className="text-muted-foreground hover:text-foreground p-1 rounded-md"
-                onClick={() => setSelectedReportMember(null)}
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded">
+                  ESC
+                </kbd>
+                <button
+                  type="button"
+                  className="text-muted-foreground hover:text-foreground p-1 rounded-md transition-colors"
+                  onClick={() => setSelectedReportMember(null)}
+                  title="Close (Esc)"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             <div className="space-y-4 mt-4">
@@ -580,10 +595,10 @@ export const DailyBoardView = ({
               </div>
             </div>
 
-            <div className="flex justify-end pt-4 mt-4 border-t border-slate-800">
+            <div className="flex justify-end pt-4 mt-4 border-t border-border/60">
               <Button
                 variant="outline"
-                className="border-slate-700 text-slate-300 hover:bg-slate-800 text-xs"
+                className="border-border text-foreground hover:bg-muted text-xs"
                 onClick={() => setSelectedReportMember(null)}
               >
                 Close

@@ -11,6 +11,7 @@ import {
   Building2,
   Activity,
   ShieldCheck,
+  Keyboard,
 } from "lucide-react";
 import { CanAccess, useTranslate, useUserMenu } from "ra-core";
 import { Link, matchPath, useLocation } from "react-router";
@@ -68,7 +69,12 @@ const Header = () => {
   }
 
   const moreTabs = [
-    { label: "Messages", to: "/messages", match: "/messages", icon: MessageSquare },
+    {
+      label: "Messages",
+      to: "/messages",
+      match: "/messages",
+      icon: MessageSquare,
+    },
     { label: "Feed", to: "/feed", match: "/feed", icon: Megaphone },
     { label: "Meetings", to: "/meetings", match: "/meetings", icon: Video },
     {
@@ -83,7 +89,12 @@ const Header = () => {
       match: "/contacts",
       icon: Users,
     },
-    { label: "Performance", to: "/performance", match: "/performance", icon: Activity },
+    {
+      label: "Performance",
+      to: "/performance",
+      match: "/performance",
+      icon: Activity,
+    },
     { label: "Portals", to: "/portals", match: "/portals", icon: ShieldCheck },
   ];
 
@@ -159,7 +170,9 @@ const Header = () => {
                           : "text-secondary-foreground/70 border-transparent hover:text-secondary-foreground/80"
                       }`}
                     >
-                      <span>{activeMoreItem ? activeMoreItem.label : "More"}</span>
+                      <span>
+                        {activeMoreItem ? activeMoreItem.label : "More"}
+                      </span>
                       <ChevronDown className="w-3.5 h-3.5 opacity-70 shrink-0" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48 p-1 z-50">
@@ -199,6 +212,19 @@ const Header = () => {
                 <div className="2xl:hidden">
                   <GlobalSearchButton variant="icon" />
                 </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    window.dispatchEvent(
+                      new CustomEvent("groupcrm:open-shortcuts"),
+                    )
+                  }
+                  className="p-1.5 sm:p-2 rounded-lg text-secondary-foreground/70 hover:text-secondary-foreground hover:bg-secondary/60 transition-colors focus:outline-none"
+                  title="Keyboard Shortcuts (?)"
+                  aria-label="Keyboard shortcuts"
+                >
+                  <Keyboard className="w-4 h-4" />
+                </button>
                 <ThemeModeToggle />
                 <RefreshButton />
                 <CompanySwitcher />

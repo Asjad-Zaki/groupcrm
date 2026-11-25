@@ -205,6 +205,98 @@ export const createDataProvider = ({
       }
       return baseDataProvider.getList(resource, params);
     },
+    async create(resource: string, params: any) {
+      const result = await baseDataProvider.create(resource, params);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("group-crm:mutation", {
+            detail: { resource, type: "create", data: result.data },
+          }),
+        );
+        if (
+          resource === "contact_notes" ||
+          resource === "deal_notes" ||
+          resource === "contacts" ||
+          resource === "deals" ||
+          resource === "companies"
+        ) {
+          window.dispatchEvent(
+            new CustomEvent("group-crm:activity-update", {
+              detail: { resource, data: result.data },
+            }),
+          );
+        }
+        if (resource === "messages" || resource === "conversations") {
+          window.dispatchEvent(
+            new CustomEvent("group-crm:message-sent", {
+              detail: { resource, data: result.data },
+            }),
+          );
+        }
+        if (resource === "tasks" || resource === "daily_reports") {
+          window.dispatchEvent(
+            new CustomEvent("group-crm:task-update", {
+              detail: { resource, data: result.data },
+            }),
+          );
+        }
+      }
+      return result;
+    },
+    async update(resource: string, params: any) {
+      const result = await baseDataProvider.update(resource, params);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("group-crm:mutation", {
+            detail: { resource, type: "update", data: result.data },
+          }),
+        );
+        if (
+          resource === "contact_notes" ||
+          resource === "deal_notes" ||
+          resource === "contacts" ||
+          resource === "deals" ||
+          resource === "companies"
+        ) {
+          window.dispatchEvent(
+            new CustomEvent("group-crm:activity-update", {
+              detail: { resource, data: result.data },
+            }),
+          );
+        }
+        if (resource === "messages" || resource === "conversations") {
+          window.dispatchEvent(
+            new CustomEvent("group-crm:message-sent", {
+              detail: { resource, data: result.data },
+            }),
+          );
+        }
+        if (resource === "tasks" || resource === "daily_reports") {
+          window.dispatchEvent(
+            new CustomEvent("group-crm:task-update", {
+              detail: { resource, data: result.data },
+            }),
+          );
+        }
+      }
+      return result;
+    },
+    async delete(resource: string, params: any) {
+      const result = await baseDataProvider.delete(resource, params);
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("group-crm:mutation", {
+            detail: { resource, type: "delete", id: params.id },
+          }),
+        );
+        window.dispatchEvent(
+          new CustomEvent("group-crm:activity-update", {
+            detail: { resource, id: params.id },
+          }),
+        );
+      }
+      return result;
+    },
     unarchiveDeal: async (deal: Deal) => {
       // get all deals where stage is the same as the deal to unarchive
       const { data: deals } = await baseDataProvider.getList<Deal>("deals", {

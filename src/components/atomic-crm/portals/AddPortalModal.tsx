@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 import type { AuthorityPortal } from "./types";
 
 interface AddPortalModalProps {
@@ -9,24 +10,30 @@ interface AddPortalModalProps {
   onAdd: (portal: AuthorityPortal) => void;
 }
 
-export const AddPortalModal = ({ isOpen, onClose, onAdd }: AddPortalModalProps) => {
+export const AddPortalModal = ({
+  isOpen,
+  onClose,
+  onAdd,
+}: AddPortalModalProps) => {
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
   const [name, setName] = useState("");
   const [acronym, setAcronym] = useState("");
   const [url, setUrl] = useState("");
-  const [category, setCategory] = useState<AuthorityPortal["category"]>("municipalities");
+  const [category, setCategory] =
+    useState<AuthorityPortal["category"]>("municipalities");
   const [description, setDescription] = useState("");
   const [hotline, setHotline] = useState("");
   const [hours, setHours] = useState("");
-  const [companies, setCompanies] = useState<Array<"goldland" | "abbadi" | "casavera">>([
-    "goldland",
-  ]);
+  const [companies, setCompanies] = useState<
+    Array<"goldland" | "abbadi" | "casavera">
+  >(["goldland"]);
   const [error, setError] = useState("");
 
   if (!isOpen) return null;
 
   const handleToggleCompany = (c: "goldland" | "abbadi" | "casavera") => {
     setCompanies((prev) =>
-      prev.includes(c) ? prev.filter((item) => item !== c) : [...prev, c]
+      prev.includes(c) ? prev.filter((item) => item !== c) : [...prev, c],
     );
   };
 
@@ -48,7 +55,9 @@ export const AddPortalModal = ({ isOpen, onClose, onAdd }: AddPortalModalProps) 
       acronym: acronym.trim().toUpperCase(),
       url: url.trim(),
       category,
-      description: description.trim() || "UAE Authority Submission & Online Services Portal.",
+      description:
+        description.trim() ||
+        "UAE Authority Submission & Online Services Portal.",
       operating_companies: companies,
       submission_guidelines: [
         "Ensure all drawings have valid consultant registration seals.",
@@ -67,13 +76,37 @@ export const AddPortalModal = ({ isOpen, onClose, onAdd }: AddPortalModalProps) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="bg-slate-900 border border-slate-800 text-slate-100 rounded-2xl max-w-lg w-full shadow-2xl p-6">
-        <div className="flex items-center gap-3 text-amber-400 mb-4 pb-3 border-b border-slate-800">
-          <PlusCircle className="w-6 h-6 shrink-0" />
-          <div>
-            <h3 className="text-lg font-bold text-white">Add Authority Portal Shortcut</h3>
-            <p className="text-xs text-slate-400">Configure quick-access link for team submissions</p>
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-150"
+    >
+      <div className="bg-card border border-border/80 text-card-foreground rounded-2xl max-w-lg w-full shadow-2xl p-6 animate-in zoom-in-95 duration-150">
+        <div className="flex items-center justify-between pb-3 border-b border-border/60 mb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
+              <PlusCircle className="w-5 h-5 shrink-0" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-foreground">
+                Add Authority Portal Shortcut
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Configure quick-access link for team submissions
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded">
+              ESC
+            </kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              title="Close (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
         </div>
 
@@ -124,7 +157,9 @@ export const AddPortalModal = ({ isOpen, onClose, onAdd }: AddPortalModalProps) 
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Category</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">
+                Category
+              </label>
               <select
                 className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
                 value={category}
@@ -138,7 +173,9 @@ export const AddPortalModal = ({ isOpen, onClose, onAdd }: AddPortalModalProps) 
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Support Hotline</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">
+                Support Hotline
+              </label>
               <input
                 type="text"
                 placeholder="e.g. 800 900"
@@ -149,7 +186,9 @@ export const AddPortalModal = ({ isOpen, onClose, onAdd }: AddPortalModalProps) 
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Official Hours</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">
+                Official Hours
+              </label>
               <input
                 type="text"
                 placeholder="e.g. 07:30 – 15:30"
@@ -161,7 +200,9 @@ export const AddPortalModal = ({ isOpen, onClose, onAdd }: AddPortalModalProps) 
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Description / Services</label>
+            <label className="block text-xs font-medium text-slate-300 mb-1">
+              Description / Services
+            </label>
             <textarea
               rows={2}
               placeholder="Key services covered by this authority portal..."

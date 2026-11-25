@@ -7,8 +7,10 @@ import {
   FolderKanban,
   PlayCircle,
   PauseCircle,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 import type { Task, DailyReport, Identifier } from "../types";
 
 interface EndOfDayModalProps {
@@ -30,6 +32,7 @@ export const EndOfDayModal = ({
   company,
   onSubmitReport,
 }: EndOfDayModalProps) => {
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
   // Local task states for quick inline editing before submission
   const [taskStates, setTaskStates] = useState<Task[]>(tasks);
   const [summary, setSummary] = useState("");
@@ -112,8 +115,11 @@ export const EndOfDayModal = ({
   const totalCount = taskStates.length;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="bg-card border border-border/80 text-card-foreground rounded-2xl max-w-2xl w-full shadow-2xl p-6 my-8">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-150"
+    >
+      <div className="bg-card border border-border/80 text-card-foreground rounded-2xl max-w-2xl w-full shadow-2xl p-6 my-8 animate-in zoom-in-95 duration-150">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-border/60">
           <div>
@@ -131,10 +137,21 @@ export const EndOfDayModal = ({
             </p>
           </div>
 
-          <div className="text-right">
+          <div className="flex items-center gap-3">
             <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border">
               {completedCount} / {totalCount} Done
             </span>
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded">
+              ESC
+            </kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              title="Close (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
         </div>
 

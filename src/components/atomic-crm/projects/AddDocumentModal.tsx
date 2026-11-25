@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, FileText, Building2, Calendar, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 import type { ProjectDocumentNOC } from "../types";
 
 interface AddDocumentModalProps {
@@ -14,13 +15,16 @@ export const AddDocumentModal = ({
   onClose,
   onSubmit,
 }: AddDocumentModalProps) => {
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
   const [authority, setAuthority] = useState("Dubai Municipality (DM)");
-  const [category, setCategory] = useState<ProjectDocumentNOC["category"]>("permit");
+  const [category, setCategory] =
+    useState<ProjectDocumentNOC["category"]>("permit");
   const [title, setTitle] = useState("");
   const [referenceNo, setReferenceNo] = useState("");
-  const [status, setStatus] = useState<ProjectDocumentNOC["status"]>("under_review");
+  const [status, setStatus] =
+    useState<ProjectDocumentNOC["status"]>("under_review");
   const [submissionDate, setSubmissionDate] = useState<string>(
-    new Date().toISOString().split("T")[0]
+    new Date().toISOString().split("T")[0],
   );
   const [expiryDate, setExpiryDate] = useState<string>("");
   const [notes, setNotes] = useState("");
@@ -38,7 +42,10 @@ export const AddDocumentModal = ({
       reference_no: referenceNo.trim(),
       status,
       submission_date: submissionDate || undefined,
-      approval_date: status === "approved" ? new Date().toISOString().split("T")[0] : undefined,
+      approval_date:
+        status === "approved"
+          ? new Date().toISOString().split("T")[0]
+          : undefined,
       expiry_date: expiryDate || undefined,
       file_type: "PDF",
       file_size: "2.4 MB",
@@ -49,22 +56,34 @@ export const AddDocumentModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-lg bg-card rounded-2xl border border-border shadow-2xl p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-150"
+    >
+      <div className="w-full max-w-lg bg-card rounded-2xl border border-border shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between pb-3 border-b border-border">
           <div className="space-y-0.5">
-            <h2 className="text-base font-bold text-foreground">Add Permit / NOC Document</h2>
+            <h2 className="text-base font-bold text-foreground">
+              Add Permit / NOC Document
+            </h2>
             <p className="text-xs text-muted-foreground">
-              Register authority submission, NOC reference, or contractor compliance certificate.
+              Register authority submission, NOC reference, or contractor
+              compliance certificate.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded">
+              ESC
+            </kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              title="Close (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
@@ -78,16 +97,32 @@ export const AddDocumentModal = ({
                 onChange={(e) => setAuthority(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
               >
-                <option value="Dubai Municipality (DM)">Dubai Municipality (DM)</option>
-                <option value="Dubai Civil Defence (DCD)">Dubai Civil Defence (DCD)</option>
-                <option value="Dubai Electricity & Water Authority (DEWA)">DEWA</option>
-                <option value="Dubai Development Authority (DDA)">DDA (TECOM)</option>
+                <option value="Dubai Municipality (DM)">
+                  Dubai Municipality (DM)
+                </option>
+                <option value="Dubai Civil Defence (DCD)">
+                  Dubai Civil Defence (DCD)
+                </option>
+                <option value="Dubai Electricity & Water Authority (DEWA)">
+                  DEWA
+                </option>
+                <option value="Dubai Development Authority (DDA)">
+                  DDA (TECOM)
+                </option>
                 <option value="Trakhees (PCFC)">Trakhees (PCFC)</option>
-                <option value="Emaar Properties PJSC">Emaar Properties PJSC</option>
-                <option value="Nakheel Community Management">Nakheel Community Management</option>
-                <option value="Concordia (DMCC/JLT)">Concordia (DMCC/JLT)</option>
+                <option value="Emaar Properties PJSC">
+                  Emaar Properties PJSC
+                </option>
+                <option value="Nakheel Community Management">
+                  Nakheel Community Management
+                </option>
+                <option value="Concordia (DMCC/JLT)">
+                  Concordia (DMCC/JLT)
+                </option>
                 <option value="Dubai South (DWC)">Dubai South (DWC)</option>
-                <option value="Other Regulatory Authority">Other Regulatory Authority</option>
+                <option value="Other Regulatory Authority">
+                  Other Regulatory Authority
+                </option>
               </select>
             </div>
 
@@ -97,7 +132,9 @@ export const AddDocumentModal = ({
               </label>
               <select
                 value={category}
-                onChange={(e) => setCategory(e.target.value as ProjectDocumentNOC["category"])}
+                onChange={(e) =>
+                  setCategory(e.target.value as ProjectDocumentNOC["category"])
+                }
                 className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
               >
                 <option value="permit">Official Authority Permit</option>
@@ -111,7 +148,9 @@ export const AddDocumentModal = ({
           </div>
 
           <div className="space-y-1">
-            <label className="font-semibold text-muted-foreground">Document Title *</label>
+            <label className="font-semibold text-muted-foreground">
+              Document Title *
+            </label>
             <input
               type="text"
               required
@@ -124,7 +163,9 @@ export const AddDocumentModal = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="font-semibold text-muted-foreground">Reference / Application # *</label>
+              <label className="font-semibold text-muted-foreground">
+                Reference / Application # *
+              </label>
               <input
                 type="text"
                 required
@@ -141,12 +182,16 @@ export const AddDocumentModal = ({
               </label>
               <select
                 value={status}
-                onChange={(e) => setStatus(e.target.value as ProjectDocumentNOC["status"])}
+                onChange={(e) =>
+                  setStatus(e.target.value as ProjectDocumentNOC["status"])
+                }
                 className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
               >
                 <option value="approved">Approved</option>
                 <option value="under_review">Under Authority Review</option>
-                <option value="revision_required">Revision Required / Comments Issued</option>
+                <option value="revision_required">
+                  Revision Required / Comments Issued
+                </option>
                 <option value="pending_submission">Pending Submission</option>
               </select>
             </div>
@@ -179,7 +224,9 @@ export const AddDocumentModal = ({
           </div>
 
           <div className="space-y-1">
-            <label className="font-semibold text-muted-foreground">Conditions / Portal Notes</label>
+            <label className="font-semibold text-muted-foreground">
+              Conditions / Portal Notes
+            </label>
             <input
               type="text"
               placeholder="E.g., Approved with condition of night-time hauling only"

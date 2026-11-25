@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNotify } from "ra-core";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 import type { FeedPost } from "../types";
 
 interface CreatePostModalProps {
@@ -23,6 +24,7 @@ export const CreatePostModal = ({
   onCreatePost,
 }: CreatePostModalProps) => {
   const notify = useNotify();
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
 
   const [type, setType] = useState<FeedPost["type"]>("announcement");
   const [title, setTitle] = useState("");
@@ -65,8 +67,11 @@ export const CreatePostModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in">
-      <div className="relative w-full max-w-lg bg-card text-card-foreground border border-border rounded-2xl shadow-2xl overflow-hidden">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-150 overflow-y-auto"
+    >
+      <div className="relative w-full max-w-lg bg-card text-card-foreground border border-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border/80 bg-muted/20">
           <div className="flex items-center gap-3">
@@ -83,13 +88,19 @@ export const CreatePostModal = ({
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded">
+              ESC
+            </kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              title="Close (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Form */}

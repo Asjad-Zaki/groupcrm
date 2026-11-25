@@ -1,6 +1,14 @@
 import { useState } from "react";
-import { X, Calendar, User, Users, PackageCheck, AlertTriangle } from "lucide-react";
+import {
+  X,
+  Calendar,
+  User,
+  Users,
+  PackageCheck,
+  AlertTriangle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 import type { ProjectDailyLogEntry } from "../types";
 
 interface AddDailyLogModalProps {
@@ -14,14 +22,23 @@ export const AddDailyLogModal = ({
   onClose,
   onSubmit,
 }: AddDailyLogModalProps) => {
-  const [date, setDate] = useState<string>(new Date().toISOString().split("T")[0]);
-  const [authorName, setAuthorName] = useState("Arshad (Site Inspection Engineer)");
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
+  const [date, setDate] = useState<string>(
+    new Date().toISOString().split("T")[0],
+  );
+  const [authorName, setAuthorName] = useState(
+    "Arshad (Site Inspection Engineer)",
+  );
   const authorRole = "Site Engineer";
   const [workSummary, setWorkSummary] = useState("");
   const [manpowerCount, setManpowerCount] = useState<number>(6);
-  const [manpowerBreakdown, setManpowerBreakdown] = useState("4 Installers, 1 Electrician, 1 Supervisor");
+  const [manpowerBreakdown, setManpowerBreakdown] = useState(
+    "4 Installers, 1 Electrician, 1 Supervisor",
+  );
   const [materialsReceived, setMaterialsReceived] = useState("");
-  const [weatherCondition, setWeatherCondition] = useState("Clear 30°C, Normal site access");
+  const [weatherCondition, setWeatherCondition] = useState(
+    "Clear 30°C, Normal site access",
+  );
   const [blockers, setBlockers] = useState("");
 
   if (!isOpen) return null;
@@ -47,22 +64,33 @@ export const AddDailyLogModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-lg bg-card rounded-2xl border border-border shadow-2xl p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-150"
+    >
+      <div className="w-full max-w-lg bg-card rounded-2xl border border-border shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between pb-3 border-b border-border">
           <div className="space-y-0.5">
-            <h2 className="text-base font-bold text-foreground">Post Site Daily Log</h2>
+            <h2 className="text-base font-bold text-foreground">
+              Post Site Daily Log
+            </h2>
             <p className="text-xs text-muted-foreground">
               Record daily manpower, materials delivered, and site progress.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded">
+              ESC
+            </kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              title="Close (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
@@ -121,7 +149,9 @@ export const AddDailyLogModal = ({
               />
             </div>
             <div className="col-span-2 space-y-1">
-              <label className="font-semibold text-muted-foreground">Trades Breakdown</label>
+              <label className="font-semibold text-muted-foreground">
+                Trades Breakdown
+              </label>
               <input
                 type="text"
                 placeholder="E.g., 4 Joiners, 2 Electricians"
@@ -134,7 +164,8 @@ export const AddDailyLogModal = ({
 
           <div className="space-y-1">
             <label className="font-semibold text-muted-foreground flex items-center gap-1">
-              <PackageCheck className="w-3.5 h-3.5" /> Materials Received On Site
+              <PackageCheck className="w-3.5 h-3.5" /> Materials Received On
+              Site
             </label>
             <input
               type="text"
@@ -159,7 +190,8 @@ export const AddDailyLogModal = ({
 
           <div className="space-y-1">
             <label className="font-semibold text-red-400 flex items-center gap-1">
-              <AlertTriangle className="w-3.5 h-3.5" /> Site Blockers or Authority Delays (Optional)
+              <AlertTriangle className="w-3.5 h-3.5" /> Site Blockers or
+              Authority Delays (Optional)
             </label>
             <input
               type="text"

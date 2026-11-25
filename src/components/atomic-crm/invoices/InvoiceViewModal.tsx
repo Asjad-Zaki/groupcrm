@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 import type { Invoice } from "../types";
 
 interface InvoiceViewModalProps {
@@ -22,6 +23,8 @@ export const InvoiceViewModal = ({
   onClose,
   onRecordPayment,
 }: InvoiceViewModalProps) => {
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
+
   if (!isOpen || !invoice) return null;
 
   const formatAED = (value: number) => {
@@ -80,8 +83,11 @@ export const InvoiceViewModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in overflow-y-auto">
-      <div className="relative w-full max-w-3xl bg-card text-card-foreground border border-border rounded-2xl shadow-2xl overflow-hidden my-8 print:border-none print:shadow-none print:p-0">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-150 overflow-y-auto"
+    >
+      <div className="relative w-full max-w-3xl bg-card text-card-foreground border border-border rounded-2xl shadow-2xl overflow-hidden my-8 animate-in zoom-in-95 duration-150 print:border-none print:shadow-none print:p-0">
         {/* Top Control Bar (Hidden during print) */}
         <div className="flex items-center justify-between p-4 border-b border-border/80 bg-muted/40 print:hidden">
           <div className="flex items-center gap-2">
@@ -133,10 +139,14 @@ export const InvoiceViewModal = ({
             >
               <Printer className="w-3.5 h-3.5" /> Print
             </Button>
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded ml-1">
+              ESC
+            </kbd>
             <button
               type="button"
               onClick={onClose}
-              className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted ml-2"
+              className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted ml-1 transition-colors"
+              title="Close (Esc)"
             >
               <X className="w-5 h-5" />
             </button>

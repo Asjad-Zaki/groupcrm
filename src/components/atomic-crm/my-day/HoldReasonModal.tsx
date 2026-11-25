@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 
 interface HoldReasonModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ export const HoldReasonModal = ({
   onSubmit,
   taskTitle,
 }: HoldReasonModalProps) => {
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
   const [reason, setReason] = useState("");
   const [error, setError] = useState("");
 
@@ -23,7 +25,9 @@ export const HoldReasonModal = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!reason.trim()) {
-      setError("Please provide a reason why this task is being placed on hold.");
+      setError(
+        "Please provide a reason why this task is being placed on hold.",
+      );
       return;
     }
     onSubmit(reason.trim());
@@ -32,30 +36,51 @@ export const HoldReasonModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-slate-900 border border-slate-800 text-slate-100 rounded-xl max-w-md w-full shadow-2xl p-6">
-        <div className="flex items-center gap-3 text-amber-400 mb-4">
-          <AlertCircle className="w-6 h-6 shrink-0" />
-          <h3 className="text-lg font-semibold text-white">Place Task On Hold</h3>
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-150"
+    >
+      <div className="bg-card border border-border/80 text-card-foreground rounded-2xl max-w-md w-full shadow-2xl p-6 animate-in zoom-in-95 duration-150">
+        <div className="flex items-center justify-between pb-3 border-b border-border/60 mb-4">
+          <div className="flex items-center gap-2.5 text-amber-500">
+            <AlertCircle className="w-5 h-5 shrink-0" />
+            <h3 className="text-base font-bold text-foreground">
+              Place Task On Hold
+            </h3>
+          </div>
+          <div className="flex items-center gap-2">
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded">
+              ESC
+            </kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              title="Close (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        <p className="text-sm text-slate-300 mb-2">
-          Company policy requires a documented reason when halting active tasks.
+        <p className="text-xs text-muted-foreground mb-3">
+          Company policy requires a documented reason when halting active
+          project tasks.
         </p>
 
-        <div className="p-3 bg-slate-800/60 rounded-lg text-xs text-slate-400 mb-4 border border-slate-700/50">
-          <span className="font-semibold text-slate-200">Task: </span>
+        <div className="p-3 bg-muted/40 rounded-xl text-xs text-muted-foreground mb-4 border border-border/60">
+          <span className="font-semibold text-foreground">Task: </span>
           {taskTitle}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">
-              Hold Reason <span className="text-rose-400">*</span>
+            <label className="block text-xs font-semibold text-muted-foreground mb-1">
+              Hold Reason <span className="text-destructive">*</span>
             </label>
             <textarea
               rows={3}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+              className="w-full bg-background border border-border rounded-xl p-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-amber-500/40"
               placeholder="e.g. Awaiting client review on joinery mockups, site power disconnected, DEWA inspection rescheduled..."
               value={reason}
               onChange={(e) => {
@@ -64,14 +89,14 @@ export const HoldReasonModal = ({
               }}
               autoFocus
             />
-            {error && <p className="text-xs text-rose-400 mt-1">{error}</p>}
+            {error && <p className="text-xs text-destructive mt-1">{error}</p>}
           </div>
 
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex justify-end gap-2 pt-2 border-t border-border/60">
             <Button
               type="button"
               variant="outline"
-              className="border-slate-700 text-slate-300 hover:bg-slate-800"
+              className="border-border text-foreground hover:bg-muted"
               onClick={onClose}
             >
               Cancel

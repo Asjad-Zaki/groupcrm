@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import {
   useListContext,
   useInfinitePaginationContext,
@@ -32,6 +32,20 @@ export function ActivityLogIterator() {
   const { hasNextPage, fetchNextPage, isFetchingNextPage } =
     useInfinitePaginationContext();
   const translate = useTranslate();
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      refetch();
+    };
+    window.addEventListener("group-crm:activity-update", handleUpdate);
+    window.addEventListener("group-crm:mutation", handleUpdate);
+    const interval = setInterval(handleUpdate, 15000);
+    return () => {
+      window.removeEventListener("group-crm:activity-update", handleUpdate);
+      window.removeEventListener("group-crm:mutation", handleUpdate);
+      clearInterval(interval);
+    };
+  }, [refetch]);
 
   if (isPending) {
     return (

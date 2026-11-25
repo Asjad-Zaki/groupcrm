@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { X, DollarSign, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNotify } from "ra-core";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 import type { Invoice } from "../types";
 
 interface RecordPaymentModalProps {
@@ -18,19 +19,28 @@ export const RecordPaymentModal = ({
   onPaymentRecorded,
 }: RecordPaymentModalProps) => {
   const notify = useNotify();
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
 
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
-  const [paymentMethod, setPaymentMethod] = useState<"bank_transfer" | "cheque" | "card">("bank_transfer");
+  const [paymentMethod, setPaymentMethod] = useState<
+    "bank_transfer" | "cheque" | "card"
+  >("bank_transfer");
   const [reference, setReference] = useState<string>("");
-  const [bankName, setBankName] = useState<string>("Emirates NBD - Dubai Branch");
-  const [paymentDate, setPaymentDate] = useState<string>(new Date().toISOString().split("T")[0]);
+  const [bankName, setBankName] = useState<string>(
+    "Emirates NBD - Dubai Branch",
+  );
+  const [paymentDate, setPaymentDate] = useState<string>(
+    new Date().toISOString().split("T")[0],
+  );
   const [notes, setNotes] = useState<string>("");
 
   useEffect(() => {
     if (invoice) {
       setPaymentAmount(invoice.balance_due);
       setReference(`TRF-${Math.floor(100000 + Math.random() * 900000)}`);
-      setNotes(`Progress milestone payment against invoice ${invoice.invoice_number}`);
+      setNotes(
+        `Progress milestone payment against invoice ${invoice.invoice_number}`,
+      );
     }
   }, [invoice]);
 
@@ -53,7 +63,8 @@ export const RecordPaymentModal = ({
 
     const newAmountPaid = invoice.amount_paid + paymentAmount;
     const newBalanceDue = Math.max(0, invoice.net_payable - newAmountPaid);
-    const newStatus: Invoice["status"] = newBalanceDue === 0 ? "paid" : "partially_paid";
+    const newStatus: Invoice["status"] =
+      newBalanceDue === 0 ? "paid" : "partially_paid";
 
     const updated: Invoice = {
       ...invoice,
@@ -68,15 +79,21 @@ export const RecordPaymentModal = ({
     };
 
     onPaymentRecorded(updated);
-    notify(`Recorded ${formatAED(paymentAmount)} payment for ${invoice.invoice_number}`, {
-      type: "success",
-    });
+    notify(
+      `Recorded ${formatAED(paymentAmount)} payment for ${invoice.invoice_number}`,
+      {
+        type: "success",
+      },
+    );
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in">
-      <div className="relative w-full max-w-lg bg-card text-card-foreground border border-border rounded-2xl shadow-2xl overflow-hidden">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-150 overflow-y-auto"
+    >
+      <div className="relative w-full max-w-lg bg-card text-card-foreground border border-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border/80 bg-muted/20">
           <div className="flex items-center gap-3">
@@ -84,19 +101,27 @@ export const RecordPaymentModal = ({
               <DollarSign className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-foreground">Record Payment Collection</h3>
+              <h3 className="text-base font-bold text-foreground">
+                Record Payment Collection
+              </h3>
               <p className="text-xs text-muted-foreground">
                 Invoice {invoice.invoice_number} • {invoice.client_company}
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded">
+              ESC
+            </kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              title="Close (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Content Form */}
@@ -104,12 +129,20 @@ export const RecordPaymentModal = ({
           {/* Summary Box */}
           <div className="p-3.5 bg-muted/30 border border-border/60 rounded-xl flex items-center justify-between text-xs">
             <div>
-              <span className="text-muted-foreground">Net Invoice Payable:</span>
-              <p className="font-bold text-foreground text-sm">{formatAED(invoice.net_payable)}</p>
+              <span className="text-muted-foreground">
+                Net Invoice Payable:
+              </span>
+              <p className="font-bold text-foreground text-sm">
+                {formatAED(invoice.net_payable)}
+              </p>
             </div>
             <div className="text-right">
-              <span className="text-muted-foreground">Current Balance Due:</span>
-              <p className="font-bold text-amber-400 text-sm">{formatAED(invoice.balance_due)}</p>
+              <span className="text-muted-foreground">
+                Current Balance Due:
+              </span>
+              <p className="font-bold text-amber-400 text-sm">
+                {formatAED(invoice.balance_due)}
+              </p>
             </div>
           </div>
 
@@ -169,7 +202,9 @@ export const RecordPaymentModal = ({
           {/* Reference & Bank */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div className="space-y-1.5">
-              <label className="text-muted-foreground font-medium">Reference / Cheque No.</label>
+              <label className="text-muted-foreground font-medium">
+                Reference / Cheque No.
+              </label>
               <input
                 type="text"
                 value={reference}
@@ -179,7 +214,9 @@ export const RecordPaymentModal = ({
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-muted-foreground font-medium">Bank Deposited</label>
+              <label className="text-muted-foreground font-medium">
+                Bank Deposited
+              </label>
               <input
                 type="text"
                 value={bankName}
@@ -191,7 +228,9 @@ export const RecordPaymentModal = ({
 
           {/* Payment Date */}
           <div className="space-y-1.5 text-xs">
-            <label className="text-muted-foreground font-medium">Collection Date</label>
+            <label className="text-muted-foreground font-medium">
+              Collection Date
+            </label>
             <input
               type="date"
               value={paymentDate}
@@ -202,7 +241,9 @@ export const RecordPaymentModal = ({
 
           {/* Receipt Notes */}
           <div className="space-y-1.5 text-xs">
-            <label className="text-muted-foreground font-medium">Receipt Notes</label>
+            <label className="text-muted-foreground font-medium">
+              Receipt Notes
+            </label>
             <textarea
               rows={2}
               value={notes}
@@ -213,14 +254,20 @@ export const RecordPaymentModal = ({
 
           {/* Actions */}
           <div className="pt-3 border-t border-border flex items-center justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onClose} className="text-xs">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="text-xs"
+            >
               Cancel
             </Button>
             <Button
               type="submit"
               className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold gap-1.5"
             >
-              <CheckCircle2 className="w-4 h-4" /> Confirm Receipt & Update Invoice
+              <CheckCircle2 className="w-4 h-4" /> Confirm Receipt & Update
+              Invoice
             </Button>
           </div>
         </form>

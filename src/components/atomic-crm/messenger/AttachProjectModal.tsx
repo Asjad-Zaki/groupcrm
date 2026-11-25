@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, Search, FolderKanban, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useModalShortcuts } from "@/hooks/useModalShortcuts";
 import type { Project } from "../types";
 
 interface AttachProjectModalProps {
@@ -16,6 +17,7 @@ export const AttachProjectModal = ({
   projects,
   onSelectProject,
 }: AttachProjectModalProps) => {
+  const { handleBackdropClick } = useModalShortcuts({ isOpen, onClose });
   const [search, setSearch] = useState("");
 
   if (!isOpen) return null;
@@ -31,8 +33,11 @@ export const AttachProjectModal = ({
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-md bg-card rounded-2xl border border-border shadow-2xl p-5 space-y-4 animate-in fade-in zoom-in-95 duration-200">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto animate-in fade-in duration-150"
+    >
+      <div className="w-full max-w-md bg-card rounded-2xl border border-border shadow-2xl p-5 space-y-4 animate-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between pb-2 border-b border-border">
           <div className="space-y-0.5">
             <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
@@ -43,13 +48,19 @@ export const AttachProjectModal = ({
               Link an active UAE project directly into the chat message.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground bg-muted border border-border rounded">
+              ESC
+            </kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              title="Close (Esc)"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         <div className="relative">
@@ -79,13 +90,25 @@ export const AttachProjectModal = ({
                     {proj.reference_no}
                   </span>
                   <span className="text-[10px] px-1.5 py-0.2 rounded bg-muted text-muted-foreground font-semibold">
-                    {proj.tenant_id === 1 ? "GL" : proj.tenant_id === 2 ? "AT" : "CV"}
+                    {proj.tenant_id === 1
+                      ? "GL"
+                      : proj.tenant_id === 2
+                        ? "AT"
+                        : "CV"}
                   </span>
                 </div>
-                <p className="text-xs font-medium truncate text-foreground">{proj.name}</p>
-                <p className="text-[11px] text-muted-foreground truncate">{proj.site_location}</p>
+                <p className="text-xs font-medium truncate text-foreground">
+                  {proj.name}
+                </p>
+                <p className="text-[11px] text-muted-foreground truncate">
+                  {proj.site_location}
+                </p>
               </div>
-              <Button size="sm" variant="ghost" className="h-7 w-7 p-0 shrink-0">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-7 w-7 p-0 shrink-0"
+              >
                 <Check className="w-3.5 h-3.5 text-primary" />
               </Button>
             </div>
@@ -93,7 +116,12 @@ export const AttachProjectModal = ({
         </div>
 
         <div className="flex justify-end pt-2 border-t border-border">
-          <Button size="sm" variant="outline" className="text-xs" onClick={onClose}>
+          <Button
+            size="sm"
+            variant="outline"
+            className="text-xs"
+            onClick={onClose}
+          >
             Cancel
           </Button>
         </div>
