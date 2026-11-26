@@ -83,7 +83,7 @@ export const AddPortalModal = ({
       <div className="bg-card border border-border/80 text-card-foreground rounded-2xl max-w-lg w-full shadow-2xl p-6 animate-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between pb-3 border-b border-border/60 mb-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
+            <div className="p-2 rounded-xl bg-primary/10 text-primary border border-primary/20">
               <PlusCircle className="w-5 h-5 shrink-0" />
             </div>
             <div>
@@ -113,13 +113,13 @@ export const AddPortalModal = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2">
-              <label className="block text-xs font-medium text-slate-300 mb-1">
-                Portal Name <span className="text-rose-400">*</span>
+              <label className="block text-xs font-medium text-foreground mb-1">
+                Portal Name <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
                 placeholder="e.g. Dubai Civil Defence Portal"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                className="w-full bg-background border border-border rounded-xl p-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                 value={name}
                 onChange={(e) => {
                   setName(e.target.value);
@@ -129,13 +129,13 @@ export const AddPortalModal = ({
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">
-                Acronym <span className="text-rose-400">*</span>
+              <label className="block text-xs font-medium text-foreground mb-1">
+                Acronym <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
                 placeholder="e.g. DCD"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                className="w-full bg-background border border-border rounded-xl p-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                 value={acronym}
                 onChange={(e) => setAcronym(e.target.value)}
               />
@@ -143,13 +143,13 @@ export const AddPortalModal = ({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">
-              Official Portal URL <span className="text-rose-400">*</span>
+            <label className="block text-xs font-medium text-foreground mb-1">
+              Official Portal URL <span className="text-rose-500">*</span>
             </label>
             <input
               type="url"
               placeholder="https://..."
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              className="w-full bg-background border border-border rounded-xl p-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
@@ -157,11 +157,11 @@ export const AddPortalModal = ({
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">
+              <label className="block text-xs font-medium text-foreground mb-1">
                 Category
               </label>
               <select
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                className="w-full bg-background border border-border rounded-xl p-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                 value={category}
                 onChange={(e) => setCategory(e.target.value as any)}
               >
@@ -173,26 +173,26 @@ export const AddPortalModal = ({
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">
+              <label className="block text-xs font-medium text-foreground mb-1">
                 Support Hotline
               </label>
               <input
                 type="text"
                 placeholder="e.g. 800 900"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                className="w-full bg-background border border-border rounded-xl p-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                 value={hotline}
                 onChange={(e) => setHotline(e.target.value)}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">
+              <label className="block text-xs font-medium text-foreground mb-1">
                 Official Hours
               </label>
               <input
                 type="text"
                 placeholder="e.g. 07:30 – 15:30"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                className="w-full bg-background border border-border rounded-xl p-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                 value={hours}
                 onChange={(e) => setHours(e.target.value)}
               />
@@ -200,74 +200,74 @@ export const AddPortalModal = ({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">
+            <label className="block text-xs font-medium text-foreground mb-1">
               Description / Services
             </label>
             <textarea
               rows={2}
               placeholder="Key services covered by this authority portal..."
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              className="w-full bg-background border border-border rounded-xl p-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">
+            <label className="block text-xs font-medium text-foreground mb-1">
               Relevant Operating Entities
             </label>
             <div className="flex gap-2">
               <button
                 type="button"
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer ${
                   companies.includes("goldland")
-                    ? "bg-amber-950 text-amber-300 border-amber-600"
-                    : "bg-slate-950 text-slate-400 border-slate-800"
+                    ? "bg-amber-500/15 text-amber-500 border-amber-500/40"
+                    : "bg-muted/40 text-muted-foreground border-border/60 hover:text-foreground"
                 }`}
                 onClick={() => handleToggleCompany("goldland")}
               >
-                GL • Goldland
+                GL · Goldland
               </button>
               <button
                 type="button"
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer ${
                   companies.includes("abbadi")
-                    ? "bg-blue-950 text-blue-300 border-blue-600"
-                    : "bg-slate-950 text-slate-400 border-slate-800"
+                    ? "bg-blue-500/15 text-blue-500 border-blue-500/40"
+                    : "bg-muted/40 text-muted-foreground border-border/60 hover:text-foreground"
                 }`}
                 onClick={() => handleToggleCompany("abbadi")}
               >
-                AT • Abbadi Tech
+                AT · Abbadi Tech
               </button>
               <button
                 type="button"
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer ${
                   companies.includes("casavera")
-                    ? "bg-emerald-950 text-emerald-300 border-emerald-600"
-                    : "bg-slate-950 text-slate-400 border-slate-800"
+                    ? "bg-emerald-500/15 text-emerald-500 border-emerald-500/40"
+                    : "bg-muted/40 text-muted-foreground border-border/60 hover:text-foreground"
                 }`}
                 onClick={() => handleToggleCompany("casavera")}
               >
-                CV • Casavera
+                CV · Casavera
               </button>
             </div>
           </div>
 
-          {error && <p className="text-xs text-rose-400">{error}</p>}
+          {error && (
+            <p className="text-xs text-rose-500 font-medium">{error}</p>
+          )}
 
-          <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+          <div className="flex justify-end gap-2 pt-3 border-t border-border/60">
             <Button
               type="button"
               variant="outline"
-              className="border-slate-700 text-slate-300 hover:bg-slate-800 text-xs"
+              size="sm"
+              className="text-xs"
               onClick={onClose}
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              className="bg-amber-600 hover:bg-amber-500 text-white font-medium text-xs"
-            >
+            <Button type="submit" size="sm" className="text-xs shadow-xs">
               Save Portal Shortcut
             </Button>
           </div>
